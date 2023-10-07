@@ -1,0 +1,279 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id                    String         @id @default(uuid())
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  name                  String
+  email                 String         @unique
+  hashedPassword        String?        @db.Text
+  imageUrl              String?        @db.Text
+  imageId               String?
+  emailConfirmed        Boolean        @default(false)
+  locked                Boolean        @default(false)
+  role                  Role           @default(MEMBER)
+  followerCount         Int            @default(0)
+  birthDate             DateTime?      @db.Date
+  gender                Gender?     
+  about                 String?        @db.Text
+  alias                 String?
+
+  playlists             Playlist[]
+  followings            User[]         @relation(name: "followers")
+  followers             User[]         @relation(name: "followers")
+  likedSongs            UserSong[]
+  followingArtists      UserArtist[]
+  likedPlaylists        UserPlaylist[]   
+  likedAlbums           UserAlbum[]
+  tokens                Token[]
+
+  @@index([name])
+  @@map("users")
+}
+
+model Token {
+  id          String     @id @default(uuid())
+  token       String     
+  expiryTime  DateTime
+  type        TokenType
+  userId      String
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tokens")
+  @@index([userId])
+  @@unique([token, userId])
+}
+
+model Artist {
+  id             String      @id @default(cuid())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  name           String
+  birthDate      DateTime?   @db.Date
+  about          String?     @db.Text
+  imageUrl       String?     @db.Text
+  imageId        String?
+  followerCount  Int         @default(0)
+  alias          String?
+
+  songs          Song[]
+  followers      UserArtist[]
+  albums         Album[]
+
+  @@index([name])
+  @@map("artists")
+}
+
+model Song {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  name         String
+  songUrl      String?    @db.Text
+  imageUrl     String?    @db.Text
+  imageId      String?
+  length       Int        @default(0)
+  releasedAt   DateTime?  @db.Date
+  likeCount    Int        @default(0)
+  listenCount  Int        @default(0)
+  alias        String?
+  language     Language   @default(NONE)
+
+  genres       Genre[]
+  artists      Artist[]
+  likedUsers   UserSong[]
+  playlists    PlaylistSong[]
+  albums       AlbumSong[]
+  listens      Listen[]
+
+  @@index([name])
+  @@map("songs")
+}
+
+model Listen {
+  songId  String
+  date    DateTime  @db.Date
+  count   Int       @default(1)
+
+  song    Song      @relation(fields: [songId], references: [id], onDelete: Cascade)
+  @@unique([songId, date])
+  @@map("listens")
+}
+
+model Playlist {
+  id           String          @id @default(cuid())
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  name         String
+  description  String?         @db.Text
+  imageUrl     String?         @db.Text
+  imageId      String?
+  userId       String
+  status       PlaylistStatus  @default(PUBLIC)
+  likeCount    Int             @default(0)
+  songCount    Int             @default(0)
+  totalLength  Int             @default(0)
+  alias        String?
+
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likedUsers   UserPlaylist[]
+  songs        PlaylistSong[]
+
+  @@index([userId])
+  @@index([name])
+  @@map("playlists")
+}
+
+model PlaylistSong {
+  playlistId  String
+  playlist    Playlist  @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  songId      String
+  song        Song      @relation(fields: [songId], references: [id], onDelete: Cascade)
+  order       Int       @db.SmallInt
+
+  @@unique([playlistId, songId])
+  @@index([songId])
+  @@map("_PlaylistToSong")
+}
+
+model Album {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  name         String
+  imageUrl     String?    @db.Text
+  imageId      String?
+  likeCount    Int        @default(0)
+  songCount    Int        @default(0)
+  totalLength  Int        @default(0)
+  alias        String?
+  artistId     String?
+
+  artist       Artist?    @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  genres       Genre[]    
+  likedUsers   UserAlbum[]
+  songs        AlbumSong[]
+
+  @@map("albums")
+  @@index([artistId])
+  @@index([name])
+}
+
+model AlbumSong {
+  albumId  String
+  album    Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  songId   String
+  song     Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+  order    Int      @db.SmallInt
+
+  @@unique([albumId, songId])
+  @@index([songId]) 
+  @@map("_AlbumToSong")
+}
+
+model Genre {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  name         String
+  description  String?    @db.Text
+  imageUrl     String?    @db.Text
+  imageId      String?
+  alias        String?
+
+  songs        Song[]
+  albums       Album[]
+
+  @@map("genres")
+}
+
+model UserAlbum {
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  albumId  String
+  album    Album     @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  likedAt  DateTime  @default(now())
+
+  @@unique([userId, albumId])
+  @@index([albumId])
+  @@map("_UserToLikedAlbum")
+}
+
+model UserSong {
+  userId   String
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  songId   String
+  song     Song      @relation(fields: [songId], references: [id], onDelete: Cascade)
+  likedAt  DateTime  @default(now())
+
+  @@unique([userId, songId])
+  @@index([songId])
+  @@map("_UserToLikedSong")
+}
+
+model UserPlaylist {
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playlistId  String
+  playlist    Playlist  @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  likedAt     DateTime  @default(now())
+
+  @@unique([userId, playlistId])
+  @@index([playlistId])
+  @@map("_UserToLikedPlaylist")
+}
+
+model UserArtist {
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artistId  String
+  artist    Artist    @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  followAt  DateTime  @default(now())
+
+  @@unique([userId, artistId])
+  @@index([artistId])
+  @@map("_UserToArtist")
+}
+
+enum TokenType {
+  CONFIRM_EMAIL
+  RESET_PASSWORD
+  REFRESH_TOKEN
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum PlaylistStatus {
+  PUBLIC
+  PRIVATE
+}
+
+enum Language {
+  NONE
+  JAPANESE
+  VIETNAMESE
+  ENGLISH
+  CHINESE
+  KOREAN
+}

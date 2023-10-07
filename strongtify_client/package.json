@@ -1,0 +1,38 @@
+{
+  "name": "strongtify_client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write \"src/**/*.tsx\""
+  },
+  "dependencies": {
+    "@types/node": "20.5.1",
+    "@types/react": "18.2.20",
+    "@types/react-dom": "18.2.7",
+    "autoprefixer": "10.4.15",
+    "next": "13.4.19",
+    "next-auth": "^4.23.1",
+    "postcss": "8.4.28",
+    "react": "18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.45.4",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^4.10.1",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-loading-skeleton": "^3.3.1",
+    "react-select": "^5.7.4",
+    "react-spinners": "^0.13.8",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.1.6",
+    "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/react-beautiful-dnd": "^13.1.4",
+    "prettier": "^3.0.3"
+  }
+}

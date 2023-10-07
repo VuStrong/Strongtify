@@ -1,0 +1,5 @@
+export enum PrismaError {
+    UNIQUE_CONSTRAINT_FAILED = "P2002",
+    ENTITY_NOT_FOUND = "P2025",
+    QUERY_INTERPRETATION_ERROR = "P2016",
+}
