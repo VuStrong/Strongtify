@@ -18,7 +18,7 @@ export default function PlaylistItem({ playlist }: { playlist: Playlist }) {
                     alt={playlist.name}
                 />
                 <div className="pt-4 pb-2">
-                    <div className="font-bold text-xl text-yellow-50 truncate">
+                    <div className="font-bold text-xl text-yellow-50 line-clamp-2">
                         {playlist.name}
                     </div>
 
