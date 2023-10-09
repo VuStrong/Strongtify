@@ -1,18 +1,14 @@
-'use client'
+"use client";
 
 import usePlayer from "@/hooks/usePlayer";
 import { AiFillPlayCircle } from "react-icons/ai";
 
-export default function PlayButton({
-    songIds
-}: {
-    songIds?: string[]
-}) {
+export default function PlayButton({ songIds }: { songIds?: string[] }) {
     const player = usePlayer();
 
     const handleClick = () => {
         player.setIds(songIds ?? []);
-    }
+    };
 
     return (
         <div
@@ -21,5 +17,5 @@ export default function PlayButton({
         >
             <AiFillPlayCircle />
         </div>
-    )
+    );
 }

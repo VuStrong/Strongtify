@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { BiDotsVerticalRounded } from "react-icons/bi";
 
 import { Song } from "@/types/song";
 import { NO_IMAGE_URL } from "@/libs/constants";
@@ -13,17 +11,11 @@ export default function SongItem({
     song,
     index,
     containLink,
-    containMenu,
-    menu
 }: {
     song: Song;
     index?: number;
     containLink?: boolean;
-    containMenu?: boolean;
-    menu?: React.ReactNode;
 }) {
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-
     return (
         <div
             className="flex gap-x-3 items-center w-full text-gray-300 p-2 hover:bg-darkgray"
@@ -65,21 +57,6 @@ export default function SongItem({
             </div>
 
             <div className="md:block hidden">{formatLength(song.length)}</div>
-
-            { containMenu && (
-                <>
-                    <div 
-                        className="group relative" 
-                        onClick={() => { setIsMenuOpen(!isMenuOpen) }}
-                    >
-                        <BiDotsVerticalRounded size={24} />
-
-                        <div className="invisible group-hover:visible min-w-[300px] absolute z-30 bg-gray-900 rounded-lg right-0 top-0 -translate-y-full">
-                            {menu}
-                        </div>
-                    </div>
-                </>
-            ) }
         </div>
     );
 }

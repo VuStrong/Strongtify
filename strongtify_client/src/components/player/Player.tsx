@@ -11,7 +11,7 @@ export default function Player() {
 
     const PlayerContent = useMemo(
         () => dynamic(() => import("./PlayerContent"), { ssr: false }),
-        [song]
+        [song],
     );
 
     if (!player.ids[0] || !song) {
@@ -22,5 +22,5 @@ export default function Player() {
         <div className="fixed bg-orange-800 px-4 py-3 bottom-0 left-0 w-full z-30 md:z-50">
             <PlayerContent song={song} />
         </div>
-    )
+    );
 }

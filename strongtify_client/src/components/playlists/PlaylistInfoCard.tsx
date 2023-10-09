@@ -92,47 +92,54 @@ export default function PlaylistInfoCard({
                 }}
             >
                 <div className="text-yellow-50 p-4 flex flex-col gap-3">
-                    {session?.user?.id && session.user.id === playlist.user.id && (
-                        <>
-                            <Button
-                                label="Chỉnh sửa thông tin playlist"
-                                onClick={() => {
-                                    setIsEditModalOpen(true);
-                                    setIsModalOpen(false);
-                                }}
-                                outline
-                            />
-
-                            {playlist.status === "PUBLIC" ? (
+                    {session?.user?.id &&
+                        session.user.id === playlist.user.id && (
+                            <>
                                 <Button
-                                    label="Đặt thành riêng tư"
+                                    label="Chỉnh sửa thông tin playlist"
                                     onClick={() => {
-                                        handleChangePlaylistStatus("PRIVATE");
+                                        setIsEditModalOpen(true);
+                                        setIsModalOpen(false);
                                     }}
                                     outline
                                 />
-                            ) : (
+
+                                {playlist.status === "PUBLIC" ? (
+                                    <Button
+                                        label="Đặt thành riêng tư"
+                                        onClick={() => {
+                                            handleChangePlaylistStatus(
+                                                "PRIVATE",
+                                            );
+                                        }}
+                                        outline
+                                    />
+                                ) : (
+                                    <Button
+                                        label="Đặt thành công khai"
+                                        onClick={() => {
+                                            handleChangePlaylistStatus(
+                                                "PUBLIC",
+                                            );
+                                        }}
+                                        outline
+                                    />
+                                )}
+
                                 <Button
-                                    label="Đặt thành công khai"
-                                    onClick={() => {
-                                        handleChangePlaylistStatus("PUBLIC");
-                                    }}
+                                    label="Xóa playlist này"
+                                    onClick={handleDeletePlaylist}
                                     outline
                                 />
-                            )}
-
-                            <Button
-                                label="Xóa playlist này"
-                                onClick={handleDeletePlaylist}
-                                outline
-                            />
-                        </>
-                    )}
+                            </>
+                        )}
 
                     <Button
                         label="Copy link playlist"
                         onClick={() => {
-                            navigator.clipboard.writeText(`${window.location.hostname}/playlists/${playlist.id}`);
+                            navigator.clipboard.writeText(
+                                `${window.location.hostname}/playlists/${playlist.id}`,
+                            );
                             toast.success("Đã copy link playlist");
                             setIsModalOpen(false);
                         }}
@@ -198,13 +205,16 @@ export default function PlaylistInfoCard({
                 </div>
 
                 <div className="flex gap-3 items-center mb-3">
-                    <PlayButton songIds={playlist.songs?.map(song => song.id)} />
+                    <PlayButton
+                        songIds={playlist.songs?.map((song) => song.id)}
+                    />
 
-                    {session?.user?.id && session.user.id !== playlist.user.id && (
-                        <div>
-                            <LikePlaylistButton playlistId={playlist.id} />
-                        </div>
-                    )}
+                    {session?.user?.id &&
+                        session.user.id !== playlist.user.id && (
+                            <div>
+                                <LikePlaylistButton playlistId={playlist.id} />
+                            </div>
+                        )}
 
                     <div
                         className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"

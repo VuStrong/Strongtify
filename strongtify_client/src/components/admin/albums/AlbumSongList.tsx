@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 
 import { AlbumDetail } from "@/types/album";
 import { Song } from "@/types/song";
@@ -26,6 +27,9 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
     const [isModalLoaded, setIsModalLoaded] = useState<boolean>(false);
     const [isAddSongsModalOpen, setIsAddSongsModalOpen] =
         useState<boolean>(false);
+    const [isSongOptionsModalOpen, setIsSongOptionsModalOpen] =
+        useState<boolean>(false);
+    const [selectedSongId, setSelectedSongId] = useState<string>("");
 
     const router = useRouter();
     const { data: session } = useSession();
@@ -36,11 +40,13 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
         [album.songs],
     );
 
-    const handleRemoveSongFromAlbum = useCallback(async (songId: string) => {
+    const handleRemoveSongFromAlbum = useCallback(async () => {
+        setIsSongOptionsModalOpen(false);
+
         try {
             await removeSongFromAlbum(
                 album.id,
-                songId,
+                selectedSongId,
                 session?.accessToken ?? "",
             );
             toast.success("Đã xóa bài hát khỏi album");
@@ -48,7 +54,7 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
         } catch (error: any) {
             toast.error(error.message);
         }
-    }, [session?.accessToken]);
+    }, [selectedSongId, session?.accessToken]);
 
     return (
         <>
@@ -78,6 +84,30 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
                 </Modal>
             )}
 
+            {/* Song options modal */}
+            <Modal
+                isOpen={isSongOptionsModalOpen}
+                onClickClose={() => {
+                    setIsSongOptionsModalOpen(false);
+                }}
+            >
+                <div className="text-yellow-50 p-4 flex flex-col gap-3">
+                    <Button
+                        label="Xem chi tiết"
+                        onClick={() => {
+                            setIsSongOptionsModalOpen(false);
+                            router.push(`/admin/songs/${selectedSongId}`);
+                        }}
+                        outline
+                    />
+                    <Button
+                        label="Xóa bài hát khỏi album này"
+                        onClick={handleRemoveSongFromAlbum}
+                        outline
+                    />
+                </div>
+            </Modal>
+
             <section>
                 <h2 className="text-3xl text-primary mb-5">
                     Song list
@@ -99,28 +129,21 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
                 <DraggableList
                     initialItems={album.songs ?? []}
                     formatItem={(item: Song, index: number) => (
-                        <SongItem
-                            song={item}
-                            index={index + 1}
-                            containLink
-                            containMenu
-                            menu={(
-                                <div className="text-yellow-50 p-4 flex flex-col gap-3">
-                                    <Button
-                                        label="Xóa bài hát khỏi album này"
-                                        onClick={() => handleRemoveSongFromAlbum(item.id) }
-                                        outline
-                                    />
-                                    <Button
-                                        label="Xem chi tiết"
-                                        onClick={() => {
-                                            router.push(`/admin/songs/${item.id}`);
-                                        }}
-                                        outline
-                                    />
-                                </div>
-                            )}
-                        />
+                        <div className="relative">
+                            <div className="mr-6">
+                                <SongItem song={item} index={index + 1} />
+                            </div>
+
+                            <div
+                                className="cursor-pointer absolute right-0 top-1/2 -translate-y-1/2 text-yellow-50"
+                                onClick={() => {
+                                    setIsSongOptionsModalOpen(true);
+                                    setSelectedSongId(item.id);
+                                }}
+                            >
+                                <BiDotsVerticalRounded size={24} />
+                            </div>
+                        </div>
                     )}
                     onDrop={async (item: Song, index: number) => {
                         await moveSongInAlbum(

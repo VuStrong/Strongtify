@@ -24,12 +24,8 @@ const Slider: React.FC<SlideProps> = ({ value = 0, onChange, onCommit }) => {
             max={100}
             step={1}
         >
-            <RadixSlider.Track
-                className="bg-neutral-600 relative grow rounded-full h-[3px] hover:h-[6px]"
-            >
-                <RadixSlider.Range
-                    className="absolute bg-white rounded-full h-full"
-                />
+            <RadixSlider.Track className="bg-neutral-600 relative grow rounded-full h-[3px] hover:h-[6px]">
+                <RadixSlider.Range className="absolute bg-white rounded-full h-full" />
             </RadixSlider.Track>
 
             <RadixSlider.Thumb className="block w-[10px] h-[10px] bg-white rounded-full hover:scale-125" />

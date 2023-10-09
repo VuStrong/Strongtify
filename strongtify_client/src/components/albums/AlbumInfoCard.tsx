@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -31,7 +31,9 @@ export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
                     <Button
                         label="Copy link album"
                         onClick={() => {
-                            navigator.clipboard.writeText(`${window.location.hostname}/albums/${album.alias}/${album.id}`);
+                            navigator.clipboard.writeText(
+                                `${window.location.hostname}/albums/${album.alias}/${album.id}`,
+                            );
                             toast.success("Đã copy link album");
                             setIsModalOpen(false);
                         }}
@@ -93,7 +95,7 @@ export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
                 </div>
 
                 <div className="flex gap-3 items-center">
-                    <PlayButton songIds={album.songs?.map(song => song.id)} />
+                    <PlayButton songIds={album.songs?.map((song) => song.id)} />
 
                     {session?.user?.id && (
                         <div>
@@ -112,5 +114,5 @@ export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
                 </div>
             </div>
         </>
-    )
+    );
 }

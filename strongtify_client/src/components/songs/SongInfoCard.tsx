@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -13,9 +13,13 @@ import PlayButton from "../buttons/PlayButton";
 import LikeSongButton from "../buttons/LikeSongButton";
 import Modal from "../modals/Modal";
 import Button from "../buttons/Button";
+import PlaylistContent from "../modals/modal-contents/PlaylistContent";
+import { addSongsToPlaylist } from "@/services/api/playlists";
 
 export default function SongInfoCard({ song }: { song: SongDetail }) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
+        useState<boolean>(false);
     const { data: session } = useSession();
 
     return (
@@ -30,13 +34,48 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                     <Button
                         label="Copy link bài hát"
                         onClick={() => {
-                            navigator.clipboard.writeText(`${window.location.hostname}/songs/${song.alias}/${song.id}`);
+                            navigator.clipboard.writeText(
+                                `${window.location.hostname}/songs/${song.alias}/${song.id}`,
+                            );
                             toast.success("Đã copy link bài hát");
                             setIsModalOpen(false);
                         }}
                         outline
                     />
+                    <Button
+                        label="Thêm vào danh sách phát"
+                        onClick={() => {
+                            setIsModalOpen(false);
+                            setIsAddToPlaylistModalOpen(true);
+                        }}
+                        outline
+                    />
                 </div>
+            </Modal>
+
+            <Modal
+                isOpen={isAddToPlaylistModalOpen}
+                onClickClose={() => {
+                    setIsAddToPlaylistModalOpen(false);
+                }}
+            >
+                <PlaylistContent
+                    onClickPlaylist={async (playlistId: string) => {
+                        setIsAddToPlaylistModalOpen(false);
+
+                        try {
+                            await addSongsToPlaylist(
+                                playlistId,
+                                [song.id],
+                                session?.accessToken ?? "",
+                            );
+
+                            toast.success("Đã thêm bài hát vào danh sách phát");
+                        } catch (error: any) {
+                            toast.error(error.message);
+                        }
+                    }}
+                />
             </Modal>
 
             <div className="bg-darkgray rounded-lg p-10">
@@ -97,5 +136,5 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                 </div>
             </div>
         </>
-    )
+    );
 }

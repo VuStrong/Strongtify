@@ -21,11 +21,11 @@ export default function PlayerContent({ song }: { song: SongDetail }) {
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.play();
-    
+
             const listen = async () => {
                 await increaseListenCount(song.id);
-            }
-    
+            };
+
             listen();
         }
     }, []);
@@ -38,7 +38,7 @@ export default function PlayerContent({ song }: { song: SongDetail }) {
         if (player.currentIndex >= player.ids.length - 1) {
             player.setCurrentIndex(0);
         } else {
-            player.setCurrentIndex(player.currentIndex + 1)
+            player.setCurrentIndex(player.currentIndex + 1);
         }
     }, [player]);
 
@@ -64,22 +64,26 @@ export default function PlayerContent({ song }: { song: SongDetail }) {
 
     const onTimeUpdate = useCallback(() => {
         if (audioRef.current && !isDrag) {
-            setProgress(audioRef.current.currentTime / audioRef.current.duration * 100);
+            setProgress(
+                (audioRef.current.currentTime / audioRef.current.duration) *
+                    100,
+            );
         }
     }, [isDrag, audioRef]);
 
     return (
         <>
             <div className="absolute top-0 left-0 w-full">
-                <Slider 
+                <Slider
                     value={progress}
                     onChange={(value) => {
                         setIsDrag(true);
                         setProgress(value);
                     }}
-                    onCommit={(value) => { 
+                    onCommit={(value) => {
                         if (audioRef.current) {
-                            audioRef.current.currentTime = value / 100 * audioRef.current.duration;
+                            audioRef.current.currentTime =
+                                (value / 100) * audioRef.current.duration;
                         }
 
                         setIsDrag(false);
@@ -87,13 +91,17 @@ export default function PlayerContent({ song }: { song: SongDetail }) {
                 />
             </div>
 
-            <audio 
-                id="audio" 
-                ref={audioRef} 
+            <audio
+                id="audio"
+                ref={audioRef}
                 src={song.songUrl}
                 onTimeUpdate={onTimeUpdate}
-                onPlay={() => { setIsPlaying(true) }}
-                onPause={() => { setIsPlaying(false) }}
+                onPlay={() => {
+                    setIsPlaying(true);
+                }}
+                onPause={() => {
+                    setIsPlaying(false);
+                }}
                 onEnded={() => {
                     setIsPlaying(false);
                     onPlayNext();

@@ -1,6 +1,5 @@
 "use client";
 
-import { BiDotsVerticalRounded } from "react-icons/bi";
 import {
     PiNumberCircleOneBold,
     PiNumberCircleThreeBold,
@@ -45,18 +44,7 @@ export default function TopSongsSection({ topSongs }: { topSongs: TopSong[] }) {
                     </div>
 
                     <div className="ml-12">
-                        <SongItem
-                            key={song.id}
-                            song={song}
-                            actionLabel={
-                                <div
-                                    className="cursor-pointer"
-                                    onClick={() => {}}
-                                >
-                                    <BiDotsVerticalRounded size={24} />
-                                </div>
-                            }
-                        />
+                        <SongItem key={song.id} song={song} containLink />
                     </div>
                 </div>
             ))}

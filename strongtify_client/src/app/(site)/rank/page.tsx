@@ -65,7 +65,7 @@ export default async function RankPage({
             </div>
 
             <div className="mb-5">
-                <PlayButton songIds={topSongs?.map(song => song.id)} />
+                <PlayButton songIds={topSongs?.map((song) => song.id)} />
             </div>
 
             <TopSongsSection topSongs={topSongs ?? []} />

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 
 import { Song } from "@/types/song";
 import Button from "@/components/buttons/Button";
@@ -30,6 +31,9 @@ export default function PlaylistSongList({
     const [isModalLoaded, setIsModalLoaded] = useState<boolean>(false);
     const [isAddSongsModalOpen, setIsAddSongsModalOpen] =
         useState<boolean>(false);
+    const [isSongOptionsModalOpen, setIsSongOptionsModalOpen] =
+        useState<boolean>(false);
+    const [selectedSongId, setSelectedSongId] = useState<string>("");
 
     const router = useRouter();
     const { data: session } = useSession();
@@ -40,12 +44,13 @@ export default function PlaylistSongList({
         [playlist.songs],
     );
 
-    const handleRemoveSongFromPlaylist = useCallback(async (songId: string) => {
+    const handleRemoveSongFromPlaylist = useCallback(async () => {
+        setIsSongOptionsModalOpen(false);
 
         try {
             await removeSongFromPlaylist(
                 playlist.id,
-                songId,
+                selectedSongId,
                 session?.accessToken ?? "",
             );
             toast.success("Đã xóa bài hát khỏi playlist");
@@ -53,7 +58,7 @@ export default function PlaylistSongList({
         } catch (error: any) {
             toast.error(error.message);
         }
-    }, [session?.accessToken]);
+    }, [selectedSongId, session?.accessToken]);
 
     return (
         <>
@@ -83,6 +88,22 @@ export default function PlaylistSongList({
                 </Modal>
             )}
 
+            {/* Song options modal */}
+            <Modal
+                isOpen={isSongOptionsModalOpen}
+                onClickClose={() => {
+                    setIsSongOptionsModalOpen(false);
+                }}
+            >
+                <div className="text-yellow-50 p-4 flex flex-col gap-3">
+                    <Button
+                        label="Xóa bài hát khỏi playlist này"
+                        onClick={handleRemoveSongFromPlaylist}
+                        outline
+                    />
+                </div>
+            </Modal>
+
             <section>
                 <h2 className="text-yellow-50 text-2xl font-medium mb-3">
                     Danh sách bài hát
@@ -103,28 +124,25 @@ export default function PlaylistSongList({
                 <DraggableList
                     initialItems={playlist.songs ?? []}
                     formatItem={(item: Song, index: number) => (
-                        <SongItem
-                            song={item}
-                            index={index + 1}
-                            containLink
-                            containMenu
-                            menu={(
-                                <div className="text-yellow-50 p-4 flex flex-col gap-3">
-                                    <Button
-                                        label="Xóa bài hát khỏi playlist này"
-                                        onClick={() => handleRemoveSongFromPlaylist(item.id) }
-                                        outline
-                                    />
-                                    <Button
-                                        label="Xem bài hát"
-                                        onClick={() => {
-                                            router.push(`/songs/${item.alias}/${item.id}`);
-                                        }}
-                                        outline
-                                    />
-                                </div>
-                            )}
-                        />
+                        <div className="relative">
+                            <div className="mr-6">
+                                <SongItem
+                                    song={item}
+                                    index={index + 1}
+                                    containLink
+                                />
+                            </div>
+
+                            <div
+                                className="cursor-pointer absolute right-0 top-1/2 -translate-y-1/2 text-yellow-50"
+                                onClick={() => {
+                                    setIsSongOptionsModalOpen(true);
+                                    setSelectedSongId(item.id);
+                                }}
+                            >
+                                <BiDotsVerticalRounded size={24} />
+                            </div>
+                        </div>
                     )}
                     onDrop={async (item: Song, index: number) => {
                         await moveSongInPlaylist(

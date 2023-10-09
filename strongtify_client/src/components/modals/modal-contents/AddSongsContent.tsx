@@ -56,10 +56,7 @@ export default function AddSongsContent({
 
     return (
         <div className="px-4 py-3 sm:px-6">
-            <h3
-                className="font-semibold leading-6 text-yellow-50 text-xl mb-2"
-                id="modal-title"
-            >
+            <h3 className="font-semibold leading-6 text-yellow-50 text-xl mb-2">
                 Thêm bài hát
             </h3>
 
@@ -105,10 +102,7 @@ export default function AddSongsContent({
                         {songs?.map((song, index) => (
                             <div className="relative">
                                 <div className="mr-12">
-                                    <SongItem
-                                        key={index}
-                                        song={song}
-                                    />
+                                    <SongItem key={index} song={song} />
                                 </div>
 
                                 <div className="absolute right-2 top-1/2 -translate-y-1/2">
