@@ -135,3 +135,11 @@ export async function deleteSong(songId: string, accessToken: string) {
 
     return data as CudSongResponse;
 }
+
+export async function increaseListenCount(songId: string) {
+    const response = await callAPI(`${BACKEND_API_URL}/v1/songs/${songId}/listen`, {
+        method: "PATCH",
+    });
+
+    return response.ok;
+}

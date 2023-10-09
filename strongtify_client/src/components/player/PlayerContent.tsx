@@ -9,6 +9,7 @@ import usePlayer from "@/hooks/usePlayer";
 import { NO_IMAGE_URL } from "@/libs/constants";
 import Slider from "./Slider";
 import { SongDetail } from "@/types/song";
+import { increaseListenCount } from "@/services/api/songs";
 
 export default function PlayerContent({ song }: { song: SongDetail }) {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -18,8 +19,16 @@ export default function PlayerContent({ song }: { song: SongDetail }) {
     const player = usePlayer();
 
     useEffect(() => {
-        audioRef.current?.play();
-    }, [audioRef.current]);
+        if (audioRef.current) {
+            audioRef.current.play();
+    
+            const listen = async () => {
+                await increaseListenCount(song.id);
+            }
+    
+            listen();
+        }
+    }, []);
 
     const onPlayNext = useCallback(() => {
         if (!player.ids[0]) {
