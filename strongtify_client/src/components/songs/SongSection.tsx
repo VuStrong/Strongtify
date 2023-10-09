@@ -1,8 +1,10 @@
 "use client";
 
-import { BiDotsVerticalRounded } from "react-icons/bi";
 import { Song } from "@/types/song";
 import SongItem from "./SongItem";
+import Button from "../buttons/Button";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function SongSection({
     songs,
@@ -13,6 +15,8 @@ export default function SongSection({
     showIndex?: boolean;
     oneColumn?: boolean;
 }) {
+    const router = useRouter();
+
     return (
         <section
             className={`grid sm:gap-3 gap-1 grid-cols-1 ${
@@ -29,11 +33,26 @@ export default function SongSection({
                     index={showIndex ? index + 1 : undefined}
                     song={song}
                     containLink
-                    actionLabel={
-                        <div className="cursor-pointer" onClick={() => {}}>
-                            <BiDotsVerticalRounded size={24} />
+                    containMenu
+                    menu={(
+                        <div className="text-yellow-50 p-4 flex flex-col gap-3">
+                            <Button
+                                label="Xem bài hát"
+                                onClick={() => {
+                                    router.push(`/songs/${song.alias}/${song.id}`);
+                                }}
+                                outline
+                            />
+                            <Button
+                                label="Copy link bài hát"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(`${window.location.hostname}/songs/${song.alias}/${song.id}`);
+                                    toast.success("Đã copy link bài hát");
+                                }}
+                                outline
+                            />
                         </div>
-                    }
+                    )}
                 />
             ))}
         </section>

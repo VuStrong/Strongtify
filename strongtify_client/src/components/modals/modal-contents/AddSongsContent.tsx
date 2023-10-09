@@ -103,18 +103,23 @@ export default function AddSongsContent({
                         scrollableTarget="scrollableAddSong"
                     >
                         {songs?.map((song, index) => (
-                            <SongItem
-                                key={index}
-                                song={song}
-                                actionLabel={
+                            <div className="relative">
+                                <div className="mr-12">
+                                    <SongItem
+                                        key={index}
+                                        song={song}
+                                    />
+                                </div>
+
+                                <div className="absolute right-2 top-1/2 -translate-y-1/2">
                                     <AddButton
                                         size={20}
                                         onClick={async () => {
                                             await onAdd(song);
                                         }}
                                     />
-                                }
-                            />
+                                </div>
+                            </div>
                         ))}
                     </InfiniteScroll>
                 )}

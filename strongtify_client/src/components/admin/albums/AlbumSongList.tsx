@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { BiDotsVerticalRounded } from "react-icons/bi";
 
 import { AlbumDetail } from "@/types/album";
 import { Song } from "@/types/song";
@@ -27,9 +26,6 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
     const [isModalLoaded, setIsModalLoaded] = useState<boolean>(false);
     const [isAddSongsModalOpen, setIsAddSongsModalOpen] =
         useState<boolean>(false);
-    const [isSongOptionsModalOpen, setIsSongOptionsModalOpen] =
-        useState<boolean>(false);
-    const [selectedSongId, setSelectedSongId] = useState<string>("");
 
     const router = useRouter();
     const { data: session } = useSession();
@@ -40,13 +36,11 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
         [album.songs],
     );
 
-    const handleRemoveSongFromAlbum = useCallback(async () => {
-        setIsSongOptionsModalOpen(false);
-
+    const handleRemoveSongFromAlbum = useCallback(async (songId: string) => {
         try {
             await removeSongFromAlbum(
                 album.id,
-                selectedSongId,
+                songId,
                 session?.accessToken ?? "",
             );
             toast.success("Đã xóa bài hát khỏi album");
@@ -54,7 +48,7 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
         } catch (error: any) {
             toast.error(error.message);
         }
-    }, [selectedSongId, session?.accessToken]);
+    }, [session?.accessToken]);
 
     return (
         <>
@@ -84,29 +78,6 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
                 </Modal>
             )}
 
-            {/* Song options modal */}
-            <Modal
-                isOpen={isSongOptionsModalOpen}
-                onClickClose={() => {
-                    setIsSongOptionsModalOpen(false);
-                }}
-            >
-                <div className="text-yellow-50 p-4 flex flex-col gap-3">
-                    <Button
-                        label="Xem chi tiết"
-                        onClick={() => {
-                            router.push(`/admin/songs/${selectedSongId}`);
-                        }}
-                        outline
-                    />
-                    <Button
-                        label="Xóa bài hát khỏi album này"
-                        onClick={handleRemoveSongFromAlbum}
-                        outline
-                    />
-                </div>
-            </Modal>
-
             <section>
                 <h2 className="text-3xl text-primary mb-5">
                     Song list
@@ -132,17 +103,23 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
                             song={item}
                             index={index + 1}
                             containLink
-                            actionLabel={
-                                <div
-                                    className="cursor-pointer"
-                                    onClick={() => {
-                                        setIsSongOptionsModalOpen(true);
-                                        setSelectedSongId(item.id);
-                                    }}
-                                >
-                                    <BiDotsVerticalRounded size={24} />
+                            containMenu
+                            menu={(
+                                <div className="text-yellow-50 p-4 flex flex-col gap-3">
+                                    <Button
+                                        label="Xóa bài hát khỏi album này"
+                                        onClick={() => handleRemoveSongFromAlbum(item.id) }
+                                        outline
+                                    />
+                                    <Button
+                                        label="Xem chi tiết"
+                                        onClick={() => {
+                                            router.push(`/admin/songs/${item.id}`);
+                                        }}
+                                        outline
+                                    />
                                 </div>
-                            }
+                            )}
                         />
                     )}
                     onDrop={async (item: Song, index: number) => {

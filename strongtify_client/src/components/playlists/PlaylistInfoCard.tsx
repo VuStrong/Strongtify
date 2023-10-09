@@ -92,36 +92,50 @@ export default function PlaylistInfoCard({
                 }}
             >
                 <div className="text-yellow-50 p-4 flex flex-col gap-3">
-                    <Button
-                        label="Chỉnh sửa thông tin playlist"
-                        onClick={() => {
-                            setIsEditModalOpen(true);
-                            setIsModalOpen(false);
-                        }}
-                        outline
-                    />
+                    {session?.user?.id && session.user.id === playlist.user.id && (
+                        <>
+                            <Button
+                                label="Chỉnh sửa thông tin playlist"
+                                onClick={() => {
+                                    setIsEditModalOpen(true);
+                                    setIsModalOpen(false);
+                                }}
+                                outline
+                            />
 
-                    {playlist.status === "PUBLIC" ? (
-                        <Button
-                            label="Đặt thành riêng tư"
-                            onClick={() => {
-                                handleChangePlaylistStatus("PRIVATE");
-                            }}
-                            outline
-                        />
-                    ) : (
-                        <Button
-                            label="Đặt thành công khai"
-                            onClick={() => {
-                                handleChangePlaylistStatus("PUBLIC");
-                            }}
-                            outline
-                        />
+                            {playlist.status === "PUBLIC" ? (
+                                <Button
+                                    label="Đặt thành riêng tư"
+                                    onClick={() => {
+                                        handleChangePlaylistStatus("PRIVATE");
+                                    }}
+                                    outline
+                                />
+                            ) : (
+                                <Button
+                                    label="Đặt thành công khai"
+                                    onClick={() => {
+                                        handleChangePlaylistStatus("PUBLIC");
+                                    }}
+                                    outline
+                                />
+                            )}
+
+                            <Button
+                                label="Xóa playlist này"
+                                onClick={handleDeletePlaylist}
+                                outline
+                            />
+                        </>
                     )}
 
                     <Button
-                        label="Xóa playlist này"
-                        onClick={handleDeletePlaylist}
+                        label="Copy link playlist"
+                        onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.hostname}/playlists/${playlist.id}`);
+                            toast.success("Đã copy link playlist");
+                            setIsModalOpen(false);
+                        }}
                         outline
                     />
                 </div>
@@ -192,16 +206,14 @@ export default function PlaylistInfoCard({
                         </div>
                     )}
 
-                    {session?.user?.id && session.user.id === playlist.user.id && (
-                        <div
-                            className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"
-                            onClick={() => {
-                                setIsModalOpen(true);
-                            }}
-                        >
-                            <BsThreeDots />
-                        </div>
-                    )}
+                    <div
+                        className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"
+                        onClick={() => {
+                            setIsModalOpen(true);
+                        }}
+                    >
+                        <BsThreeDots />
+                    </div>
                 </div>
 
                 {playlist.description && (
