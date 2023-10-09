@@ -1,12 +1,12 @@
 import { ImageResponse } from "next/server";
-import { getSongById } from "@/services/api/songs";
-import { NO_IMAGE_URL } from "@/libs/constants";
+import { DEFAULT_AVATAR_URL } from "@/libs/constants";
+import { getUserById } from "@/services/api/users";
 
 // Route segment config
 export const runtime = "edge";
 
 // Image metadata
-export const alt = "Song";
+export const alt = "User";
 export const size = {
     width: 1200,
     height: 1200,
@@ -15,10 +15,10 @@ export const size = {
 // export const contentType = "image/png";
 
 export default async function Image({ params }: { params: { id: string } }) {
-    const song = await getSongById(params.id);
+    const user = await getUserById(params.id);
 
     const interSemiBold = fetch(
-        new URL(song?.imageUrl ?? NO_IMAGE_URL, import.meta.url),
+        new URL(user?.imageUrl ?? DEFAULT_AVATAR_URL, import.meta.url),
     ).then((res) => res.arrayBuffer());
 
     return new ImageResponse(
