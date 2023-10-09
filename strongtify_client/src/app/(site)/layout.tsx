@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import SideBar from "@/components/sideBars/SideBar";
 import MobileHeader from "@/components/headers/MobileHeader";
 import getUserSession from "@/services/getUserSession";
+import Player from "@/components/player/Player";
 
 export default async function SiteLayout({
     children,
@@ -19,6 +20,7 @@ export default async function SiteLayout({
         <div className="bg-black min-h-screen py-2">
             <MobileHeader />
             <SideBar />
+            <Player />
 
             <div className="w-full md:w-10/12 md:px-5 px-2 md:ml-auto">
                 {children}

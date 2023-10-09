@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import TopSongsSection from "@/components/songs/TopSongsSection";
 import { getTopSongs } from "@/services/api/songs";
+import PlayButton from "@/components/buttons/PlayButton";
 
 export const metadata: Metadata = {
     title: `Strongtify - Bảng xếp hạng`,
@@ -28,7 +29,7 @@ export default async function RankPage({
                 Bảng xếp hạng
             </h1>
 
-            <div className="flex gap-x-5 overflow-x-auto mb-10">
+            <div className="flex gap-x-5 overflow-x-auto mb-5">
                 <Link
                     href={`/rank?time=day`}
                     className={`
@@ -61,6 +62,10 @@ export default async function RankPage({
                 >
                     Tháng
                 </Link>
+            </div>
+
+            <div className="mb-5">
+                <PlayButton songIds={topSongs?.map(song => song.id)} />
             </div>
 
             <TopSongsSection topSongs={topSongs ?? []} />

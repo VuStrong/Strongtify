@@ -50,7 +50,9 @@ export default function LikedAlbumsPage() {
 
     return (
         <main className="py-5">
-            <h2 className="text-yellow-50 text-2xl mb-5 font-medium">Album đã thích</h2>
+            <h2 className="text-yellow-50 text-2xl mb-5 font-medium">
+                Album đã thích
+            </h2>
 
             {isLoading && <SiteLoading />}
 

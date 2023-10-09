@@ -54,11 +54,7 @@ export default function UserMenu() {
                     <AiFillCaretDown className="text-primary" size={24} />
                 )}
             </div>
-            <ul
-                className={`${
-                    isOpen ? "" : "hidden"
-                } py-2 space-y-2`}
-            >
+            <ul className={`${isOpen ? "" : "hidden"} py-2 space-y-2`}>
                 <li className="flex items-center w-full p-2 text-gray-400 pl-11">
                     <Link
                         href={`/users/${session.user.id}`}

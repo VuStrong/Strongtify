@@ -1,6 +1,10 @@
 import Link from "next/link";
 import getUserSession from "@/services/getUserSession";
-import { getLikedAlbums, getLikedPlaylists, getLikedSongs } from "@/services/api/me";
+import {
+    getLikedAlbums,
+    getLikedPlaylists,
+    getLikedSongs,
+} from "@/services/api/me";
 import { getPlaylists } from "@/services/api/playlists";
 import PlaylistSection from "@/components/playlists/PlaylistSection";
 import SongSection from "@/components/songs/SongSection";
@@ -10,15 +14,20 @@ import CreatePlaylistButton from "@/components/buttons/CreatePlaylistButton";
 
 export default async function CollectionPage() {
     const session = await getUserSession();
-    
+
     const results = await Promise.allSettled([
-        getPlaylists({
-            skip: 0, take: 5, sort: "createdAt_desc",
-            userId: session?.user.id
-        }, session?.accessToken),
-        getLikedSongs(session?.accessToken ?? "", { skip: 0, take: 8}),
-        getLikedAlbums(session?.accessToken ?? "", { skip: 0, take: 5}),
-        getLikedPlaylists(session?.accessToken ?? "", { skip: 0, take: 5}),
+        getPlaylists(
+            {
+                skip: 0,
+                take: 5,
+                sort: "createdAt_desc",
+                userId: session?.user.id,
+            },
+            session?.accessToken,
+        ),
+        getLikedSongs(session?.accessToken ?? "", { skip: 0, take: 8 }),
+        getLikedAlbums(session?.accessToken ?? "", { skip: 0, take: 5 }),
+        getLikedPlaylists(session?.accessToken ?? "", { skip: 0, take: 5 }),
     ]);
 
     return (
@@ -44,7 +53,9 @@ export default async function CollectionPage() {
                             Hiện tất cả
                         </Link>
                     </div>
-                    <PlaylistSection playlists={(results[0] as any).value.results ?? []} />
+                    <PlaylistSection
+                        playlists={(results[0] as any).value.results ?? []}
+                    />
                 </div>
             )}
 
@@ -63,7 +74,9 @@ export default async function CollectionPage() {
                         </Link>
                     </div>
 
-                    <SongSection songs={(results[1] as any).value.results ?? []} />
+                    <SongSection
+                        songs={(results[1] as any).value.results ?? []}
+                    />
                 </div>
             )}
 
@@ -81,7 +94,9 @@ export default async function CollectionPage() {
                             Hiện tất cả
                         </Link>
                     </div>
-                    <AlbumSection albums={(results[2] as any).value.results ?? []} />
+                    <AlbumSection
+                        albums={(results[2] as any).value.results ?? []}
+                    />
                 </div>
             )}
 
@@ -99,9 +114,11 @@ export default async function CollectionPage() {
                             Hiện tất cả
                         </Link>
                     </div>
-                    <PlaylistSection playlists={(results[3] as any).value.results ?? []} />
+                    <PlaylistSection
+                        playlists={(results[3] as any).value.results ?? []}
+                    />
                 </div>
             )}
         </main>
-    )
+    );
 }

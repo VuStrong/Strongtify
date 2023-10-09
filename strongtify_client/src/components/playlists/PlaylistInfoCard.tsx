@@ -16,6 +16,7 @@ import Modal from "../modals/Modal";
 import Button from "../buttons/Button";
 import { deletePlaylist, updatePlaylist } from "@/services/api/playlists";
 import UpdatePlaylistForm from "./UpdatePlaylistForm";
+import PlayButton from "../buttons/PlayButton";
 
 export default function PlaylistInfoCard({
     playlist,
@@ -70,11 +71,13 @@ export default function PlaylistInfoCard({
             {/* Edit playlist modal */}
             <Modal
                 isOpen={isEditModalOpen}
-                onClickClose={() => { setIsEditModalOpen(false) }}
+                onClickClose={() => {
+                    setIsEditModalOpen(false);
+                }}
             >
-                <UpdatePlaylistForm 
-                    playlist={playlist} 
-                    onUpdated={() => { 
+                <UpdatePlaylistForm
+                    playlist={playlist}
+                    onUpdated={() => {
                         setIsEditModalOpen(false);
                         router.refresh();
                     }}
@@ -91,7 +94,7 @@ export default function PlaylistInfoCard({
                 <div className="text-yellow-50 p-4 flex flex-col gap-3">
                     <Button
                         label="Chỉnh sửa thông tin playlist"
-                        onClick={() => { 
+                        onClick={() => {
                             setIsEditModalOpen(true);
                             setIsModalOpen(false);
                         }}
@@ -180,22 +183,26 @@ export default function PlaylistInfoCard({
                     </div>
                 </div>
 
-                {session?.user?.id && session.user.id !== playlist.user.id && (
-                    <div>
-                        <LikePlaylistButton playlistId={playlist.id} />
-                    </div>
-                )}
+                <div className="flex gap-3 items-center mb-3">
+                    <PlayButton songIds={playlist.songs?.map(song => song.id)} />
 
-                {session?.user?.id && session.user.id === playlist.user.id && (
-                    <div
-                        className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white mb-3"
-                        onClick={() => {
-                            setIsModalOpen(true);
-                        }}
-                    >
-                        <BsThreeDots />
-                    </div>
-                )}
+                    {session?.user?.id && session.user.id !== playlist.user.id && (
+                        <div>
+                            <LikePlaylistButton playlistId={playlist.id} />
+                        </div>
+                    )}
+
+                    {session?.user?.id && session.user.id === playlist.user.id && (
+                        <div
+                            className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"
+                            onClick={() => {
+                                setIsModalOpen(true);
+                            }}
+                        >
+                            <BsThreeDots />
+                        </div>
+                    )}
+                </div>
 
                 {playlist.description && (
                     <div className="text-gray-500">

@@ -5,9 +5,9 @@ export const metadata: Metadata = {
 };
 
 export default function CollectionPageLayout({
-    children
+    children,
 }: {
-    children: React.ReactNode
+    children: React.ReactNode;
 }) {
     return children;
 }

@@ -7,7 +7,10 @@ import { User } from "@/types/user";
 
 export default function UserItem({ user }: { user: User }) {
     return (
-        <div className="max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4" title={user.name}>
+        <div
+            className="max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4"
+            title={user.name}
+        >
             <Link href={`/users/${user.id}`}>
                 <Image
                     className="w-full h-4/6 rounded-full object-cover"

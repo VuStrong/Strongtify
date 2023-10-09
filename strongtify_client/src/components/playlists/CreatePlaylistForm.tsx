@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -14,9 +14,9 @@ import Input from "../inputs/Input";
 import Button from "../buttons/Button";
 
 export default function CreatePlaylistForm({
-    onCreated
+    onCreated,
 }: {
-    onCreated?: () => void
+    onCreated?: () => void;
 }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string | undefined>();
@@ -55,7 +55,7 @@ export default function CreatePlaylistForm({
         } catch (error: any) {
             toast.error(error.message);
         }
-        
+
         setIsLoading(false);
     };
 
@@ -73,7 +73,7 @@ export default function CreatePlaylistForm({
 
             <div className="gap-x-4 md:flex items-stretch">
                 <div className="md:w-[150px]">
-                    <ImageInput 
+                    <ImageInput
                         id="image"
                         disabled={isLoading}
                         src={imageUrl ?? NO_IMAGE_URL}
@@ -138,16 +138,12 @@ export default function CreatePlaylistForm({
                         type="submit"
                         disabled={isLoading}
                         label={
-                            isLoading ? (
-                                <BeatLoader color="#121212" />
-                            ) : (
-                                "Tạo"
-                            )
+                            isLoading ? <BeatLoader color="#121212" /> : "Tạo"
                         }
                         onClick={handleSubmit(onSubmit)}
                     />
                 </div>
             </div>
         </form>
-    )   
+    );
 }

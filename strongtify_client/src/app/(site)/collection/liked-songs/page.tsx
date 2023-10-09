@@ -20,7 +20,7 @@ export default function LikedSongsPage() {
     if (status === "loading") {
         return <SiteLoading />;
     }
-    
+
     useEffect(() => {
         const get = async () => {
             const data = await getLikedSongs(session?.accessToken ?? "", {

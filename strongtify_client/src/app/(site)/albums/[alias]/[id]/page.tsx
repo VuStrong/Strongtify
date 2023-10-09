@@ -8,6 +8,7 @@ import { formatLength } from "@/libs/utils";
 import { getAlbumById } from "@/services/api/albums";
 import LikeAlbumButton from "@/components/buttons/LikeAlbumButton";
 import SongSection from "@/components/songs/SongSection";
+import PlayButton from "@/components/buttons/PlayButton";
 
 export async function generateMetadata({
     params,
@@ -88,11 +89,15 @@ export default async function AlbumDetailPage({
                     </div>
                 </div>
 
-                {session?.user?.id && (
-                    <div>
-                        <LikeAlbumButton albumId={album.id} />
-                    </div>
-                )}
+                <div className="flex gap-3">
+                    <PlayButton songIds={album.songs?.map(song => song.id)} />
+
+                    {session?.user?.id && (
+                        <div>
+                            <LikeAlbumButton albumId={album.id} />
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="my-8">

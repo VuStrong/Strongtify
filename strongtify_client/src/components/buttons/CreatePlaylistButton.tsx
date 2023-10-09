@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react"
+import { useState } from "react";
 import Modal from "../modals/Modal";
 import CreatePlaylistForm from "../playlists/CreatePlaylistForm";
 import Button from "./Button";
@@ -14,20 +14,24 @@ export default function CreatePlaylistButton() {
         <>
             <Modal
                 isOpen={isCreateModalOpen}
-                onClickClose={() => { setIsCreateModalOpen(false) }}
+                onClickClose={() => {
+                    setIsCreateModalOpen(false);
+                }}
             >
-                <CreatePlaylistForm 
-                    onCreated={() => { 
+                <CreatePlaylistForm
+                    onCreated={() => {
                         setIsCreateModalOpen(false);
                         router.refresh();
                     }}
                 />
             </Modal>
 
-            <Button 
+            <Button
                 label="Tạo playlist mới"
-                onClick={() => { setIsCreateModalOpen(true) }}
+                onClick={() => {
+                    setIsCreateModalOpen(true);
+                }}
             />
         </>
-    )
+    );
 }

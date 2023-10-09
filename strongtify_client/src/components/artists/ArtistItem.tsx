@@ -7,7 +7,10 @@ import { DEFAULT_AVATAR_URL } from "@/libs/constants";
 
 export default function ArtistItem({ artist }: { artist: Artist }) {
     return (
-        <div className="max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4" title={artist.name}>
+        <div
+            className="max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4"
+            title={artist.name}
+        >
             <Link href={`/artists/${artist.alias}/${artist.id}`}>
                 <Image
                     className="w-full h-4/6 rounded-full object-cover"

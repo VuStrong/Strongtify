@@ -8,7 +8,10 @@ import { DEFAULT_AVATAR_URL, NO_IMAGE_URL } from "@/libs/constants";
 
 export default function PlaylistItem({ playlist }: { playlist: Playlist }) {
     return (
-        <div className="relative max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4" title={playlist.name}>
+        <div
+            className="relative max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4"
+            title={playlist.name}
+        >
             <Link href={`/playlists/${playlist.id}`}>
                 <Image
                     className="w-full h-1/2 object-cover"

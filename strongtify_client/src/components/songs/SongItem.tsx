@@ -19,7 +19,10 @@ export default function SongItem({
     actionLabel?: React.ReactNode;
 }) {
     return (
-        <div className="flex gap-x-3 items-center w-full text-gray-300 p-2 hover:bg-darkgray" title={song.name}>
+        <div
+            className="flex gap-x-3 items-center w-full text-gray-300 p-2 hover:bg-darkgray"
+            title={song.name}
+        >
             {index && <div className="w-[30px] text-center">{index}</div>}
 
             <Image

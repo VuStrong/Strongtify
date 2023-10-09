@@ -7,6 +7,7 @@ import getUserSession from "@/services/getUserSession";
 import { formatLength } from "@/libs/utils";
 import ArtistSection from "@/components/artists/ArtistSection";
 import LikeSongButton from "@/components/buttons/LikeSongButton";
+import PlayButton from "@/components/buttons/PlayButton";
 
 export async function generateMetadata({
     params,
@@ -73,11 +74,15 @@ export default async function SongDetailPage({
                     </div>
                 </div>
 
-                {session?.user?.id && (
-                    <div>
-                        <LikeSongButton songId={song.id} />
-                    </div>
-                )}
+                <div className="flex gap-3">
+                    <PlayButton songIds={[song.id]} />
+
+                    {session?.user?.id && (
+                        <div>
+                            <LikeSongButton songId={song.id} />
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="my-8">

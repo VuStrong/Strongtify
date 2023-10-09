@@ -7,7 +7,10 @@ import { Album } from "@/types/album";
 
 export default function AlbumItem({ album }: { album: Album }) {
     return (
-        <div className="max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4" title={album.name}>
+        <div
+            className="max-w-sm rounded overflow-hidden shadow-lg hover:bg-primary/30 bg-darkgray cursor-pointer p-4"
+            title={album.name}
+        >
             <Link href={`/albums/${album.alias}/${album.id}`}>
                 <Image
                     className="w-full"

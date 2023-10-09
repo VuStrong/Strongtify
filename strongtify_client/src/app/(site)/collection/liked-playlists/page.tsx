@@ -20,7 +20,7 @@ export default function LikedPlaylistsPage() {
     if (status === "loading") {
         return <SiteLoading />;
     }
-    
+
     useEffect(() => {
         const get = async () => {
             const data = await getLikedPlaylists(session?.accessToken ?? "", {
@@ -50,7 +50,9 @@ export default function LikedPlaylistsPage() {
 
     return (
         <main className="py-5">
-            <h2 className="text-yellow-50 text-2xl mb-5 font-medium">Playlist đã thích</h2>
+            <h2 className="text-yellow-50 text-2xl mb-5 font-medium">
+                Playlist đã thích
+            </h2>
 
             {isLoading && <SiteLoading />}
 
