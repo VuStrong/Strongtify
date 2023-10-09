@@ -18,7 +18,11 @@ export async function generateMetadata({
 
     return {
         title: `Playlist - ${playlist.name} | Strongtify`,
-        description: `Playlist - ${playlist.name} | Strongtify`,
+        description: playlist.description ?? `Playlist - ${playlist.name} | Strongtify`,
+        openGraph: {
+            title: `Playlist - ${playlist.name} | Strongtify`,
+            description: playlist.description ?? `Playlist - ${playlist.name} | Strongtify`,
+        }
     };
 }
 

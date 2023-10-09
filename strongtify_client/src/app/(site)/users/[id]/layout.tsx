@@ -7,6 +7,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     return {
         title: `Strongtify - User ${params.id}`,
+        openGraph: {
+            title: `Strongtify - User ${params.id}`,
+        }
     };
 }
 

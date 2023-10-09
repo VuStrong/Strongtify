@@ -14,6 +14,10 @@ export async function generateMetadata({
     return {
         title: `Nghệ sĩ - ${artist.name} | Strongtify`,
         description: artist.about ?? `Nghệ sĩ - ${artist.name} | Strongtify`,
+        openGraph: {
+            title: `Nghệ sĩ - ${artist.name} | Strongtify`,
+            description: artist.about ?? `Nghệ sĩ - ${artist.name} | Strongtify`,
+        }
     };
 }
 

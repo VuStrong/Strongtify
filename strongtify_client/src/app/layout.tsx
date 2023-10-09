@@ -13,6 +13,12 @@ export const metadata: Metadata = {
         "Strongtify - Nền tảng nghe nhạc trực tuyến miễn phí với hàng triệu bài hát, album chất lượng",
     icons: HeadLinkIcons,
     manifest: "/manifest.json",
+    openGraph: {
+        title: "Strongtify",
+        description:
+            "Strongtify - Nền tảng nghe nhạc trực tuyến miễn phí với hàng triệu bài hát, album chất lượng",
+        type: "music.song"
+    }
 };
 
 export default function RootLayout({

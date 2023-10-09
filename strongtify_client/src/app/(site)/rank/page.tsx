@@ -8,6 +8,11 @@ export const metadata: Metadata = {
     title: `Strongtify - Bảng xếp hạng`,
     description:
         "Strongtify - Bảng xếp hạng các bài hát được nghe nhiều nhất trong ngày, tuần, tháng vừa qua.",
+    openGraph: {
+        title: `Strongtify - Bảng xếp hạng`,
+        description:
+            "Strongtify - Bảng xếp hạng các bài hát được nghe nhiều nhất trong ngày, tuần, tháng vừa qua.",
+    }
 };
 
 export default async function RankPage({

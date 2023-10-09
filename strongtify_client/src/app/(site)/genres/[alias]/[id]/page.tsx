@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import AlbumSection from "@/components/albums/AlbumSection";
 import SongSection from "@/components/songs/SongSection";

@@ -16,6 +16,10 @@ export async function generateMetadata({
     return {
         title: `Bài hát - ${song.name} | Strongtify`,
         description: `Bài hát - ${song.name} | Strongtify`,
+        openGraph: {
+            title: `Bài hát - ${song.name} | Strongtify`,
+            description: `Bài hát - ${song.name} | Strongtify`,
+        }
     };
 }
 

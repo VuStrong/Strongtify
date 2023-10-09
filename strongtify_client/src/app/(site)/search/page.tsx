@@ -7,6 +7,11 @@ export const metadata: Metadata = {
     title: "Strongtify - Tìm kiếm",
     description:
         "Tìm kiếm bài hát, album, nghệ sĩ và vô vàn thứ khác | Strongtify",
+    openGraph: {
+        title: "Strongtify - Tìm kiếm",
+        description:
+            "Tìm kiếm bài hát, album, nghệ sĩ và vô vàn thứ khác | Strongtify",
+    }
 };
 
 export default async function SearchPage() {

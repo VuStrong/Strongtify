@@ -15,6 +15,11 @@ export async function generateMetadata({
         title: `Thể loại - ${genre.name} | Strongtify`,
         description:
             genre.description ?? `Thể loại - ${genre.name} | Strongtify`,
+        openGraph: {
+            title: `Thể loại - ${genre.name} | Strongtify`,
+            description:
+                genre.description ?? `Thể loại - ${genre.name} | Strongtify`,
+        }
     };
 }
 

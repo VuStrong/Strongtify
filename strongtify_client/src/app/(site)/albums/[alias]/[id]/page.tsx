@@ -16,6 +16,10 @@ export async function generateMetadata({
     return {
         title: `Album - ${album.name} | Strongtify`,
         description: `Album - ${album.name} | Strongtify`,
+        openGraph: {
+            title: `Album - ${album.name} | Strongtify`,
+            description: `Album - ${album.name} | Strongtify`,
+        }
     };
 }
 
