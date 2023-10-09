@@ -9,7 +9,6 @@ import { getPlaylists } from "@/services/api/playlists";
 import PlaylistSection from "@/components/playlists/PlaylistSection";
 import SongSection from "@/components/songs/SongSection";
 import AlbumSection from "@/components/albums/AlbumSection";
-import Button from "@/components/buttons/Button";
 import CreatePlaylistButton from "@/components/buttons/CreatePlaylistButton";
 
 export default async function CollectionPage() {
@@ -54,7 +53,7 @@ export default async function CollectionPage() {
                         </Link>
                     </div>
                     <PlaylistSection
-                        playlists={(results[0] as any).value.results ?? []}
+                        playlists={(results[0] as any).value?.results ?? []}
                     />
                 </div>
             )}
@@ -75,7 +74,7 @@ export default async function CollectionPage() {
                     </div>
 
                     <SongSection
-                        songs={(results[1] as any).value.results ?? []}
+                        songs={(results[1] as any).value?.results ?? []}
                     />
                 </div>
             )}
@@ -95,7 +94,7 @@ export default async function CollectionPage() {
                         </Link>
                     </div>
                     <AlbumSection
-                        albums={(results[2] as any).value.results ?? []}
+                        albums={(results[2] as any).value?.results ?? []}
                     />
                 </div>
             )}
@@ -115,7 +114,7 @@ export default async function CollectionPage() {
                         </Link>
                     </div>
                     <PlaylistSection
-                        playlists={(results[3] as any).value.results ?? []}
+                        playlists={(results[3] as any).value?.results ?? []}
                     />
                 </div>
             )}
