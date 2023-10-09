@@ -33,4 +33,13 @@ export class FFApiController {
 
         await this.cacheService.delete("cached-sections");
     }
+
+    @Get("del-rank")
+    async deleteCachedRank(@Query("pass") pass: string) {
+        if (pass !== process.env.FFAPI_PASS) throw new ForbiddenException();
+
+        await this.cacheService.delete("top-day-songs");
+        await this.cacheService.delete("top-week-songs");
+        await this.cacheService.delete("top-month-songs");
+    }
 }
