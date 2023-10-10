@@ -1,5 +1,7 @@
 # Introduction
 - A music streaming website project with NestJS and NextJS.
+- Website: https://strongtify.io.vn/.
+- Swagger Doc: https://api.strongtify.io.vn/api.
 
 # Page
 
