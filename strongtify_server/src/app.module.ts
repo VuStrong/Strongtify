@@ -15,6 +15,7 @@ import { GenresModule } from "./resources/genres/genres.module";
 import { SectionsModule } from "./section/sections.module";
 import { CacheModule } from "./cache/cache.module";
 import { FFApiController } from "./ffapi.controller";
+import { JwtService } from "@nestjs/jwt";
 
 @Module({
     imports: [
@@ -30,7 +31,7 @@ import { FFApiController } from "./ffapi.controller";
         AuthModule,
     ],
     controllers: [AppController, FFApiController],
-    providers: [AppService],
+    providers: [AppService, JwtService],
 })
 export class AppModule implements NestModule {
     public configure(consumer: MiddlewareConsumer): void {
