@@ -17,10 +17,6 @@ export const size = {
 export default async function Image({ params }: { params: { id: string } }) {
     const playlist = await getPlaylistById(params.id);
 
-    const interSemiBold = fetch(
-        new URL(playlist?.imageUrl ?? NO_IMAGE_URL, import.meta.url),
-    ).then((res) => res.arrayBuffer());
-
     return new ImageResponse(
         (
             <div
@@ -34,19 +30,14 @@ export default async function Image({ params }: { params: { id: string } }) {
                     justifyContent: "center",
                 }}
             >
-                
+                <img src={playlist?.imageUrl ?? NO_IMAGE_URL} alt={playlist?.name} style={{
+                    width: "100%",
+                    height: "100%",
+                }}/>
             </div>
         ),
         {
             ...size,
-            fonts: [
-                {
-                    name: "Inter",
-                    data: await interSemiBold,
-                    style: "normal",
-                    weight: 400,
-                },
-            ],
         },
     );
 }

@@ -17,10 +17,6 @@ export const size = {
 export default async function Image({ params }: { params: { id: string } }) {
     const genre = await getGenreById(params.id);
 
-    const interSemiBold = fetch(
-        new URL(genre?.imageUrl ?? NO_IMAGE_URL, import.meta.url),
-    ).then((res) => res.arrayBuffer());
-
     return new ImageResponse(
         (
             <div
@@ -34,19 +30,14 @@ export default async function Image({ params }: { params: { id: string } }) {
                     justifyContent: "center",
                 }}
             >
-                
+                <img src={genre?.imageUrl ?? NO_IMAGE_URL} alt={genre?.name} style={{
+                    width: "100%",
+                    height: "100%",
+                }}/>
             </div>
         ),
         {
             ...size,
-            fonts: [
-                {
-                    name: "Inter",
-                    data: await interSemiBold,
-                    style: "normal",
-                    weight: 400,
-                },
-            ],
         },
     );
 }
