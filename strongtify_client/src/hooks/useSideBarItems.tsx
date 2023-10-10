@@ -36,37 +36,37 @@ export default function useSideBarItems() {
                         icon: AiOutlineUser,
                         name: "Users",
                         href: "/admin/users",
-                        active: pathname === "/admin/users",
+                        active: pathname?.startsWith("/admin/users") ?? false,
                     },
                     {
                         icon: BsFileMusicFill,
                         name: "Songs",
                         href: "/admin/songs",
-                        active: pathname === "/admin/songs",
+                        active: pathname?.startsWith("/admin/songs") ?? false,
                     },
                     {
                         icon: BsJournalAlbum,
                         name: "Albums",
                         href: "/admin/albums",
-                        active: pathname === "/admin/albums",
+                        active: pathname?.startsWith("/admin/albums") ?? false,
                     },
                     {
                         icon: BsFilePerson,
                         name: "Artists",
                         href: "/admin/artists",
-                        active: pathname === "/admin/artists",
+                        active: pathname?.startsWith("/admin/artists") ?? false,
                     },
                     {
                         icon: BiSolidPlaylist,
                         name: "Playlists",
                         href: "/admin/playlists",
-                        active: pathname === "/admin/playlists",
+                        active: pathname?.startsWith("/admin/playlists") ?? false,
                     },
                     {
                         icon: BiSolidCategory,
                         name: "Genres",
                         href: "/admin/genres",
-                        active: pathname === "/admin/genres",
+                        active: pathname?.startsWith("/admin/genres") ?? false,
                     },
                 ];
                 break;
@@ -110,7 +110,7 @@ export default function useSideBarItems() {
                         icon: HiOutlineCollection,
                         name: "Thư viện",
                         href: "/collection",
-                        active: pathname === "/collection",
+                        active: pathname?.startsWith("/collection") ?? false,
                     },
                 ];
                 break;
