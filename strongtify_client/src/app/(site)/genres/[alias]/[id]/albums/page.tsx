@@ -23,7 +23,7 @@ export default function GenreAlbumsPage({
             const data = await getAlbums({
                 skip: 0,
                 take: 20,
-                sort: "listenCount_desc",
+                sort: "likeCount_desc",
                 genreId: params.id,
             });
 
@@ -40,7 +40,7 @@ export default function GenreAlbumsPage({
         const data = await getAlbums({
             skip: skip + 20,
             take: 20,
-            sort: "listenCount_desc",
+            sort: "likeCount_desc",
             genreId: params.id,
         });
 
