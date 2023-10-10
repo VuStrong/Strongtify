@@ -1,15 +1,10 @@
 "use client";
 
-import type { Metadata } from "next";
 import Image from "next/image";
 
 import TableItem from "@/components/admin/tables/TableItem";
 import { getArtists, searchArtists } from "@/services/api/artists";
 import { DEFAULT_AVATAR_URL } from "@/libs/constants";
-
-export const metadata: Metadata = {
-    title: "Quản lý Artists",
-};
 
 const artistColumns = [
     {

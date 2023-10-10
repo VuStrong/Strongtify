@@ -1,6 +1,5 @@
 "use client";
 
-import type { Metadata } from "next";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -9,10 +8,6 @@ import Skeleton from "react-loading-skeleton";
 import TableItem from "@/components/admin/tables/TableItem";
 import { getAccounts } from "@/services/api/accounts";
 import { DEFAULT_AVATAR_URL } from "@/libs/constants";
-
-export const metadata: Metadata = {
-    title: "Quản lý Users",
-};
 
 const userColumns = [
     {

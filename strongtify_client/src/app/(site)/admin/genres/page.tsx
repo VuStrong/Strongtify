@@ -1,15 +1,10 @@
 "use client";
 
-import type { Metadata } from "next";
 import Image from "next/image";
 
 import TableItem from "@/components/admin/tables/TableItem";
 import { getGenres } from "@/services/api/genres";
 import { NO_IMAGE_URL } from "@/libs/constants";
-
-export const metadata: Metadata = {
-    title: "Quản lý Genres",
-};
 
 const genreColumns = [
     {
