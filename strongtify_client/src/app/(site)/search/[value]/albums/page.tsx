@@ -22,7 +22,7 @@ export default function SearchAlbumPage({
 
     useEffect(() => {
         const search = async () => {
-            const data = await searchAlbums(params.value, {
+            const data = await searchAlbums(decodeURIComponent(params.value), {
                 skip: 0,
                 take: 20,
             });
@@ -37,7 +37,7 @@ export default function SearchAlbumPage({
     }, []);
 
     const fetchMoreAlbum = async () => {
-        const data = await searchAlbums(params.value, {
+        const data = await searchAlbums(decodeURIComponent(params.value), {
             skip: skip + 20,
             take: 20,
         });
@@ -49,12 +49,12 @@ export default function SearchAlbumPage({
 
     return (
         <main>
-            <SearchForm value={params.value} searchItem="albums" />
+            <SearchForm value={decodeURIComponent(params.value)} searchItem="albums" />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList
                     activeLink="albums"
-                    searchValue={params.value}
+                    searchValue={decodeURIComponent(params.value)}
                 />
 
                 {isSearching && <SiteLoading />}

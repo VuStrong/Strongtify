@@ -22,7 +22,7 @@ export default function SearchUserPage({
 
     useEffect(() => {
         const search = async () => {
-            const data = await searchUsers(params.value, {
+            const data = await searchUsers(decodeURIComponent(params.value), {
                 skip: 0,
                 take: 20,
             });
@@ -37,7 +37,7 @@ export default function SearchUserPage({
     }, []);
 
     const fetchMoreUsers = async () => {
-        const data = await searchUsers(params.value, {
+        const data = await searchUsers(decodeURIComponent(params.value), {
             skip: skip + 20,
             take: 20,
         });
@@ -49,12 +49,12 @@ export default function SearchUserPage({
 
     return (
         <main>
-            <SearchForm value={params.value} searchItem="users" />
+            <SearchForm value={decodeURIComponent(params.value)} searchItem="users" />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList
                     activeLink="users"
-                    searchValue={params.value}
+                    searchValue={decodeURIComponent(params.value)}
                 />
 
                 {isSearching && <SiteLoading />}

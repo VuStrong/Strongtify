@@ -5,12 +5,14 @@ export async function generateMetadata({
 }: {
     params: { value: string };
 }): Promise<Metadata> {
+    const decodedValue = decodeURIComponent(params.value);
+
     return {
-        title: `${params.value} - Tìm kiếm | Strongtify`,
+        title: `${decodedValue} - Tìm kiếm | Strongtify`,
         description:
             "Tìm kiếm bài hát, album, nghệ sĩ và vô vàn thứ khác | Strongtify",
         openGraph: {
-            title: `${params.value} - Tìm kiếm | Strongtify`,
+            title: `${decodedValue} - Tìm kiếm | Strongtify`,
             description:
                 "Tìm kiếm bài hát, album, nghệ sĩ và vô vàn thứ khác | Strongtify",
         }

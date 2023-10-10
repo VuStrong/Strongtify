@@ -14,18 +14,20 @@ export default async function SearchAllPage({
 }: {
     params: { value: string };
 }) {
+    const decodedValue = decodeURIComponent(params.value);
+
     const data = await search({
-        q: params.value,
+        q: decodedValue,
         take: 5,
         allowCount: false,
     });
 
     return (
         <main>
-            <SearchForm value={params.value} />
+            <SearchForm value={decodedValue} />
 
             <div className="flex flex-col gap-10">
-                <SearchItemLinkList searchValue={params.value} />
+                <SearchItemLinkList searchValue={decodedValue} />
 
                 {
                     <>

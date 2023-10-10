@@ -19,16 +19,16 @@ export default async function SearchGenrePage({
 }: {
     params: { value: string };
 }) {
-    const genres = await getGenres(params.value);
+    const genres = await getGenres(decodeURIComponent(params.value));
 
     return (
         <main>
-            <SearchForm value={params.value} searchItem="genres" />
+            <SearchForm value={decodeURIComponent(params.value)} searchItem="genres" />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList
                     activeLink="genres"
-                    searchValue={params.value}
+                    searchValue={decodeURIComponent(params.value)}
                 />
 
                 <GenreSection genres={genres ?? []} />
