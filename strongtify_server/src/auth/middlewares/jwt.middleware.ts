@@ -1,4 +1,5 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { NextFunction, Request, Response } from "express";
 
@@ -7,7 +8,10 @@ import { NextFunction, Request, Response } from "express";
  */
 @Injectable()
 export class JwtMiddleware implements NestMiddleware {
-    constructor(private readonly jwtService: JwtService) {}
+    constructor(
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService
+    ) {}
 
     async use(req: Request, res: Response, next: NextFunction) {
         const token = this.getTokenFromHeader(req);
@@ -15,7 +19,7 @@ export class JwtMiddleware implements NestMiddleware {
         if (token) {
             const payload = await this.jwtService
                 .verifyAsync(token, {
-                    secret: `${process.env.JWT_SECRET}`,
+                    secret: this.configService.get<string>('JWT_SECRET'),
                 })
                 .catch(() => undefined);
 

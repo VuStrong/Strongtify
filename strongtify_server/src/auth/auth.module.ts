@@ -11,6 +11,7 @@ import { AUTH_SERVICES } from "./interfaces/constants";
 import { SocialAuthServiceImpl } from "./services/social-auth.service";
 import { ConfirmEmailServiceImpl } from "./services/confirm-email.service";
 import { ResetPasswordServiceImpl } from "./services/reset-password.service";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 const authService = {
     provide: AUTH_SERVICES.AuthService,
@@ -34,13 +35,20 @@ const resetPasswordService = {
 
 @Module({
     imports: [
+        ConfigModule,
         UsersModule,
         MailModule,
-        JwtModule.register({
-            global: true,
-            secret: `${process.env.JWT_SECRET}`,
-            // signOptions: { expiresIn: "30m" },
-            signOptions: { expiresIn: "30d" },
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => {
+                return {
+                    secret: configService.get<string>('JWT_SECRET'),
+                    global: true,
+                    signOptions: { expiresIn: "30m" },
+                    // signOptions: { expiresIn: "30d" },
+                };
+            },
+            inject: [ConfigService],
         }),
     ],
     providers: [
