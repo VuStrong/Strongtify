@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getSongById } from "@/services/api/songs";
 import ArtistSection from "@/components/artists/ArtistSection";
 import SongInfoCard from "@/components/songs/SongInfoCard";
+import GenreSection from "@/components/genres/GenreSection";
 
 export async function generateMetadata({
     params,
@@ -41,6 +42,13 @@ export default async function SongDetailPage({
                     Nghệ sĩ
                 </h2>
                 <ArtistSection artists={song.artists ?? []} />
+            </div>
+
+            <div className="mb-8">
+                <h2 className="text-yellow-50 text-2xl font-medium mb-5">
+                    Thể loại
+                </h2>
+                <GenreSection genres={song.genres ?? []} />
             </div>
         </main>
     );
