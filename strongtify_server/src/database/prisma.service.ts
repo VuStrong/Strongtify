@@ -8,6 +8,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
             super({
                 log: ["error", "info", "query", "warn"],
             });
+        } else {
+            super();
         }
     }
 
