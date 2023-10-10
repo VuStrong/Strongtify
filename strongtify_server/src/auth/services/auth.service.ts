@@ -81,7 +81,7 @@ export class AuthServiceImpl extends BaseAuthService implements AuthService {
             }
 
             throw new HttpException(
-                error.message,
+                "Có lỗi nào đó xảy ra.",
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
