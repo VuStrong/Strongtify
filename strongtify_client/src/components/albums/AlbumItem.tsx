@@ -24,13 +24,15 @@ export default function AlbumItem({ album }: { album: Album }) {
                 </div>
             </Link>
 
-            {album.artist && (
+            {album.artist ? (
                 <Link
                     className="text-gray-500 text-base truncate hover:underline pb-4"
                     href={`/artists/${album.artist.alias}/${album.artist.id}`}
                 >
                     {album.artist.name}
                 </Link>
+            ) : (
+                <div className="text-gray-500 text-base truncate pb-4">Strongtify</div>
             )}
         </div>
     );
