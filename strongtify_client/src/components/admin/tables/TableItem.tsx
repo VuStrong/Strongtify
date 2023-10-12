@@ -24,9 +24,10 @@ interface TableItemProps {
 
     columns: ColumnProps[];
 
-    createItemLink?: string;
+    createPage?: string;
 
-    onClickItem?: (item: any) => string;
+    generateItemLink?: (item: any) => string;
+
     onLoadItems: (
         page: number,
         size: number,
@@ -49,8 +50,8 @@ const TableItem: React.FC<TableItemProps> = ({
     itemName,
     readonly,
     columns,
-    createItemLink,
-    onClickItem,
+    createPage,
+    generateItemLink,
     onLoadItems,
     onSearchItems,
     allowPaging = true,
@@ -100,7 +101,7 @@ const TableItem: React.FC<TableItemProps> = ({
         <div>
             {!readonly && (
                 <Link
-                    href={createItemLink ?? "/"}
+                    href={createPage ?? "/"}
                     className="rounded-md bg-success px-3 py-2"
                 >
                     Add new {itemName}
@@ -143,8 +144,8 @@ const TableItem: React.FC<TableItemProps> = ({
                                     key={item.id}
                                     className="border-b border-gray-700 text-gray-400 cursor-pointer hover:underline"
                                     onClick={() => {
-                                        onClickItem &&
-                                            router.push(onClickItem(item));
+                                        generateItemLink &&
+                                            router.push(generateItemLink(item));
                                     }}
                                 >
                                     {columns.map((col, j) =>
@@ -168,6 +169,7 @@ const TableItem: React.FC<TableItemProps> = ({
                             ))}
                     </tbody>
                 </table>
+                
                 {!isLoading && items && !items[0] && (
                     <div className="text-yellow-50">Không có kết quả</div>
                 )}

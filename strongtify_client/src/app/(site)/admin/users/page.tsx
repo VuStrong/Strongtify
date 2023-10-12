@@ -70,7 +70,7 @@ export default function AdminUsersPage() {
                     itemName="User"
                     readonly
                     columns={userColumns}
-                    onClickItem={(item) => `/admin/users/${item.id}`}
+                    generateItemLink={(item) => `/admin/users/${item.id}`}
                     itemPerPage={10}
                     onLoadItems={(page, size) =>
                         getAccounts(

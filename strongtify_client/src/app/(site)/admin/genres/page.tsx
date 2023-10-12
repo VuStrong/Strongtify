@@ -35,8 +35,8 @@ export default function AdminGenresPage() {
                 itemName="Genre"
                 columns={genreColumns}
                 allowPaging={false}
-                createItemLink="/admin/genres/create"
-                onClickItem={(item) => `/admin/genres/${item.id}`}
+                createPage="/admin/genres/create"
+                generateItemLink={(item) => `/admin/genres/${item.id}`}
                 itemPerPage={10}
                 onLoadItems={(page, size) => getGenres()}
                 onSearchItems={(value, page, size) => getGenres(value)}

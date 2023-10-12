@@ -38,8 +38,8 @@ export default function AdminArtistsPage() {
             <TableItem
                 itemName="Artist"
                 columns={artistColumns}
-                createItemLink="/admin/artists/create"
-                onClickItem={(item) => `/admin/artists/${item.id}`}
+                createPage="/admin/artists/create"
+                generateItemLink={(item) => `/admin/artists/${item.id}`}
                 itemPerPage={10}
                 onLoadItems={(page, size) =>
                     getArtists({

@@ -3,10 +3,11 @@
 import Image from "next/image";
 
 import TableItem from "@/components/admin/tables/TableItem";
-import { getSongs, searchSongs } from "@/services/api/songs";
-import { NO_IMAGE_URL } from "@/libs/constants";
+import { DEFAULT_AVATAR_URL, NO_IMAGE_URL } from "@/libs/constants";
+import { User } from "@/types/user";
+import { getPlaylists, searchPlaylists } from "@/services/api/playlists";
 
-const songColumns = [
+const playlistColumns = [
     {
         name: "imageUrl",
         displayName: "#",
@@ -16,7 +17,7 @@ const songColumns = [
                 style={{ width: "50px", height: "auto" }}
                 width={50}
                 height={50}
-                alt="song"
+                alt="playlist"
             />
         ),
     },
@@ -25,17 +26,28 @@ const songColumns = [
         displayName: "Name",
     },
     {
-        name: "artists",
-        displayName: "Artists",
-        render: (data: any) => (
-            <div className="px-4 py-2">
-                {data?.map((i: any) => i.name).join(", ")}
+        name: "user",
+        displayName: "User",
+        render: (data: User) => (
+            <div className="px-4 py-2 flex gap-2">
+                <Image
+                    className="rounded-full"
+                    width={24}
+                    height={24}
+                    src={data?.imageUrl ?? DEFAULT_AVATAR_URL}
+                    alt={data.name}
+                />
+                <div
+                    className="text-gray-500 text-base truncate hover:underline"
+                >
+                    {data.name}
+                </div>
             </div>
         ),
     },
     {
-        name: "language",
-        displayName: "Language",
+        name: "songCount",
+        displayName: "Song Count",
     },
     {
         name: "likeCount",
@@ -46,23 +58,23 @@ const songColumns = [
 export default function AdminSongsPage() {
     return (
         <section className="mb-5">
-            <h1 className="text-primary text-4xl mb-7">Songs</h1>
+            <h1 className="text-primary text-4xl mb-7">Playlists</h1>
 
             <TableItem
-                itemName="Song"
-                columns={songColumns}
-                createPage="/admin/songs/create"
-                generateItemLink={(item) => `/admin/songs/${item.id}`}
+                itemName="Playlist"
+                readonly
+                columns={playlistColumns}
+                generateItemLink={(item) => `/admin/playlists/${item.id}`}
                 itemPerPage={10}
                 onLoadItems={(page, size) =>
-                    getSongs({
+                    getPlaylists({
                         skip: (page - 1) * size,
                         take: size,
                         sort: "createdAt_desc",
                     })
                 }
                 onSearchItems={(value, page, size) =>
-                    searchSongs(value, {
+                    searchPlaylists(value, {
                         skip: (page - 1) * size,
                         take: size,
                     })
