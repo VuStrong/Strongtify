@@ -64,7 +64,7 @@ export default function RegisterForm() {
 
     function socialLogin(provider: string) {
         window.open(
-            `${BACKEND_URL}/api/v1/auth/${provider}`,
+            `${BACKEND_URL}/v1/auth/${provider}`,
             "Auth",
             "status=yes,toolbar=no,menubar=no,location=no",
         );
