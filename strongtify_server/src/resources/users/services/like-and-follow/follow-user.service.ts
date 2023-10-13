@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { FollowUserService } from "../../interfaces/like-and-follow/follow-user-service.interface";
 import { PrismaService } from "src/database/prisma.service";
 import { UserNotFoundException } from "../../exceptions/user-not-found.exception";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { UserResponseDto } from "../../dtos/get/user-response.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { USER_SERVICES } from "../../interfaces/constants";
@@ -18,9 +18,9 @@ export class FollowUserServiceImpl implements FollowUserService {
 
     async getFollowingUsers(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<UserResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
+        const { skip, take, allowCount } = params;
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -43,9 +43,9 @@ export class FollowUserServiceImpl implements FollowUserService {
 
     async getFollowers(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<UserResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
+        const { skip, take, allowCount } = params;
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             select: {

@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 import TableItem from "@/components/admin/tables/TableItem";
 import { DEFAULT_AVATAR_URL, NO_IMAGE_URL } from "@/libs/constants";
 import { User } from "@/types/user";
-import { getPlaylists, searchPlaylists } from "@/services/api/playlists";
+import { getPlaylists } from "@/services/api/playlists";
+import Skeleton from "react-loading-skeleton";
 
 const playlistColumns = [
     {
@@ -56,30 +58,50 @@ const playlistColumns = [
 ];
 
 export default function AdminSongsPage() {
+    const { data: session } = useSession();
+
     return (
         <section className="mb-5">
             <h1 className="text-primary text-4xl mb-7">Playlists</h1>
 
-            <TableItem
-                itemName="Playlist"
-                readonly
-                columns={playlistColumns}
-                generateItemLink={(item) => `/admin/playlists/${item.id}`}
-                itemPerPage={10}
-                onLoadItems={(page, size) =>
-                    getPlaylists({
-                        skip: (page - 1) * size,
-                        take: size,
-                        sort: "createdAt_desc",
-                    })
-                }
-                onSearchItems={(value, page, size) =>
-                    searchPlaylists(value, {
-                        skip: (page - 1) * size,
-                        take: size,
-                    })
-                }
-            />
+            {session?.user ? (
+                <TableItem
+                    itemName="Playlist"
+                    readonly
+                    columns={playlistColumns}
+                    generateItemLink={(item) => `/admin/playlists/${item.id}`}
+                    itemPerPage={10}
+                    onLoadItems={(page, size) =>
+                        getPlaylists(
+                            {
+                                skip: (page - 1) * size,
+                                take: size,
+                                sort: "createdAt_desc",
+                            },
+                            session.accessToken
+                        )
+                    }
+                    onSearchItems={(value, page, size) =>
+                        getPlaylists(
+                            {
+                                skip: (page - 1) * size,
+                                take: size,
+                                sort: "createdAt_desc",
+                                q: value
+                            },
+                            session.accessToken
+                        )
+                    }
+                />
+            ) : (
+                <div className="w-full">
+                    <Skeleton
+                        count={10}
+                        highlightColor="#f58c1b"
+                        baseColor="#121212"
+                    />
+                </div>
+            )}
         </section>
     );
 }

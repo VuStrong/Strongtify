@@ -2,18 +2,18 @@ import { Prisma } from "@prisma/client";
 import { GenreDetailResponseDto } from "../dtos/get/genre-detail-response.dto";
 import { GenreDetailParamDto } from "../dtos/query-params/genre-detail-param.dto";
 import { GenreResponseDto } from "../dtos/get/genre-response.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
+import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 
 /**
  * Interface for Genre to perform Read operations
  */
 export interface GetGenreService {
-    getAll(): Promise<GenreResponseDto[]>;
-
     /**
-     * Search for genres
-     * @param value - keyword to search
+     * Get genres
+     * @param params - options to filter genres
      */
-    search(value: string): Promise<GenreResponseDto[]>;
+    get(params: QueryParamDto): Promise<PagedResponseDto<GenreResponseDto>>;
 
     /**
      * Find genre by ID contains songs and albums

@@ -80,8 +80,6 @@ export type UpdateAccountRequest = {
 }
 
 export type AccountQuery = PagingQuery & {
-    q?: string;
-
     emailConfirmed?: boolean;
 
     locked?: boolean;

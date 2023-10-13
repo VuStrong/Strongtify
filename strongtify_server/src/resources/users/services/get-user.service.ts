@@ -10,7 +10,6 @@ import { UserDetailParamDto } from "../dtos/query-params/user-detail-param.dto";
 import { UserDetailResponseDto } from "../dtos/get/user-detail-response.dto";
 import { Prisma, User } from "@prisma/client";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { AccountParamDto } from "../dtos/query-params/account-param.dto";
 
@@ -131,19 +130,23 @@ export class GetUserServiceImpl implements GetUserService {
             take,
             allowCount,
             sort: order,
-            searchValue,
+            keyword,
             ...rest
         } = userParams;
+
         const filter: Prisma.UserWhereInput = {
             AND: {
                 ...rest,
-                name: searchValue && { contains: searchValue },
+                name: keyword && { contains: keyword.trim() },
             },
         };
 
         const userFindInputs: Prisma.UserFindManyArgs = {
             where: filter,
-            orderBy: this.prisma.toPrismaOrderByObject(order),
+            orderBy: [
+                this.prisma.toPrismaOrderByObject(order),
+                { name: "asc" },
+            ],
             skip,
             take,
         };
@@ -167,38 +170,6 @@ export class GetUserServiceImpl implements GetUserService {
             } else {
                 throw new InternalServerErrorException();
             }
-        }
-    }
-
-    async search(
-        value: string,
-        pagingParams: PagingParamDto,
-    ): Promise<PagedResponseDto<User>> {
-        const { skip, take, allowCount } = pagingParams;
-
-        value = value?.trim().toLowerCase();
-        const filter: Prisma.UserWhereInput = {
-            name: { contains: value },
-        };
-
-        const userFindInputs: Prisma.UserFindManyArgs = {
-            where: filter,
-            orderBy: [ {followerCount: "desc"}, {name: "desc"} ],
-            skip,
-            take,
-        };
-
-        if (allowCount) {
-            const [users, count] = await this.prisma.$transaction([
-                this.prisma.user.findMany(userFindInputs),
-                this.prisma.user.count({ where: filter }),
-            ]);
-
-            return new PagedResponseDto<User>(users, skip, take, count);
-        } else {
-            const users = await this.prisma.user.findMany(userFindInputs);
-
-            return new PagedResponseDto<User>(users, skip, take, 0);
         }
     }
 }

@@ -10,7 +10,7 @@ import { PrismaError } from "src/database/enums/prisma-error.enum";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { PlaylistResponseDto } from "src/resources/playlists/dtos/get/playlist-response.dto";
 import { PlaylistStatus } from "@prisma/client";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { UserNotFoundException } from "../../exceptions/user-not-found.exception";
 
 @Injectable()
@@ -19,9 +19,9 @@ export class LikePlaylistServiceImpl implements LikePlaylistService {
 
     async getLikedPlaylists(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<PlaylistResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
+        const { skip, take, allowCount } = params;
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             select: {

@@ -1,6 +1,6 @@
 import { BACKEND_API_URL } from "@/libs/constants";
 import callAPI from "../callApi";
-import { PagedResponse, PagingQuery } from "@/types/paging";
+import { PagedResponse } from "@/types/paging";
 import { Album, AlbumDetail, AlbumQuery, CreateUpdateAlbumRequest, CudAlbumResponse } from "@/types/album";
 
 export async function getAlbums(query: AlbumQuery) {
@@ -9,21 +9,6 @@ export async function getAlbums(query: AlbumQuery) {
     });
 
     const response = await callAPI(`${BACKEND_API_URL}/v1/albums?${params}`);
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-
-    return data as PagedResponse<Album>;
-}
-
-export async function searchAlbums(value: string, query: PagingQuery) {
-    const params = new URLSearchParams({
-        q: value,
-        ...query as any
-    });
-
-    const response = await callAPI(`${BACKEND_API_URL}/v1/albums/search?${params}`);
 
     if (!response.ok) return null;
 

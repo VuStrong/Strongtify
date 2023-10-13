@@ -11,7 +11,6 @@ import { ArrayService } from "src/common/utils/array.service";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { AlbumParamDto } from "../dtos/query-params/album-param.dto";
 import { AlbumDetailResponseDto } from "../dtos/get/album-detail-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { AlbumResponseDto } from "../dtos/get/album-response.dto";
 
 @Injectable()
@@ -53,12 +52,14 @@ export class GetAlbumServiceImpl implements GetAlbumService {
             take,
             allowCount,
             sort: order,
+            keyword,
             artistId,
             genreId,
         } = params;
 
         const filter: Prisma.AlbumWhereInput = {
             AND: {
+                name: keyword && { contains: keyword.trim() },
                 artistId: artistId === "null" ? null : artistId,
                 genres: genreId ? { some: { id: genreId } } : undefined,
             },
@@ -66,7 +67,10 @@ export class GetAlbumServiceImpl implements GetAlbumService {
 
         const albumFindInputs: Prisma.AlbumFindManyArgs = {
             where: filter,
-            orderBy: this.prisma.toPrismaOrderByObject(order),
+            orderBy: [
+                this.prisma.toPrismaOrderByObject(order),
+                { name: "asc" },
+            ],
             skip,
             take,
             include: {
@@ -129,50 +133,5 @@ export class GetAlbumServiceImpl implements GetAlbumService {
         });
 
         return this.arrayService.shuffle(albums);
-    }
-
-    async search(
-        value: string,
-        pagingParams: PagingParamDto,
-    ): Promise<PagedResponseDto<AlbumResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
-
-        value = value?.trim().toLowerCase();
-        const filter: Prisma.AlbumWhereInput = {
-            name: { contains: value },
-        };
-
-        const albumFindInputs: Prisma.AlbumFindManyArgs = {
-            where: filter,
-            orderBy: [ {likeCount: "desc"}, {name: "desc"} ],
-            skip,
-            take,
-            include: {
-                artist: true,
-            },
-        };
-
-        if (allowCount) {
-            const [albums, count] = await this.prisma.$transaction([
-                this.prisma.album.findMany(albumFindInputs),
-                this.prisma.album.count({ where: filter }),
-            ]);
-
-            return new PagedResponseDto<AlbumResponseDto>(
-                albums,
-                skip,
-                take,
-                count,
-            );
-        } else {
-            const albums = await this.prisma.album.findMany(albumFindInputs);
-
-            return new PagedResponseDto<AlbumResponseDto>(
-                albums,
-                skip,
-                take,
-                0,
-            );
-        }
     }
 }

@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import TableItem from "@/components/admin/tables/TableItem";
-import { getAlbums, searchAlbums } from "@/services/api/albums";
+import { getAlbums } from "@/services/api/albums";
 import { NO_IMAGE_URL } from "@/libs/constants";
 
 const albumColumns = [
@@ -58,9 +58,11 @@ export default function AdminAlbumsPage() {
                     })
                 }
                 onSearchItems={(value, page, size) =>
-                    searchAlbums(value, {
+                    getAlbums({
                         skip: (page - 1) * size,
                         take: size,
+                        sort: "createdAt_desc",
+                        q: value
                     })
                 }
             />

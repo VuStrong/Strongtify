@@ -34,12 +34,22 @@ export default function AdminGenresPage() {
             <TableItem
                 itemName="Genre"
                 columns={genreColumns}
-                allowPaging={false}
                 createPage="/admin/genres/create"
                 generateItemLink={(item) => `/admin/genres/${item.id}`}
                 itemPerPage={10}
-                onLoadItems={(page, size) => getGenres()}
-                onSearchItems={(value, page, size) => getGenres(value)}
+                onLoadItems={(page, size) => 
+                    getGenres({
+                        skip: (page - 1) * size,
+                        take: size,
+                    })
+                }
+                onSearchItems={(value, page, size) => 
+                    getGenres({
+                        skip: (page - 1) * size,
+                        take: size,
+                        q: value
+                    })
+                }
             />
         </section>
     );

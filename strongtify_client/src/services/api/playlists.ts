@@ -1,7 +1,7 @@
 import { CreateUpdatePlaylistRequest, CudPlaylistResponse, Playlist, PlaylistDetail, PlaylistQuery } from "@/types/playlist";
 import callAPI from "../callApi";
 import { BACKEND_API_URL } from "@/libs/constants";
-import { PagedResponse, PagingQuery } from "@/types/paging";
+import { PagedResponse } from "@/types/paging";
 
 export async function getPlaylists(query?: PlaylistQuery, accessToken?: string) {
     const params = query && new URLSearchParams({
@@ -11,21 +11,6 @@ export async function getPlaylists(query?: PlaylistQuery, accessToken?: string) 
     const response = await callAPI(`${BACKEND_API_URL}/v1/playlists?${params ?? ""}`, {
         accessToken
     });
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-
-    return data as PagedResponse<Playlist>;
-}
-
-export async function searchPlaylists(value: string, query: PagingQuery) {
-    const params = new URLSearchParams({
-        q: value,
-        ...query as any
-    });
-
-    const response = await callAPI(`${BACKEND_API_URL}/v1/playlists/search?${params}`);
 
     if (!response.ok) return null;
 

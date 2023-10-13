@@ -7,7 +7,7 @@ import { LikeAlbumService } from "../../interfaces/like-and-follow/like-album-se
 import { AlbumNotFoundException } from "src/resources/albums/exceptions/album-not-found.exception";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
 import { PrismaService } from "src/database/prisma.service";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { AlbumResponseDto } from "src/resources/albums/dtos/get/album-response.dto";
 import { UserNotFoundException } from "../../exceptions/user-not-found.exception";
@@ -18,9 +18,9 @@ export class LikeAlbumServiceImpl implements LikeAlbumService {
 
     async getLikedAlbums(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<AlbumResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
+        const { skip, take, allowCount } = params;
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             select: {

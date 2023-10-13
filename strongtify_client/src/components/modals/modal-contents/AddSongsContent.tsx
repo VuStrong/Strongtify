@@ -7,10 +7,10 @@ import Skeleton from "react-loading-skeleton";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
 import useDebounce from "@/hooks/useDebounce";
-import { searchSongs } from "@/services/api/songs";
 import { Song } from "@/types/song";
 import SongItem from "@/components/songs/SongItem";
 import AddButton from "@/components/buttons/AddButton";
+import { getSongs } from "@/services/api/songs";
 
 export default function AddSongsContent({
     onAdd,
@@ -29,9 +29,11 @@ export default function AddSongsContent({
         const search = async () => {
             setIsSearching(true);
 
-            const data = await searchSongs(searchValue, {
+            const data = await getSongs({
                 skip: 0,
                 take: 10,
+                q: searchValue,
+                sort: "likeCount_desc"
             });
 
             setSongs(data?.results);
@@ -44,9 +46,11 @@ export default function AddSongsContent({
     }, [searchValue]);
 
     const fetchMoreSong = async () => {
-        const data = await searchSongs(searchValue, {
+        const data = await getSongs({
             skip: skip + 10,
             take: 10,
+            q: searchValue,
+            sort: "likeCount_desc"
         });
 
         setSongs([...(songs ?? []), ...(data?.results ?? [])]);

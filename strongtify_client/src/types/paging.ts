@@ -11,4 +11,5 @@ export type PagingQuery = {
     skip: number;
     take: number;
     sort?: string;
+    q?: string;
 }

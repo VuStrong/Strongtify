@@ -102,7 +102,7 @@ export class AppService {
     }
 
     async search(
-        value: string,
+        keyword: string,
         options: {
             take: number;
             allowCount: boolean;
@@ -113,20 +113,47 @@ export class AppService {
 
         const [songs, albums, playlists, genres, artists, users] =
             await Promise.all([
-                this.getSongService.search(value, { skip, take, allowCount }),
-                this.getAlbumService.search(value, { skip, take, allowCount }),
-                this.getPlaylistService.search(value, {
+                this.getSongService.get({
                     skip,
                     take,
                     allowCount,
+                    keyword,
+                    sort: "likeCount_desc",
                 }),
-                this.getGenreService.search(value),
-                this.getArtistService.search(value, {
+                this.getAlbumService.get({
                     skip,
                     take,
                     allowCount,
+                    keyword,
+                    sort: "likeCount_desc",
                 }),
-                this.getUserService.search(value, { skip, take, allowCount }),
+                this.getPlaylistService.get({
+                    skip,
+                    take,
+                    allowCount,
+                    keyword,
+                    sort: "likeCount_desc",
+                }),
+                this.getGenreService.get({
+                    skip,
+                    take,
+                    allowCount,
+                    keyword,
+                }),
+                this.getArtistService.get({
+                    skip,
+                    take,
+                    allowCount,
+                    keyword,
+                    sort: "followerCount_desc",
+                }),
+                this.getUserService.get({
+                    skip,
+                    take,
+                    allowCount,
+                    keyword,
+                    sort: "followerCount_desc",
+                }),
             ]);
 
         return {

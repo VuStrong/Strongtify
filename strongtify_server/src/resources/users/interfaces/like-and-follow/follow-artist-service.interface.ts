@@ -1,5 +1,5 @@
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { ArtistResponseDto } from "src/resources/artists/dtos/get/artist-response.dto";
 
 /**
@@ -9,11 +9,11 @@ export interface FollowArtistService {
     /**
      * Get user's following artists
      * @param userId - User's ID
-     * @param pagingParams - options for pagination
+     * @param params - options for filter
      */
     getFollowingArtists(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<ArtistResponseDto>>;
 
     /**

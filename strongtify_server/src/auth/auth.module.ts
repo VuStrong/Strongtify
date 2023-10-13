@@ -42,7 +42,7 @@ const resetPasswordService = {
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => {
                 return {
-                    secret: configService.get<string>('JWT_SECRET'),
+                    secret: configService.get<string>("JWT_SECRET"),
                     global: true,
                     signOptions: { expiresIn: "30m" },
                     // signOptions: { expiresIn: "30d" },

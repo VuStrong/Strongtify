@@ -8,9 +8,8 @@ import { PrismaService } from "src/database/prisma.service";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
 import { GetArtistService } from "../interfaces/get-artist-service.interface";
 import { ArtistNotFoundException } from "../exceptions/artist-not-found.exception";
-import { SortParamDto } from "src/common/dtos/sort-param.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { ArtistDetailParamDto } from "../dtos/query-params/artist-detail-param.dto";
 import { ArtistResponseDto } from "../dtos/get/artist-response.dto";
 import { ArtistDetailResponseDto } from "../dtos/get/artist-detail-response.dto";
@@ -81,11 +80,20 @@ export class GetArtistServiceImpl implements GetArtistService {
     }
 
     async get(
-        artistParams: SortParamDto,
+        artistParams: QueryParamDto,
     ): Promise<PagedResponseDto<ArtistResponseDto>> {
-        const { skip, take, allowCount, sort: order } = artistParams;
+        const { skip, take, allowCount, sort: order, keyword } = artistParams;
+
+        const filter: Prisma.ArtistWhereInput = {
+            name: keyword && { contains: keyword.trim() },
+        };
+
         const artistFindInputs: Prisma.ArtistFindManyArgs = {
-            orderBy: this.prisma.toPrismaOrderByObject(order),
+            where: filter,
+            orderBy: [
+                this.prisma.toPrismaOrderByObject(order),
+                { name: "asc" },
+            ],
             skip,
             take,
         };
@@ -94,7 +102,7 @@ export class GetArtistServiceImpl implements GetArtistService {
             if (allowCount) {
                 const [artists, count] = await this.prisma.$transaction([
                     this.prisma.artist.findMany(artistFindInputs),
-                    this.prisma.artist.count(),
+                    this.prisma.artist.count({ where: filter }),
                 ]);
 
                 return new PagedResponseDto<ArtistResponseDto>(
@@ -121,48 +129,6 @@ export class GetArtistServiceImpl implements GetArtistService {
             } else {
                 throw new InternalServerErrorException();
             }
-        }
-    }
-
-    async search(
-        value: string,
-        pagingParams: PagingParamDto,
-    ): Promise<PagedResponseDto<ArtistResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
-
-        value = value?.trim().toLowerCase();
-        const filter: Prisma.ArtistWhereInput = {
-            name: { contains: value },
-        };
-
-        const artistFindInputs: Prisma.ArtistFindManyArgs = {
-            where: filter,
-            orderBy: [ {followerCount: "desc"}, {name: "desc"} ],
-            skip,
-            take,
-        };
-
-        if (allowCount) {
-            const [artists, count] = await this.prisma.$transaction([
-                this.prisma.artist.findMany(artistFindInputs),
-                this.prisma.artist.count({ where: filter }),
-            ]);
-
-            return new PagedResponseDto<ArtistResponseDto>(
-                artists,
-                skip,
-                take,
-                count,
-            );
-        } else {
-            const artists = await this.prisma.artist.findMany(artistFindInputs);
-
-            return new PagedResponseDto<ArtistResponseDto>(
-                artists,
-                skip,
-                take,
-                0,
-            );
         }
     }
 }

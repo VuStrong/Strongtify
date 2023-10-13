@@ -1,7 +1,6 @@
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { SongParamDto } from "../dtos/query-params/song-param.dto";
 import { SongResponseDto } from "../dtos/get/song-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { SongDetailResponseDto } from "../dtos/get/song-detail-response.dto";
 
 /**
@@ -19,16 +18,6 @@ export interface GetSongService {
      * @param params - options to filter songs
      */
     get(params: SongParamDto): Promise<PagedResponseDto<SongResponseDto>>;
-
-    /**
-     * Search for songs
-     * @param value - keyword to search songs
-     * @param pagingParams - options for pagination
-     */
-    search(
-        value: string,
-        pagingParams: PagingParamDto,
-    ): Promise<PagedResponseDto<SongResponseDto>>;
 
     /**
      * Get an array contain random songs

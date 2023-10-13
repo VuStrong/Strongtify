@@ -13,7 +13,6 @@ import {
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiOperation,
-    ApiQuery,
     ApiTags,
 } from "@nestjs/swagger";
 import { PlaylistStatus } from "@prisma/client";
@@ -23,7 +22,7 @@ import { ApiPaging } from "src/common/decorators/api/api-paging.decorator";
 import { User } from "../decorators/user.decorator";
 import { ACCESS_TOKEN } from "src/auth/constants";
 
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { UserResponseDto } from "../dtos/get/user-response.dto";
 import { UserDetailResponseDto } from "../dtos/get/user-detail-response.dto";
 import { UserDetailParamDto } from "../dtos/query-params/user-detail-param.dto";
@@ -48,20 +47,12 @@ export class UsersController {
         private readonly followUserService: FollowUserService,
     ) {}
 
-    @ApiOperation({ summary: "Search users" })
-    @ApiQuery({
-        name: "q",
-        required: false,
-        description: "Keyword to search users",
-    })
-    @ApiPaging(UserResponseDto, PagingParamDto)
-    @Get("search")
+    @ApiOperation({ summary: "Get users" })
+    @ApiPaging(UserResponseDto, QueryParamDto)
+    @Get()
     @UseInterceptors(new TransformDataInterceptor(UserResponseDto))
-    async searchUsers(
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
-        @Query("q") value?: string,
-    ) {
-        return this.getUserService.search(value, pagingParams);
+    async getUsers(@PagingQuery(QueryParamDto) params: QueryParamDto) {
+        return this.getUserService.get(params);
     }
 
     @ApiOperation({ summary: "Get user's detail" })
@@ -83,15 +74,15 @@ export class UsersController {
     }
 
     @ApiOperation({ summary: "Get user's followings" })
-    @ApiPaging(UserResponseDto, PagingParamDto)
+    @ApiPaging(UserResponseDto, QueryParamDto)
     @ApiNotFoundResponse({ description: "User not found" })
     @Get(":id/following-users")
     @UseInterceptors(new TransformDataInterceptor(UserResponseDto))
     async getFollowingUsers(
         @Param("id") id: string,
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
+        @PagingQuery(QueryParamDto) params: QueryParamDto,
     ) {
-        return this.followUserService.getFollowingUsers(id, pagingParams);
+        return this.followUserService.getFollowingUsers(id, params);
     }
 
     @ApiOperation({ summary: "Check if user follow an user or not" })
@@ -111,27 +102,27 @@ export class UsersController {
     }
 
     @ApiOperation({ summary: "Get user's followers" })
-    @ApiPaging(UserResponseDto, PagingParamDto)
+    @ApiPaging(UserResponseDto, QueryParamDto)
     @ApiNotFoundResponse({ description: "User not found" })
     @Get(":id/followers")
     @UseInterceptors(new TransformDataInterceptor(UserResponseDto))
     async getFollowers(
         @Param("id") id: string,
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
+        @PagingQuery(QueryParamDto) params: QueryParamDto,
     ) {
-        return this.followUserService.getFollowers(id, pagingParams);
+        return this.followUserService.getFollowers(id, params);
     }
 
     @ApiOperation({ summary: "Get user's following artists" })
-    @ApiPaging(ArtistResponseDto, PagingParamDto)
+    @ApiPaging(ArtistResponseDto, QueryParamDto)
     @ApiNotFoundResponse({ description: "User not found" })
     @Get(":id/following-artists")
     @UseInterceptors(new TransformDataInterceptor(ArtistResponseDto))
     async getFollowingArtists(
         @Param("id") id: string,
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
+        @PagingQuery(QueryParamDto) params: QueryParamDto,
     ) {
-        return this.followArtistService.getFollowingArtists(id, pagingParams);
+        return this.followArtistService.getFollowingArtists(id, params);
     }
 
     @ApiOperation({ summary: "Check if user follow an artist or not" })

@@ -22,7 +22,6 @@ import {
     ApiTags,
     ApiBearerAuth,
     ApiConsumes,
-    ApiQuery,
     ApiOperation,
 } from "@nestjs/swagger";
 
@@ -33,7 +32,6 @@ import { TransformDataInterceptor } from "src/common/interceptors/transform-data
 
 import { CreateSongDto } from "./dtos/cud/create-song.dto";
 import { UpdateSongDto } from "./dtos/cud/update-song.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { SongResponseDto } from "./dtos/get/song-response.dto";
 import { ApiPaging } from "src/common/decorators/api/api-paging.decorator";
 import { ACCESS_TOKEN } from "src/auth/constants";
@@ -94,22 +92,6 @@ export class SongsController {
         @Query("count", new DefaultValuePipe(10), ParseIntPipe) count: number,
     ) {
         return this.getSongService.getRandomSongs(count);
-    }
-
-    @ApiOperation({ summary: "Search songs" })
-    @ApiQuery({
-        name: "q",
-        required: false,
-        description: "Keyword to search songs",
-    })
-    @ApiPaging(SongResponseDto, PagingParamDto)
-    @Get("search")
-    @UseInterceptors(new TransformDataInterceptor(SongResponseDto))
-    async searchSongs(
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
-        @Query("q") value?: string,
-    ) {
-        return this.getSongService.search(value, pagingParams);
     }
 
     @ApiOperation({ summary: "Create new song (ADMIN REQUIRED)" })

@@ -1,7 +1,6 @@
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { PlaylistDetailResponseDto } from "../dtos/get/playlist-detail-response.dto";
 import { PlaylistParamDto } from "../dtos/query-params/playlist-param.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { PlaylistResponseDto } from "../dtos/get/playlist-response.dto";
 
 /**
@@ -20,15 +19,5 @@ export interface GetPlaylistService {
      */
     get(
         params: PlaylistParamDto,
-    ): Promise<PagedResponseDto<PlaylistResponseDto>>;
-
-    /**
-     * Search for playlists
-     * @param value - keyword to search playlists
-     * @param pagingParams - options for pagination
-     */
-    search(
-        value: string,
-        pagingParams: PagingParamDto,
     ): Promise<PagedResponseDto<PlaylistResponseDto>>;
 }

@@ -7,7 +7,7 @@ import { FollowArtistService } from "../../interfaces/like-and-follow/follow-art
 import { PrismaService } from "src/database/prisma.service";
 import { ArtistNotFoundException } from "src/resources/artists/exceptions/artist-not-found.exception";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { ArtistResponseDto } from "src/resources/artists/dtos/get/artist-response.dto";
 import { UserNotFoundException } from "../../exceptions/user-not-found.exception";
@@ -18,9 +18,9 @@ export class FollowArtistServiceImpl implements FollowArtistService {
 
     async getFollowingArtists(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<ArtistResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
+        const { skip, take, allowCount } = params;
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             select: {

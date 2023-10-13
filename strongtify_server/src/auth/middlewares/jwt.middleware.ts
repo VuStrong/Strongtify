@@ -10,7 +10,7 @@ import { NextFunction, Request, Response } from "express";
 export class JwtMiddleware implements NestMiddleware {
     constructor(
         private readonly jwtService: JwtService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
     ) {}
 
     async use(req: Request, res: Response, next: NextFunction) {
@@ -19,7 +19,7 @@ export class JwtMiddleware implements NestMiddleware {
         if (token) {
             const payload = await this.jwtService
                 .verifyAsync(token, {
-                    secret: this.configService.get<string>('JWT_SECRET'),
+                    secret: this.configService.get<string>("JWT_SECRET"),
                 })
                 .catch(() => undefined);
 

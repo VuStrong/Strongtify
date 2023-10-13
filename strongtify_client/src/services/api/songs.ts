@@ -1,4 +1,4 @@
-import { PagedResponse, PagingQuery } from "@/types/paging";
+import { PagedResponse } from "@/types/paging";
 import { CreateUpdateSongRequest, CudSongResponse, Song, SongDetail, SongQuery, TopSong } from "@/types/song";
 import { BACKEND_API_URL } from "@/libs/constants";
 import callAPI from "../callApi";
@@ -25,21 +25,6 @@ export async function getTopSongs(time: string) {
     const data = await response.json();
 
     return data as TopSong[];
-}
-
-export async function searchSongs(value: string, query: PagingQuery) {
-    const params = new URLSearchParams({
-        q: value,
-        ...query as any
-    });
-
-    const response = await callAPI(`${BACKEND_API_URL}/v1/songs/search?${params}`);
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-
-    return data as PagedResponse<Song>;
 }
 
 export async function getSongById(songId: string) {

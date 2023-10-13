@@ -1,5 +1,5 @@
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { SongResponseDto } from "src/resources/songs/dtos/get/song-response.dto";
 
 /**
@@ -9,11 +9,11 @@ export interface LikeSongService {
     /**
      * Get user's liked songs
      * @param userId - User's ID
-     * @param pagingParams - options for pagination
+     * @param params - options for filter
      */
     getLikedSongs(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<SongResponseDto>>;
 
     /**

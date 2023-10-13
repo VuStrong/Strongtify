@@ -1,4 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+} from "@nestjs/common";
 import { PrismaService } from "src/database/prisma.service";
 import { GetGenreService } from "../interfaces/get-genre-service.interface";
 import { GenreDetailParamDto } from "../dtos/query-params/genre-detail-param.dto";
@@ -7,26 +11,64 @@ import { Prisma } from "@prisma/client";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
 import { GenreNotFoundException } from "../exceptions/genre-not-found.exception";
 import { GenreResponseDto } from "../dtos/get/genre-response.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
+import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 
 @Injectable()
 export class GetGenreServiceImpl implements GetGenreService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async getAll(): Promise<GenreResponseDto[]> {
-        return this.prisma.genre.findMany({
-            orderBy: { name: "asc" },
-        });
-    }
+    async get(
+        params: QueryParamDto,
+    ): Promise<PagedResponseDto<GenreResponseDto>> {
+        const { skip, take, allowCount, sort: order, keyword } = params;
 
-    async search(value: string): Promise<GenreResponseDto[]> {
-        value = value?.trim().toLowerCase();
+        const filter: Prisma.GenreWhereInput = {
+            name: keyword && { contains: keyword.trim() },
+        };
 
-        return this.prisma.genre.findMany({
-            where: {
-                name: { contains: value },
-            },
-            orderBy: { name: "asc" },
-        });
+        const genreFindInputs: Prisma.GenreFindManyArgs = {
+            where: filter,
+            orderBy: [
+                this.prisma.toPrismaOrderByObject(order),
+                { name: "asc" },
+            ],
+            skip,
+            take,
+        };
+
+        try {
+            if (allowCount) {
+                const [genres, count] = await this.prisma.$transaction([
+                    this.prisma.genre.findMany(genreFindInputs),
+                    this.prisma.genre.count({ where: filter }),
+                ]);
+
+                return new PagedResponseDto<GenreResponseDto>(
+                    genres,
+                    skip,
+                    take,
+                    count,
+                );
+            } else {
+                const genres = await this.prisma.genre.findMany(
+                    genreFindInputs,
+                );
+
+                return new PagedResponseDto<GenreResponseDto>(
+                    genres,
+                    skip,
+                    take,
+                    0,
+                );
+            }
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientValidationError) {
+                throw new BadRequestException("Invalid query params.");
+            } else {
+                throw new InternalServerErrorException();
+            }
+        }
     }
 
     async findByIdWithDetails(

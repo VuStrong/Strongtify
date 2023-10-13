@@ -4,13 +4,12 @@ import callAPI from "../callApi";
 import { PagedResponse, PagingQuery } from "@/types/paging";
 import { Artist } from "@/types/artist";
 
-export async function searchUsers(value: string, query: PagingQuery) {
+export async function getUsers(query: PagingQuery) {
     const params = new URLSearchParams({
-        q: value,
         ...query as any
     });
 
-    const response = await callAPI(`${BACKEND_API_URL}/v1/users/search?${params}`);
+    const response = await callAPI(`${BACKEND_API_URL}/v1/users?${params}`);
 
     if (!response.ok) return null;
 

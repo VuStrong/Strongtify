@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsOptional } from "class-validator";
-import { SortParamDto } from "src/common/dtos/sort-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 
-export class AlbumParamDto extends SortParamDto {
+export class AlbumParamDto extends QueryParamDto {
     @ApiProperty({
         required: false,
         description:

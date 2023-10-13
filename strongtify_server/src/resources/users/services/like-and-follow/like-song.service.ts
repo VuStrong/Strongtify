@@ -7,7 +7,7 @@ import { LikeSongService } from "../../interfaces/like-and-follow/like-song-serv
 import { PrismaService } from "src/database/prisma.service";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { SongResponseDto } from "src/resources/songs/dtos/get/song-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { UserNotFoundException } from "../../exceptions/user-not-found.exception";
 import { SongNotFoundException } from "src/resources/songs/exceptions/song-not-found.exception";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
@@ -18,9 +18,9 @@ export class LikeSongServiceImpl implements LikeSongService {
 
     async getLikedSongs(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<SongResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
+        const { skip, take, allowCount } = params;
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
             select: {

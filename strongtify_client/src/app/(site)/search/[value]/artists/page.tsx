@@ -5,10 +5,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
 import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
-import { searchArtists } from "@/services/api/artists";
 import ArtistSection from "@/components/artists/ArtistSection";
 import { Artist } from "@/types/artist";
 import SiteLoading from "@/app/(site)/loading";
+import { getArtists } from "@/services/api/artists";
 
 export default function SearchArtistPage({
     params,
@@ -22,9 +22,11 @@ export default function SearchArtistPage({
 
     useEffect(() => {
         const search = async () => {
-            const data = await searchArtists(decodeURIComponent(params.value), {
+            const data = await getArtists({
                 skip: 0,
                 take: 20,
+                q: decodeURIComponent(params.value),
+                sort: "followerCount_desc"
             });
 
             setArtists(data?.results);
@@ -37,9 +39,11 @@ export default function SearchArtistPage({
     }, []);
 
     const fetchMoreArtist = async () => {
-        const data = await searchArtists(decodeURIComponent(params.value), {
+        const data = await getArtists({
             skip: skip + 20,
             take: 20,
+            q: decodeURIComponent(params.value),
+            sort: "followerCount_desc"
         });
 
         setArtists([...(artists ?? []), ...(data?.results ?? [])]);

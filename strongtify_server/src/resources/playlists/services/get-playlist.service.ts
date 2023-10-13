@@ -10,7 +10,6 @@ import { PlaylistNotFoundException } from "../exceptions/playlist-not-found.exce
 import { PlaylistParamDto } from "../dtos/query-params/playlist-param.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { PlaylistStatus, Prisma } from "@prisma/client";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { PlaylistResponseDto } from "../dtos/get/playlist-response.dto";
 
 @Injectable()
@@ -48,25 +47,34 @@ export class GetPlaylistServiceImpl implements GetPlaylistService {
             take,
             allowCount,
             sort: order,
+            keyword,
             userId,
             status,
-            userRequestId,
         } = params;
 
+        // auto restrict playlist if not set
+        const restrictOptions = params.restrictOptions || {
+            restrict: true
+        }
+
         const filter: Prisma.PlaylistWhereInput = {
+            name: keyword && { contains: keyword.trim() },
             userId,
             status,
-            NOT: {
-                userId: {
-                    not: userRequestId,
-                },
+            NOT: restrictOptions.restrict ? {
                 status: PlaylistStatus.PRIVATE,
-            },
+                userId: {
+                    not: restrictOptions.userIdToRestrict,
+                },
+            } : undefined,
         };
 
         const playlistFindInputs: Prisma.PlaylistFindManyArgs = {
             where: filter,
-            orderBy: this.prisma.toPrismaOrderByObject(order),
+            orderBy: [
+                this.prisma.toPrismaOrderByObject(order),
+                { name: "asc" },
+            ],
             skip,
             take,
             include: {
@@ -105,56 +113,6 @@ export class GetPlaylistServiceImpl implements GetPlaylistService {
             } else {
                 throw new InternalServerErrorException();
             }
-        }
-    }
-
-    async search(
-        value: string,
-        pagingParams: PagingParamDto,
-    ): Promise<PagedResponseDto<PlaylistResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
-
-        value = value?.trim().toLowerCase();
-        const filter: Prisma.PlaylistWhereInput = {
-            AND: {
-                name: { contains: value },
-                status: PlaylistStatus.PUBLIC,
-            },
-        };
-
-        const playlistFindInputs: Prisma.PlaylistFindManyArgs = {
-            where: filter,
-            orderBy: [ {likeCount: "desc"}, {name: "desc"} ],
-            skip,
-            take,
-            include: {
-                user: true,
-            },
-        };
-
-        if (allowCount) {
-            const [playlists, count] = await this.prisma.$transaction([
-                this.prisma.playlist.findMany(playlistFindInputs),
-                this.prisma.playlist.count({ where: filter }),
-            ]);
-
-            return new PagedResponseDto<PlaylistResponseDto>(
-                playlists,
-                skip,
-                take,
-                count,
-            );
-        } else {
-            const playlists = await this.prisma.playlist.findMany(
-                playlistFindInputs,
-            );
-
-            return new PagedResponseDto<PlaylistResponseDto>(
-                playlists,
-                skip,
-                take,
-                0,
-            );
         }
     }
 }

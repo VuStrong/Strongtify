@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import TableItem from "@/components/admin/tables/TableItem";
-import { getSongs, searchSongs } from "@/services/api/songs";
+import { getSongs } from "@/services/api/songs";
 import { NO_IMAGE_URL } from "@/libs/constants";
 
 const songColumns = [
@@ -62,9 +62,11 @@ export default function AdminSongsPage() {
                     })
                 }
                 onSearchItems={(value, page, size) =>
-                    searchSongs(value, {
+                    getSongs({
                         skip: (page - 1) * size,
                         take: size,
+                        sort: "createdAt_desc",
+                        q: value
                     })
                 }
             />

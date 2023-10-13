@@ -54,7 +54,7 @@ export class CaslAbilityFactory {
             can(Action.Delete, "Playlist", { userId: user.sub });
         } else if (!user) {
             can(Action.Read, "Playlist", {
-                status: PlaylistStatus.PUBLIC
+                status: PlaylistStatus.PUBLIC,
             });
         }
 

@@ -36,10 +36,13 @@ export class SearchResponseDto {
     })
     playlists: PagedResponseDto<Playlist>;
 
-    @ApiProperty({ isArray: true, type: GenreResponseDto })
+    @ApiProperty({ type: PagedResponseDto<GenreResponseDto> })
     @Expose()
-    @Transform(({ value }) => GenreResponseDto.toGenreResponseDto(value))
-    genres: Genre[];
+    @Transform(({ value }: { value: PagedResponseDto<Genre> }) => {
+        value.results = GenreResponseDto.toGenreResponseDto(value.results);
+        return value;
+    })
+    genres: PagedResponseDto<Genre>;
 
     @ApiProperty({ type: PagedResponseDto<ArtistResponseDto> })
     @Expose()

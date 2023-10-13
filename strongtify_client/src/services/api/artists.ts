@@ -17,21 +17,6 @@ export async function getArtists(query: PagingQuery) {
     return data as PagedResponse<Artist>;
 }
 
-export async function searchArtists(value: string, query: PagingQuery) {
-    const params = new URLSearchParams({
-        q: value,
-        ...query as any
-    });
-
-    const response = await callAPI(`${BACKEND_API_URL}/v1/artists/search?${params}`);
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-
-    return data as PagedResponse<Artist>;
-}
-
 export async function getArtistById(artistId: string, query?: ArtistDetailQuery) {
     const params = query && new URLSearchParams({
         ...query as any

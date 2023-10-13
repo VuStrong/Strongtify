@@ -2,9 +2,15 @@ import { ApiProperty } from "@nestjs/swagger";
 import { PlaylistStatus } from "@prisma/client";
 import { Expose } from "class-transformer";
 import { IsEnum, IsOptional } from "class-validator";
-import { SortParamDto } from "src/common/dtos/sort-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 
-export class PlaylistParamDto extends SortParamDto {
+/** Options for restrict playlist to be returned */
+type RestrictOptions = {
+    userIdToRestrict?: string;
+    restrict?: boolean;
+}
+
+export class PlaylistParamDto extends QueryParamDto {
     @ApiProperty({ required: false })
     @IsOptional()
     @Expose()
@@ -19,5 +25,5 @@ export class PlaylistParamDto extends SortParamDto {
     @Expose()
     status?: PlaylistStatus;
 
-    userRequestId?: string;
+    restrictOptions?: RestrictOptions;
 }

@@ -3,13 +3,12 @@ import {
     Injectable,
     InternalServerErrorException,
 } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 import { GetSongService } from "../interfaces/get-song-service.interface";
 import { PrismaService } from "src/database/prisma.service";
 import { ArrayService } from "src/common/utils/array.service";
 import { SongResponseDto } from "../dtos/get/song-response.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
-import { Prisma } from "@prisma/client";
 import { SongParamDto } from "../dtos/query-params/song-param.dto";
 import { SongNotFoundException } from "../exceptions/song-not-found.exception";
 import { SongDetailResponseDto } from "../dtos/get/song-detail-response.dto";
@@ -42,6 +41,7 @@ export class GetSongServiceImpl implements GetSongService {
             skip,
             take,
             allowCount,
+            keyword,
             sort: order,
             artistId,
             genreId,
@@ -50,6 +50,7 @@ export class GetSongServiceImpl implements GetSongService {
 
         const filter: Prisma.SongWhereInput = {
             AND: {
+                name: keyword && { contains: keyword.trim() },
                 language,
                 artists: artistId ? { some: { id: artistId } } : undefined,
                 genres: genreId ? { some: { id: genreId } } : undefined,
@@ -58,7 +59,10 @@ export class GetSongServiceImpl implements GetSongService {
 
         const songFindInputs: Prisma.SongFindManyArgs = {
             where: filter,
-            orderBy: this.prisma.toPrismaOrderByObject(order),
+            orderBy: [
+                this.prisma.toPrismaOrderByObject(order),
+                { name: "asc" },
+            ],
             skip,
             take,
             include: {
@@ -95,46 +99,6 @@ export class GetSongServiceImpl implements GetSongService {
             } else {
                 throw new InternalServerErrorException();
             }
-        }
-    }
-
-    async search(
-        value: string,
-        pagingParams: PagingParamDto,
-    ): Promise<PagedResponseDto<SongResponseDto>> {
-        const { skip, take, allowCount } = pagingParams;
-
-        value = value?.trim().toLowerCase();
-        const filter: Prisma.SongWhereInput = {
-            name: { contains: value },
-        };
-
-        const songFindInputs: Prisma.SongFindManyArgs = {
-            where: filter,
-            orderBy: [ {likeCount: "desc"}, {name: "desc"} ],
-            skip,
-            take,
-            include: {
-                artists: true,
-            },
-        };
-
-        if (allowCount) {
-            const [songs, count] = await this.prisma.$transaction([
-                this.prisma.song.findMany(songFindInputs),
-                this.prisma.song.count({ where: filter }),
-            ]);
-
-            return new PagedResponseDto<SongResponseDto>(
-                songs,
-                skip,
-                take,
-                count,
-            );
-        } else {
-            const songs = await this.prisma.song.findMany(songFindInputs);
-
-            return new PagedResponseDto<SongResponseDto>(songs, skip, take, 0);
         }
     }
 

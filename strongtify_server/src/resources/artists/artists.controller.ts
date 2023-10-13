@@ -19,7 +19,6 @@ import {
     ApiOkResponse,
     ApiTags,
     ApiConsumes,
-    ApiQuery,
     ApiOperation,
 } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -34,9 +33,8 @@ import { ManageArtistHandler } from "src/casl/policies/artists/manage-artist-pol
 import { ARTIST_SERVICES } from "./interfaces/constants";
 import { GetArtistService } from "./interfaces/get-artist-service.interface";
 import { CudArtistService } from "./interfaces/cud-artist-service.interface";
-import { SortParamDto } from "src/common/dtos/sort-param.dto";
 import { CreateArtistDto } from "./dtos/cud/create-artist.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { ArtistResponseDto } from "./dtos/get/artist-response.dto";
 import { ArtistDetailParamDto } from "./dtos/query-params/artist-detail-param.dto";
 import { ArtistDetailResponseDto } from "./dtos/get/artist-detail-response.dto";
@@ -57,27 +55,11 @@ export class ArtistsController {
     ) {}
 
     @ApiOperation({ summary: "Get artists" })
-    @ApiPaging(ArtistResponseDto, SortParamDto)
+    @ApiPaging(ArtistResponseDto, QueryParamDto)
     @Get()
     @UseInterceptors(new TransformDataInterceptor(ArtistResponseDto))
-    async getArtists(@PagingQuery(SortParamDto) params: SortParamDto) {
+    async getArtists(@PagingQuery(QueryParamDto) params: QueryParamDto) {
         return this.getArtistService.get(params);
-    }
-
-    @ApiOperation({ summary: "Search artists" })
-    @ApiQuery({
-        name: "q",
-        required: false,
-        description: "Keyword to search artists",
-    })
-    @ApiPaging(ArtistResponseDto, PagingParamDto)
-    @Get("search")
-    @UseInterceptors(new TransformDataInterceptor(ArtistResponseDto))
-    async searchArtist(
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
-        @Query("q") value?: string,
-    ) {
-        return this.getArtistService.search(value, pagingParams);
     }
 
     @ApiOperation({ summary: "Create an artist (ADMIN REQUIRED)" })

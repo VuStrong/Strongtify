@@ -1,15 +1,20 @@
 import { CreateUpdateGenreRequest, CudGenreResponse, Genre, GenreDetail, GenreDetailQuery } from "@/types/genre";
 import callAPI from "../callApi";
 import { BACKEND_API_URL } from "@/libs/constants";
+import { PagedResponse, PagingQuery } from "@/types/paging";
 
-export async function getGenres(value: string = "") {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/genres?q=${value}`);
+export async function getGenres(query: PagingQuery) {
+    const params = new URLSearchParams({
+        ...query as any
+    });
+
+    const response = await callAPI(`${BACKEND_API_URL}/v1/genres?${params}`);
 
     if (!response.ok) return null;
 
     const data = await response.json();
 
-    return data as Genre[];
+    return data as PagedResponse<Genre>;
 }
 
 export async function getGenreById(genreId: string, query?: GenreDetailQuery) {

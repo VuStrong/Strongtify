@@ -54,11 +54,11 @@ export class AppController {
     @Get("/search")
     @UseInterceptors(new TransformDataInterceptor(SearchResponseDto))
     async search(
-        @Query("q") value: string,
+        @Query("q") keyword: string,
         @Query("take", new DefaultValuePipe(5), ParseIntPipe) take: number,
         @Query("allowCount", new DefaultValuePipe(false), ParseBoolPipe)
         allowCount: boolean,
     ) {
-        return this.appService.search(value, { take, allowCount });
+        return this.appService.search(keyword, { take, allowCount });
     }
 }

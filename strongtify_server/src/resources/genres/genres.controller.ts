@@ -15,7 +15,6 @@ import {
 import {
     ApiNotFoundResponse,
     ApiOkResponse,
-    ApiQuery,
     ApiTags,
     ApiConsumes,
     ApiCreatedResponse,
@@ -39,6 +38,9 @@ import { CudGenreService } from "./interfaces/cud-genre-service.interface";
 import { GenreResponseDto } from "./dtos/get/genre-response.dto";
 import { UpdateGenreDto } from "./dtos/cud/update-genre.dto";
 import { CudGenreResponseDto } from "./dtos/cud/cud-genre-response.dto";
+import { ApiPaging } from "src/common/decorators/api/api-paging.decorator";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
+import { PagingQuery } from "src/common/decorators/paging-query.decorator";
 
 @ApiTags("genres")
 @Controller({
@@ -54,18 +56,11 @@ export class GenresController {
     ) {}
 
     @ApiOperation({ summary: "Get genres" })
-    @ApiQuery({
-        name: "q",
-        required: false,
-        description: "Keyword to search genres",
-    })
-    @ApiOkResponse({ type: GenreResponseDto, isArray: true })
+    @ApiPaging(GenreResponseDto, QueryParamDto)
     @Get()
     @UseInterceptors(new TransformDataInterceptor(GenreResponseDto))
-    async getAllGenre(@Query("q") value?: string) {
-        return value
-            ? this.getGenreService.search(value)
-            : this.getGenreService.getAll();
+    async getGenres(@PagingQuery(QueryParamDto) params: QueryParamDto) {
+        return this.getGenreService.get(params);
     }
 
     @ApiOperation({ summary: "Get genre's detail" })

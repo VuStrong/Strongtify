@@ -1,7 +1,6 @@
 import { User } from "@prisma/client";
 import { UserDetailParamDto } from "../dtos/query-params/user-detail-param.dto";
 import { UserDetailResponseDto } from "../dtos/get/user-detail-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { AccountParamDto } from "../dtos/query-params/account-param.dto";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 
@@ -24,14 +23,4 @@ export interface GetUserService {
     ): Promise<UserDetailResponseDto>;
 
     get(userParams: AccountParamDto): Promise<PagedResponseDto<User>>;
-
-    /**
-     * Search for users
-     * @param value - keyword to search
-     * @param pagingParams - options for pagination
-     */
-    search(
-        value: string,
-        pagingParams: PagingParamDto,
-    ): Promise<PagedResponseDto<User>>;
 }

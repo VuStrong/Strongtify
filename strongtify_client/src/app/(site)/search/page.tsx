@@ -15,7 +15,9 @@ export const metadata: Metadata = {
 };
 
 export default async function SearchPage() {
-    const genres = await getGenres();
+    const genres = await getGenres({
+        skip: 0, take: 100
+    });
 
     return (
         <main>
@@ -25,7 +27,7 @@ export default async function SearchPage() {
                 Chủ đề và thể loại
             </h3>
 
-            <GenreSection genres={genres ?? []} />
+            <GenreSection genres={genres?.results ?? []} />
         </main>
     );
 }

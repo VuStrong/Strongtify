@@ -37,7 +37,7 @@ import { StringValidationPipe } from "src/common/pipes/string-validation.pipe";
 
 import { AccountResponseDto } from "../dtos/get/account-response.dto";
 import { SongResponseDto } from "src/resources/songs/dtos/get/song-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 import { UpdateAccountDto } from "../dtos/update-account.dto";
 import { ChangePasswordDto } from "../dtos/change-password.dto";
 import { AlbumResponseDto } from "src/resources/albums/dtos/get/album-response.dto";
@@ -91,15 +91,15 @@ export class MeController {
         return this.getUserService.findById(id);
     }
 
-    @ApiPaging(SongResponseDto, PagingParamDto)
+    @ApiPaging(SongResponseDto, QueryParamDto)
     @ApiOperation({ summary: "Get current user's liked songs" })
     @Get("liked-songs")
     @UseInterceptors(new TransformDataInterceptor(SongResponseDto))
     async getLikedSongs(
         @User("sub") id: string,
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
+        @PagingQuery(QueryParamDto) params: QueryParamDto,
     ) {
-        return this.likeSongService.getLikedSongs(id, pagingParams);
+        return this.likeSongService.getLikedSongs(id, params);
     }
 
     @ApiOperation({ summary: "Check if current user like a song or not" })
@@ -115,15 +115,15 @@ export class MeController {
         if (!isLiked) throw new NotFoundException();
     }
 
-    @ApiPaging(AlbumResponseDto, PagingParamDto)
+    @ApiPaging(AlbumResponseDto, QueryParamDto)
     @ApiOperation({ summary: "Get current user's liked albums" })
     @Get("liked-albums")
     @UseInterceptors(new TransformDataInterceptor(AlbumResponseDto))
     async getLikedAlbums(
         @User("sub") id: string,
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
+        @PagingQuery(QueryParamDto) params: QueryParamDto,
     ) {
-        return this.likeAlbumService.getLikedAlbums(id, pagingParams);
+        return this.likeAlbumService.getLikedAlbums(id, params);
     }
 
     @ApiOperation({ summary: "Check if current user like an album or not" })
@@ -142,15 +142,15 @@ export class MeController {
         if (!isLiked) throw new NotFoundException();
     }
 
-    @ApiPaging(PlaylistResponseDto, PagingParamDto)
+    @ApiPaging(PlaylistResponseDto, QueryParamDto)
     @ApiOperation({ summary: "Get current user's liked playlists" })
     @Get("liked-playlists")
     @UseInterceptors(new TransformDataInterceptor(PlaylistResponseDto))
     async getLikedPlaylists(
         @User("sub") id: string,
-        @PagingQuery(PagingParamDto) pagingParams: PagingParamDto,
+        @PagingQuery(QueryParamDto) params: QueryParamDto,
     ) {
-        return this.likePlaylistService.getLikedPlaylists(id, pagingParams);
+        return this.likePlaylistService.getLikedPlaylists(id, params);
     }
 
     @ApiOperation({ summary: "Check if current user like a playlist or not" })

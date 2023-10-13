@@ -22,7 +22,6 @@ import {
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiOperation,
-    ApiQuery,
     ApiTags,
 } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -41,7 +40,6 @@ import { ManageAlbumSongsService } from "./interfaces/manage-album-songs-service
 import { GetAlbumService } from "./interfaces/get-album-service.interface";
 
 import { AlbumParamDto } from "./dtos/query-params/album-param.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { CreateAlbumDto } from "./dtos/cud/create-album.dto";
 import { UpdateAlbumDto } from "./dtos/cud/update-album.dto";
 import { AlbumResponseDto } from "./dtos/get/album-response.dto";
@@ -80,22 +78,6 @@ export class AlbumsController {
         @Query("count", new DefaultValuePipe(10), ParseIntPipe) count: number,
     ) {
         return this.getAlbumService.getRandomAlbums(count);
-    }
-
-    @ApiOperation({ summary: "Search albums" })
-    @ApiQuery({
-        name: "q",
-        required: false,
-        description: "Keyword to search albums",
-    })
-    @ApiPaging(AlbumResponseDto, PagingParamDto)
-    @Get("search")
-    @UseInterceptors(new TransformDataInterceptor(AlbumResponseDto))
-    async searchAlbums(
-        @PagingQuery(PagingParamDto) params: PagingParamDto,
-        @Query("q") value?: string,
-    ) {
-        return this.getAlbumService.search(value, params);
     }
 
     @ApiOperation({ summary: "Get album's detail" })

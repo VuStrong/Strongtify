@@ -5,17 +5,18 @@ import {
     Inject,
     Query,
 } from "@nestjs/common";
+import { ApiExcludeController } from "@nestjs/swagger";
 import {
-    ApiExcludeController
-} from "@nestjs/swagger";
-import { CACHE_SERVICE, CacheService } from "./cache/interfaces/cache.interface";
+    CACHE_SERVICE,
+    CacheService,
+} from "./cache/interfaces/cache.interface";
 
 @ApiExcludeController()
 @Controller({
     path: "ffapi",
 })
-/** 
- * Some API for fun 
+/**
+ * Some API for fun
  */
 export class FFApiController {
     constructor(

@@ -40,6 +40,9 @@ import { CudUserService } from "../interfaces/cud-user-service.interface";
     path: "accounts",
     version: "1",
 })
+@ApiBearerAuth(ACCESS_TOKEN)
+@UseGuards(AuthGuard, PoliciesGuard)
+@UseInterceptors(new TransformDataInterceptor(AccountResponseDto))
 export class AccountsController {
     constructor(
         @Inject(USER_SERVICES.GetUserService)
@@ -49,12 +52,9 @@ export class AccountsController {
     ) {}
 
     @ApiOperation({ summary: "Get accounts (ADMIN REQUIRED)" })
-    @ApiBearerAuth(ACCESS_TOKEN)
     @ApiPaging(AccountResponseDto, AccountParamDto)
     @Get()
-    @UseGuards(AuthGuard, PoliciesGuard)
     @CheckPolicies(ReadAccountHandler)
-    @UseInterceptors(new TransformDataInterceptor(AccountResponseDto))
     async getAccounts(
         @PagingQuery(AccountParamDto) accountParams: AccountParamDto,
     ) {
@@ -64,11 +64,8 @@ export class AccountsController {
     @ApiOperation({ summary: "Get account by ID (ADMIN REQUIRED)" })
     @ApiOkResponse({ type: AccountResponseDto })
     @ApiNotFoundResponse({ description: "User not found" })
-    @ApiBearerAuth(ACCESS_TOKEN)
     @Get(":id")
-    @UseGuards(AuthGuard, PoliciesGuard)
     @CheckPolicies(ReadAccountHandler)
-    @UseInterceptors(new TransformDataInterceptor(AccountResponseDto))
     async getAccountById(@Param("id") id: string) {
         return this.getUserService.findById(id);
     }
@@ -76,11 +73,8 @@ export class AccountsController {
     @ApiOperation({ summary: "Change account's state (ADMIN REQUIRED)" })
     @ApiOkResponse({ type: AccountResponseDto })
     @ApiNotFoundResponse({ description: "User not found" })
-    @ApiBearerAuth(ACCESS_TOKEN)
     @Patch(":id")
-    @UseGuards(AuthGuard, PoliciesGuard)
     @CheckPolicies(UpdateAccountHandler)
-    @UseInterceptors(new TransformDataInterceptor(AccountResponseDto))
     async updateUser(
         @Param("id") id: string,
         @Body() updateUserDto: UpdateUserDto,
@@ -94,11 +88,8 @@ export class AccountsController {
     @ApiOperation({ summary: "Delete an account (ADMIN REQUIRED)" })
     @ApiOkResponse({ type: AccountResponseDto })
     @ApiNotFoundResponse({ description: "User not found" })
-    @ApiBearerAuth(ACCESS_TOKEN)
     @Delete(":id")
-    @UseGuards(AuthGuard, PoliciesGuard)
     @CheckPolicies(DeleteAccountHandler)
-    @UseInterceptors(new TransformDataInterceptor(AccountResponseDto))
     async deleteAccount(@Param("id") id: string) {
         return this.cudUserService.delete(id);
     }

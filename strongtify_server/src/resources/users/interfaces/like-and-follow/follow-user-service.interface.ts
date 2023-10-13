@@ -1,6 +1,6 @@
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { UserResponseDto } from "../../dtos/get/user-response.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
+import { QueryParamDto } from "src/common/dtos/query-param.dto";
 
 /**
  * Interface for User to deal with followings and followers
@@ -9,21 +9,21 @@ export interface FollowUserService {
     /**
      * Get following users of an user
      * @param userId - User's ID
-     * @param pagingParams - options for pagination
+     * @param params - options for filter
      */
     getFollowingUsers(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<UserResponseDto>>;
 
     /**
      * Get followers of an user
      * @param userId - User's ID
-     * @param pagingParams - options for pagination
+     * @param params - options for filter
      */
     getFollowers(
         userId: string,
-        pagingParams: PagingParamDto,
+        params: QueryParamDto,
     ): Promise<PagedResponseDto<UserResponseDto>>;
 
     /**

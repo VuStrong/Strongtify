@@ -5,7 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
 import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
-import { searchUsers } from "@/services/api/users";
+import { getUsers } from "@/services/api/users";
 import UserSection from "@/components/users/UserSection";
 import { User } from "@/types/user";
 import SiteLoading from "@/app/(site)/loading";
@@ -22,9 +22,11 @@ export default function SearchUserPage({
 
     useEffect(() => {
         const search = async () => {
-            const data = await searchUsers(decodeURIComponent(params.value), {
+            const data = await getUsers({
                 skip: 0,
                 take: 20,
+                q: decodeURIComponent(params.value),
+                sort: "followerCount_desc"
             });
 
             setUsers(data?.results);
@@ -37,9 +39,11 @@ export default function SearchUserPage({
     }, []);
 
     const fetchMoreUsers = async () => {
-        const data = await searchUsers(decodeURIComponent(params.value), {
+        const data = await getUsers({
             skip: skip + 20,
             take: 20,
+            q: decodeURIComponent(params.value),
+            sort: "followerCount_desc"
         });
 
         setUsers([...(users ?? []), ...(data?.results ?? [])]);

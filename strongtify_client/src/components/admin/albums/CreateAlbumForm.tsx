@@ -18,22 +18,27 @@ import Input from "../../inputs/Input";
 import Button from "../../buttons/Button";
 import ImageInput from "../../inputs/ImageInput";
 import { cleanUpUrl, validateImageExtension } from "@/libs/utils";
-import { searchArtists } from "@/services/api/artists";
 import { getGenres } from "@/services/api/genres";
 import { CreateUpdateAlbumRequest } from "@/types/album";
 import { createAlbum } from "@/services/api/albums";
 import { NO_IMAGE_URL } from "@/libs/constants";
+import { getArtists } from "@/services/api/artists";
 
 const onLoadArtists = async (inputValue: string) => {
-    const artists = await searchArtists(inputValue, { skip: 0, take: 100 });
+    const artists = await getArtists({ 
+        skip: 0, 
+        take: 100, 
+        q: inputValue,
+        sort: "followerCount_desc"
+    });
 
     return artists?.results ?? [];
 };
 
 const onLoadGenres = async (inputValue: string) => {
-    const genres = await getGenres(inputValue);
+    const genres = await getGenres({ skip: 0, take: 100, q: inputValue});
 
-    return genres ?? [];
+    return genres?.results ?? [];
 };
 
 export default function CreateAlbumForm() {

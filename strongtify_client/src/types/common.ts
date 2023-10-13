@@ -17,7 +17,7 @@ export type SearchResponse = {
     songs?: PagedResponse<Song>;
     albums?: PagedResponse<Album>;
     playlists?: PagedResponse<Playlist>;
-    genres?: Genre[];
+    genres?: PagedResponse<Genre>;
     artists?: PagedResponse<Artist>;
     users?: PagedResponse<User>;
 }

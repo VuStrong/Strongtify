@@ -1,25 +1,18 @@
-import { Metadata } from "next";
 import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
 import { getGenres } from "@/services/api/genres";
 import GenreSection from "@/components/genres/GenreSection";
-
-export async function generateMetadata({
-    params,
-}: {
-    params: { value: string };
-}): Promise<Metadata> {
-    return {
-        title: `${params.value} - Tìm kiếm thể loại | Strongtify`,
-    };
-}
 
 export default async function SearchGenrePage({
     params,
 }: {
     params: { value: string };
 }) {
-    const genres = await getGenres(decodeURIComponent(params.value));
+    const genres = await getGenres({
+        skip: 0,
+        take: 100,
+        q: decodeURIComponent(params.value)
+    });
 
     return (
         <main>
@@ -31,7 +24,7 @@ export default async function SearchGenrePage({
                     searchValue={decodeURIComponent(params.value)}
                 />
 
-                <GenreSection genres={genres ?? []} />
+                <GenreSection genres={genres?.results ?? []} />
             </div>
         </main>
     );

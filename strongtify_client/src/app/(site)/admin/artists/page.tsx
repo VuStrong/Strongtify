@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 import TableItem from "@/components/admin/tables/TableItem";
-import { getArtists, searchArtists } from "@/services/api/artists";
+import { getArtists } from "@/services/api/artists";
 import { DEFAULT_AVATAR_URL } from "@/libs/constants";
 
 const artistColumns = [
@@ -49,9 +49,11 @@ export default function AdminArtistsPage() {
                     })
                 }
                 onSearchItems={(value, page, size) =>
-                    searchArtists(value, {
+                    getArtists({
                         skip: (page - 1) * size,
                         take: size,
+                        sort: "createdAt_desc",
+                        q: value
                     })
                 }
             />

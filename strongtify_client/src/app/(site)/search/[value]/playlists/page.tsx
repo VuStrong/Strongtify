@@ -5,10 +5,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
 import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
-import { searchPlaylists } from "@/services/api/playlists";
 import PlaylistSection from "@/components/playlists/PlaylistSection";
 import { Playlist } from "@/types/playlist";
 import SiteLoading from "@/app/(site)/loading";
+import { getPlaylists } from "@/services/api/playlists";
 
 export default function SearchPlaylistPage({
     params,
@@ -22,9 +22,11 @@ export default function SearchPlaylistPage({
 
     useEffect(() => {
         const search = async () => {
-            const data = await searchPlaylists(decodeURIComponent(params.value), {
+            const data = await getPlaylists({
                 skip: 0,
                 take: 20,
+                q: decodeURIComponent(params.value),
+                sort: "likeCount_desc",
             });
 
             setPlaylists(data?.results);
@@ -37,9 +39,11 @@ export default function SearchPlaylistPage({
     }, []);
 
     const fetchMorePlaylists = async () => {
-        const data = await searchPlaylists(decodeURIComponent(params.value), {
+        const data = await getPlaylists({
             skip: skip + 20,
             take: 20,
+            q: decodeURIComponent(params.value),
+            sort: "likeCount_desc",
         });
 
         setPlaylists([...(playlists ?? []), ...(data?.results ?? [])]);

@@ -22,20 +22,25 @@ import { CreateUpdateSongRequest } from "@/types/song";
 import { languageOptions } from "@/libs/selectOptions";
 import { cleanUpUrl, validateImageExtension } from "@/libs/utils";
 import { createSong } from "@/services/api/songs";
-import { searchArtists } from "@/services/api/artists";
 import { getGenres } from "@/services/api/genres";
 import { NO_IMAGE_URL } from "@/libs/constants";
+import { getArtists } from "@/services/api/artists";
 
 const onLoadArtists = async (inputValue: string) => {
-    const artists = await searchArtists(inputValue, { skip: 0, take: 100 });
+    const artists = await getArtists({ 
+        skip: 0, 
+        take: 100, 
+        q: inputValue,
+        sort: "followerCount_desc"
+    });
 
     return artists?.results ?? [];
 };
 
 const onLoadGenres = async (inputValue: string) => {
-    const genres = await getGenres(inputValue);
+    const genres = await getGenres({ skip: 0, take: 100, q: inputValue});
 
-    return genres ?? [];
+    return genres?.results ?? [];
 };
 
 export default function CreateSongForm() {

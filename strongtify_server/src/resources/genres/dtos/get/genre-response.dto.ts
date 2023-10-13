@@ -25,7 +25,7 @@ export class GenreResponseDto implements Genre {
     description: string;
     imageId: string;
 
-    static toGenreResponseDto(genre: Genre) {
+    static toGenreResponseDto(genre: Genre | Genre[]): any {
         return plainToInstance(GenreResponseDto, genre, {
             excludeExtraneousValues: true,
         });

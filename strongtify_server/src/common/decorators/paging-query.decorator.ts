@@ -5,10 +5,10 @@ import {
 } from "@nestjs/common";
 import { ClassConstructor, plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { PagingParamDto } from "../dtos/paging-param.dto";
+import { QueryParamDto } from "../dtos/query-param.dto";
 
 export const PagingQuery = createParamDecorator(
-    async (data: ClassConstructor<PagingParamDto>, ctx: ExecutionContext) => {
+    async (data: ClassConstructor<QueryParamDto>, ctx: ExecutionContext) => {
         const request = ctx.switchToHttp().getRequest();
 
         const pagingQuery = plainToInstance(data, request.query, {

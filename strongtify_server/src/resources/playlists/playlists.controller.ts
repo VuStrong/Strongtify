@@ -9,7 +9,6 @@ import {
     ParseIntPipe,
     Post,
     Put,
-    Query,
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -17,7 +16,6 @@ import {
 import {
     ApiNotFoundResponse,
     ApiOkResponse,
-    ApiQuery,
     ApiTags,
     ApiConsumes,
     ApiCreatedResponse,
@@ -37,9 +35,12 @@ import { ACCESS_TOKEN } from "src/auth/constants";
 import { AuthGuard } from "src/auth/guards/auth.guard";
 
 import { PlaylistParamDto } from "./dtos/query-params/playlist-param.dto";
-import { PagingParamDto } from "src/common/dtos/paging-param.dto";
 import { PlaylistDetailResponseDto } from "./dtos/get/playlist-detail-response.dto";
 import { CreatePlaylistDto } from "./dtos/cud/create-playlist.dto";
+import { AddSongsDto } from "./dtos/add-songs.dto";
+import { UpdatePlaylistDto } from "./dtos/cud/update-playlist.dto";
+import { PlaylistResponseDto } from "./dtos/get/playlist-response.dto";
+import { CudPlaylistResponseDto } from "./dtos/cud/cud-playlist-response.dto";
 
 import { ApiBodyMoveSong } from "src/common/decorators/api/api-body-move-song.decorator";
 import { CaslAbilityFactory } from "src/casl/casl-ability.factory";
@@ -49,14 +50,11 @@ import { PoliciesGuard } from "src/casl/guards/policies.guard";
 import { CheckPolicies } from "src/casl/decorators/check-policies.decorator";
 import { UpdatePlaylistHandler } from "src/casl/policies/playlists/update-playlist-policy.handler";
 import { DeletePlaylistHandler } from "src/casl/policies/playlists/delete-playlist-policy.handler";
-import { AddSongsDto } from "./dtos/add-songs.dto";
-import { UpdatePlaylistDto } from "./dtos/cud/update-playlist.dto";
-import { PlaylistResponseDto } from "./dtos/get/playlist-response.dto";
-import { CudPlaylistResponseDto } from "./dtos/cud/cud-playlist-response.dto";
 import { PLAYLIST_SERVICES } from "./interfaces/constants";
 import { GetPlaylistService } from "./interfaces/get-playlist-service.interface";
 import { CudPlaylistService } from "./interfaces/cud-playlist-service.interface";
 import { ManagePlaylistSongsService } from "./interfaces/manage-playlist-songs-service.interface";
+import { JwtPayload } from "src/auth/types/jwt-payload";
 
 @ApiTags("playlists")
 @Controller({
@@ -76,34 +74,26 @@ export class PlaylistsController {
 
     @ApiOperation({
         summary:
-            "Get public playlists (include private playlists of current user)",
+            "Get public playlists (include private playlists of current user or all if is ADMIN)",
     })
     @ApiBearerAuth(ACCESS_TOKEN)
     @ApiPaging(PlaylistResponseDto, PlaylistParamDto)
     @Get()
     @UseInterceptors(new TransformDataInterceptor(PlaylistResponseDto))
     async getPlaylists(
-        @User("sub") userRequestId: string,
+        @User() user: JwtPayload,
         @PagingQuery(PlaylistParamDto) params: PlaylistParamDto,
     ) {
-        params.userRequestId = userRequestId;
-        return this.getPlaylistService.get(params);
-    }
+        params.restrictOptions = {
+            restrict: true,
+            userIdToRestrict: user?.sub
+        }
 
-    @ApiOperation({ summary: "Search playlists" })
-    @ApiQuery({
-        name: "q",
-        required: false,
-        description: "Keyword to search playlists",
-    })
-    @ApiPaging(PlaylistResponseDto, PagingParamDto)
-    @Get("search")
-    @UseInterceptors(new TransformDataInterceptor(PlaylistResponseDto))
-    async searchPlaylists(
-        @PagingQuery(PagingParamDto) params: PagingParamDto,
-        @Query("q") value?: string,
-    ) {
-        return this.getPlaylistService.search(value, params);
+        if (user?.role === "ADMIN") {
+            params.restrictOptions.restrict = false;
+        }
+
+        return this.getPlaylistService.get(params);
     }
 
     @ApiOperation({ summary: "Get playlist's detail" })

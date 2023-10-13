@@ -5,10 +5,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
 import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
-import { searchAlbums } from "@/services/api/albums";
 import AlbumSection from "@/components/albums/AlbumSection";
 import { Album } from "@/types/album";
 import SiteLoading from "@/app/(site)/loading";
+import { getAlbums } from "@/services/api/albums";
 
 export default function SearchAlbumPage({
     params,
@@ -22,9 +22,11 @@ export default function SearchAlbumPage({
 
     useEffect(() => {
         const search = async () => {
-            const data = await searchAlbums(decodeURIComponent(params.value), {
+            const data = await getAlbums({
                 skip: 0,
                 take: 20,
+                q: decodeURIComponent(params.value),
+                sort: "likeCount_desc"
             });
 
             setAlbums(data?.results);
@@ -37,9 +39,11 @@ export default function SearchAlbumPage({
     }, []);
 
     const fetchMoreAlbum = async () => {
-        const data = await searchAlbums(decodeURIComponent(params.value), {
+        const data = await getAlbums({
             skip: skip + 20,
             take: 20,
+            q: decodeURIComponent(params.value),
+            sort: "likeCount_desc"
         });
 
         setAlbums([...(albums ?? []), ...(data?.results ?? [])]);

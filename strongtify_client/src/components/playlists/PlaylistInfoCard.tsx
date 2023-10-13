@@ -17,6 +17,7 @@ import Button from "../buttons/Button";
 import { deletePlaylist, updatePlaylist } from "@/services/api/playlists";
 import UpdatePlaylistForm from "./UpdatePlaylistForm";
 import PlayButton from "../buttons/PlayButton";
+import DeleteConfirmContent from "../modals/modal-contents/DeleteConfirmContent";
 
 export default function PlaylistInfoCard({
     playlist,
@@ -24,22 +25,26 @@ export default function PlaylistInfoCard({
     playlist: PlaylistDetail;
 }) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isDelPlaylistModalOpen, setIsDelPlaylistModalOpen] = useState<boolean>(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
 
-    const handleDeletePlaylist = useCallback(async () => {
+    const handleDeletePlaylist = useCallback(() => {
         setIsModalOpen(false);
+        setIsDelPlaylistModalOpen(false);
 
-        try {
-            await deletePlaylist(playlist.id, session?.accessToken ?? "");
-
-            toast.success("Đã xóa playlist");
+        const deleteTask = async () => {
+            await deletePlaylist(playlist.id, session?.accessToken ?? ""); 
             router.refresh();
             router.push("/");
-        } catch (error: any) {
-            toast.error(error.message);
         }
+
+        toast.promise(deleteTask(), {
+            loading: "Đang xóa playlist",
+            success: "Đã xóa playlist",
+            error: "Không thể xóa playlist, hãy thử lại"
+        });
     }, [session?.accessToken]);
 
     const handleChangePlaylistStatus = useCallback(
@@ -128,7 +133,10 @@ export default function PlaylistInfoCard({
 
                                 <Button
                                     label="Xóa playlist này"
-                                    onClick={handleDeletePlaylist}
+                                    onClick={() => {
+                                        setIsModalOpen(false);
+                                        setIsDelPlaylistModalOpen(true);
+                                    }}
                                     outline
                                 />
                             </>
@@ -146,6 +154,28 @@ export default function PlaylistInfoCard({
                         outline
                     />
                 </div>
+            </Modal>
+
+            {/* Delete playlist modal */}
+            <Modal
+                isOpen={isDelPlaylistModalOpen}
+                onClickClose={() => {
+                    setIsDelPlaylistModalOpen(false);
+                }}
+                actionButton={
+                    <button
+                        onClick={handleDeletePlaylist}
+                        type="button"
+                        className="inline-flex w-full justify-center rounded-md bg-error px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                    >
+                        Xóa
+                    </button>
+                }
+            >
+                <DeleteConfirmContent
+                    title="Xóa playlist này?"
+                    body="Bạn có chắc muốn xóa playlist này không?"
+                />
             </Modal>
 
             <div className="bg-darkgray rounded-lg p-10">
