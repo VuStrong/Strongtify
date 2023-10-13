@@ -9,7 +9,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, "facebook") {
         super({
             clientID: process.env.FACEBOOK_CLIENT_ID,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-            callbackURL: "https://api.strongtify.io.vn/api/v1/auth/facebook-redirect",
+            callbackURL: "https://api.strongtify.io.vn/v1/auth/facebook-redirect",
             profileFields: ["id", "displayName", "emails", "photos"],
             scope: ["email"],
         });
