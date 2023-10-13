@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
 import { MdSearch } from "react-icons/md";
@@ -31,14 +31,12 @@ interface TableItemProps {
     onLoadItems: (
         page: number,
         size: number,
-    ) => Promise<PagedResponse<any> | any[] | null>;
+    ) => Promise<PagedResponse<any> | null>;
     onSearchItems: (
         value: string,
         page: number,
         size: number,
-    ) => Promise<PagedResponse<any> | any[] | null>;
-
-    allowPaging?: boolean;
+    ) => Promise<PagedResponse<any> | null>;
 
     itemPerPage?: number;
 }
@@ -54,7 +52,6 @@ const TableItem: React.FC<TableItemProps> = ({
     generateItemLink,
     onLoadItems,
     onSearchItems,
-    allowPaging = true,
     itemPerPage = 1,
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -63,12 +60,14 @@ const TableItem: React.FC<TableItemProps> = ({
     const [searchText, setSearchText] = useState<string>("");
     const [items, setItems] = useState<any[] | null>();
 
+    const tableRef = useRef<HTMLDivElement>(null);
+
     const searchValue = useDebounce(searchText, 1000, () => {
         setPage(1);
     });
 
     const totalPage = useMemo(() => {
-        return allowPaging ? Math.ceil(totalItem / itemPerPage) : 0;
+        return Math.ceil(totalItem / itemPerPage);
     }, [totalItem]);
 
     const router = useRouter();
@@ -85,20 +84,15 @@ const TableItem: React.FC<TableItemProps> = ({
 
             if (loadedItems === null) return;
 
-            if ("results" in loadedItems) {
-                setItems(loadedItems.results);
-                setTotalItem(loadedItems.total);
-            } else if (Array.isArray(loadedItems)) {
-                setItems(loadedItems);
-                setTotalItem(loadedItems?.length);
-            }
+            setItems(loadedItems.results);
+            setTotalItem(loadedItems.total);
         };
 
         loadItems();
     }, [page, searchValue]);
 
     return (
-        <div>
+        <div id="TableItem" ref={tableRef}>
             {!readonly && (
                 <Link
                     href={createPage ?? "/"}
@@ -185,15 +179,17 @@ const TableItem: React.FC<TableItemProps> = ({
                 )}
             </div>
 
-            {allowPaging && (
-                <Pagination
-                    page={page}
-                    totalPage={totalPage}
-                    onPageChange={(page) => {
-                        setPage(page);
-                    }}
-                />
-            )}
+            <Pagination
+                page={page}
+                totalPage={totalPage}
+                onPageChange={(page) => {
+                    setPage(page);
+
+                    if (tableRef.current) {
+                        tableRef.current.scrollIntoView({ behavior: "smooth" });
+                    }
+                }}
+            />
         </div>
     );
 };
