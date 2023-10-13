@@ -59,7 +59,7 @@ export class GetAlbumServiceImpl implements GetAlbumService {
 
         const filter: Prisma.AlbumWhereInput = {
             AND: {
-                name: keyword && { contains: keyword.trim() },
+                name: keyword ? { contains: keyword.trim() } : undefined,
                 artistId: artistId === "null" ? null : artistId,
                 genres: genreId ? { some: { id: genreId } } : undefined,
             },

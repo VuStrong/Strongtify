@@ -24,7 +24,7 @@ export class GetGenreServiceImpl implements GetGenreService {
         const { skip, take, allowCount, sort: order, keyword } = params;
 
         const filter: Prisma.GenreWhereInput = {
-            name: keyword && { contains: keyword.trim() },
+            name: keyword ? { contains: keyword.trim() } : undefined,
         };
 
         const genreFindInputs: Prisma.GenreFindManyArgs = {

@@ -137,7 +137,7 @@ export class GetUserServiceImpl implements GetUserService {
         const filter: Prisma.UserWhereInput = {
             AND: {
                 ...rest,
-                name: keyword && { contains: keyword.trim() },
+                name: keyword ? { contains: keyword.trim() } : undefined,
             },
         };
 

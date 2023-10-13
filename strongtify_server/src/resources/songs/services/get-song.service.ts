@@ -50,7 +50,7 @@ export class GetSongServiceImpl implements GetSongService {
 
         const filter: Prisma.SongWhereInput = {
             AND: {
-                name: keyword && { contains: keyword.trim() },
+                name: keyword ? { contains: keyword.trim() } : undefined,
                 language,
                 artists: artistId ? { some: { id: artistId } } : undefined,
                 genres: genreId ? { some: { id: genreId } } : undefined,

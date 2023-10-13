@@ -58,7 +58,7 @@ export class GetPlaylistServiceImpl implements GetPlaylistService {
         }
 
         const filter: Prisma.PlaylistWhereInput = {
-            name: keyword && { contains: keyword.trim() },
+            name: keyword ? { contains: keyword.trim() } : undefined,
             userId,
             status,
             NOT: restrictOptions.restrict ? {

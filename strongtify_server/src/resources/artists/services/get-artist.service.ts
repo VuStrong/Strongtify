@@ -85,7 +85,7 @@ export class GetArtistServiceImpl implements GetArtistService {
         const { skip, take, allowCount, sort: order, keyword } = artistParams;
 
         const filter: Prisma.ArtistWhereInput = {
-            name: keyword && { contains: keyword.trim() },
+            name: keyword ? { contains: keyword.trim() } : undefined,
         };
 
         const artistFindInputs: Prisma.ArtistFindManyArgs = {
