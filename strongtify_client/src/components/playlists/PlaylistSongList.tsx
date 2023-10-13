@@ -47,17 +47,21 @@ export default function PlaylistSongList({
     const handleRemoveSongFromPlaylist = useCallback(async () => {
         setIsSongOptionsModalOpen(false);
 
-        try {
+        const removeTask = async () => {
             await removeSongFromPlaylist(
                 playlist.id,
                 selectedSongId,
                 session?.accessToken ?? "",
             );
-            toast.success("Đã xóa bài hát khỏi playlist");
+
             router.refresh();
-        } catch (error: any) {
-            toast.error(error.message);
         }
+
+        toast.promise(removeTask(), {
+            loading: "Đang xóa bài hát",
+            success: "Đã xóa bài hát khỏi playlist",
+            error: "Không thể xóa bài hát, hãy thử lại"
+        });
     }, [selectedSongId, session?.accessToken]);
 
     return (
