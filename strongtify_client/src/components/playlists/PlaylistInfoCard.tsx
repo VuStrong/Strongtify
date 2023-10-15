@@ -48,10 +48,10 @@ export default function PlaylistInfoCard({
     }, [session?.accessToken]);
 
     const handleChangePlaylistStatus = useCallback(
-        async (status: "PUBLIC" | "PRIVATE") => {
+        (status: "PUBLIC" | "PRIVATE") => {
             setIsModalOpen(false);
 
-            try {
+            const updateTask = async () => {
                 await updatePlaylist(
                     playlist.id,
                     {
@@ -62,11 +62,14 @@ export default function PlaylistInfoCard({
                     session?.accessToken ?? "",
                 );
 
-                toast.success("Đã cập nhập trạng thái playlist");
                 router.refresh();
-            } catch (error: any) {
-                toast.error(error.message);
             }
+
+            toast.promise(updateTask(), {
+                loading: "Đang cập nhập playlist",
+                success: "Đã cập nhập trạng thái playlist",
+                error: "Không thể cập nhập playlist, hãy thử lại"
+            });
         },
         [session?.accessToken],
     );
@@ -146,7 +149,7 @@ export default function PlaylistInfoCard({
                         label="Copy link playlist"
                         onClick={() => {
                             navigator.clipboard.writeText(
-                                `${window.location.hostname}/playlists/${playlist.id}`,
+                                `https://${window.location.hostname}/playlists/${playlist.id}`,
                             );
                             toast.success("Đã copy link playlist");
                             setIsModalOpen(false);
@@ -197,7 +200,10 @@ export default function PlaylistInfoCard({
                     <div className="p-4 md:pt-0 flex flex-col justify-between leading-normal">
                         <div className="md:mb-3">
                             <p className="text-sm text-yellow-100 flex items-center">
-                                Playlist
+                                Playlist 
+                                {playlist.status === "PRIVATE" && (
+                                    <span className="text-error ml-2">(riêng tư)</span>
+                                )}
                             </p>
                             <div className="text-yellow-50 font-bold text-3xl mb-2">
                                 {playlist.name}

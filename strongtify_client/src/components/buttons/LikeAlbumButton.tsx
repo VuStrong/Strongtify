@@ -30,16 +30,17 @@ export default function LikeAlbumButton({ albumId }: { albumId: string }) {
         setIsLoading(true);
 
         try {
+            setIsLiked(!isLiked);
+
             if (isLiked) {
-                await unLikeAlbum(albumId, session?.accessToken ?? "");
-                setIsLiked(false);
                 toast.success("Đã xóa khỏi danh sách album đã thích");
+                await unLikeAlbum(albumId, session?.accessToken ?? "");
             } else {
-                await likeAlbum(albumId, session?.accessToken ?? "");
-                setIsLiked(true);
                 toast.success("Đã thêm vào danh sách album đã thích");
+                await likeAlbum(albumId, session?.accessToken ?? "");
             }
         } catch (error: any) {
+            setIsLiked(!isLiked);
             toast.error(error.message);
         }
 

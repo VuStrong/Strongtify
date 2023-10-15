@@ -34,16 +34,17 @@ export default function FollowUserButton({
         setIsLoading(true);
 
         try {
+            setIsFollowed(!isFollowed);
+
             if (isFollowed) {
-                await unFollowUser(userIdToFollow, session?.accessToken ?? "");
-                setIsFollowed(false);
                 toast.success("Đã bỏ theo dõi");
+                await unFollowUser(userIdToFollow, session?.accessToken ?? "");
             } else {
-                await followUser(userIdToFollow, session?.accessToken ?? "");
-                setIsFollowed(true);
                 toast.success("Đã theo dõi");
+                await followUser(userIdToFollow, session?.accessToken ?? "");
             }
         } catch (error: any) {
+            setIsFollowed(!isFollowed);
             toast.error(error.message);
         }
 

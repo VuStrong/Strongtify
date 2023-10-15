@@ -30,16 +30,17 @@ export default function LikeSongButton({ songId }: { songId: string }) {
         setIsLoading(true);
 
         try {
+            setIsLiked(!isLiked);
+
             if (isLiked) {
-                await unLikeSong(songId, session?.accessToken ?? "");
-                setIsLiked(false);
                 toast.success("Đã xóa khỏi danh sách bài hát đã thích");
+                await unLikeSong(songId, session?.accessToken ?? "");
             } else {
-                await likeSong(songId, session?.accessToken ?? "");
-                setIsLiked(true);
                 toast.success("Đã thêm vào danh sách bài hát đã thích");
+                await likeSong(songId, session?.accessToken ?? "");
             }
         } catch (error: any) {
+            setIsLiked(!isLiked);
             toast.error(error.message);
         }
 

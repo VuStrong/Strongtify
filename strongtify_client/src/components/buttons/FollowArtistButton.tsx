@@ -30,16 +30,17 @@ export default function FollowArtistButton({ artistId }: { artistId: string }) {
         setIsLoading(true);
 
         try {
+            setIsFollowed(!isFollowed);
+
             if (isFollowed) {
-                await unFollowArtist(artistId, session?.accessToken ?? "");
-                setIsFollowed(false);
                 toast.success("Đã bỏ theo dõi");
+                await unFollowArtist(artistId, session?.accessToken ?? "");
             } else {
-                await followArtist(artistId, session?.accessToken ?? "");
-                setIsFollowed(true);
                 toast.success("Đã theo dõi");
+                await followArtist(artistId, session?.accessToken ?? "");
             }
         } catch (error: any) {
+            setIsFollowed(!isFollowed);
             toast.error(error.message);
         }
 

@@ -8,6 +8,7 @@ export default function PlayButton({ songIds }: { songIds?: string[] }) {
 
     const handleClick = () => {
         player.setIds(songIds ?? []);
+        player.setCurrentIndex(0);
     };
 
     return (

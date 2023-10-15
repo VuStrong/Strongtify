@@ -54,14 +54,14 @@ export default function AdminAlbumsPage() {
                     getAlbums({
                         skip: (page - 1) * size,
                         take: size,
-                        sort: "createdAt_desc",
+                        sort: "updatedAt_desc",
                     })
                 }
                 onSearchItems={(value, page, size) =>
                     getAlbums({
                         skip: (page - 1) * size,
                         take: size,
-                        sort: "createdAt_desc",
+                        sort: "updatedAt_desc",
                         q: value
                     })
                 }

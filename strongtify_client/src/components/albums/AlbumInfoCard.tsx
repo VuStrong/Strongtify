@@ -32,7 +32,7 @@ export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
                         label="Copy link album"
                         onClick={() => {
                             navigator.clipboard.writeText(
-                                `${window.location.hostname}/albums/${album.alias}/${album.id}`,
+                                `https://${window.location.hostname}/albums/${album.alias}/${album.id}`,
                             );
                             toast.success("Đã copy link album");
                             setIsModalOpen(false);

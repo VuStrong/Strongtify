@@ -35,13 +35,23 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                         label="Copy link bài hát"
                         onClick={() => {
                             navigator.clipboard.writeText(
-                                `${window.location.hostname}/songs/${song.alias}/${song.id}`,
+                                `https://${window.location.hostname}/songs/${song.alias}/${song.id}`,
                             );
                             toast.success("Đã copy link bài hát");
                             setIsModalOpen(false);
                         }}
                         outline
                     />
+
+                    <a
+                        className="relative rounded-lg hover:opacity-80 transition w-full p-3 text-md font-semibold border-gray-300 border-2 text-gray-300 text-center"
+                        href={song.songUrl ?? "#"}
+                        target="_blank"
+                        onClick={() => { setIsModalOpen(false) }}
+                    >
+                        Tải về bài hát
+                    </a>
+
                     <Button
                         label="Thêm vào danh sách phát"
                         onClick={() => {
@@ -63,17 +73,21 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                     onClickPlaylist={async (playlistId: string) => {
                         setIsAddToPlaylistModalOpen(false);
 
-                        try {
+                        const addTask = async () => {
                             await addSongsToPlaylist(
                                 playlistId,
                                 [song.id],
                                 session?.accessToken ?? "",
                             );
-
-                            toast.success("Đã thêm bài hát vào danh sách phát");
-                        } catch (error: any) {
-                            toast.error(error.message);
                         }
+
+                        toast.promise(addTask(), {
+                            loading: "Đang thêm bài hát",
+                            success: "Đã thêm bài hát vào danh sách phát",
+                            error: (e) => {
+                                return e.message;
+                            }
+                        });
                     }}
                 />
             </Modal>

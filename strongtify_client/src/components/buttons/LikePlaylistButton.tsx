@@ -38,16 +38,17 @@ export default function LikePlaylistButton({
         setIsLoading(true);
 
         try {
+            setIsLiked(!isLiked);
+
             if (isLiked) {
-                await unLikePlaylist(playlistId, session?.accessToken ?? "");
-                setIsLiked(false);
                 toast.success("Đã xóa khỏi danh sách playlist đã thích");
+                await unLikePlaylist(playlistId, session?.accessToken ?? "");
             } else {
-                await likePlaylist(playlistId, session?.accessToken ?? "");
-                setIsLiked(true);
                 toast.success("Đã thêm vào danh sách playlist đã thích");
+                await likePlaylist(playlistId, session?.accessToken ?? "");
             }
         } catch (error: any) {
+            setIsLiked(!isLiked);
             toast.error(error.message);
         }
 
