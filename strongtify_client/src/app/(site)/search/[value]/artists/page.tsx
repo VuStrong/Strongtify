@@ -9,6 +9,7 @@ import ArtistSection from "@/components/artists/ArtistSection";
 import { Artist } from "@/types/artist";
 import HomeLoading from "@/app/(site)/(home)/loading";
 import { getArtists } from "@/services/api/artists";
+import UserSectionLoading from "@/components/loadings/UserSectionLoading";
 
 export default function SearchArtistPage({
     params,
@@ -61,7 +62,7 @@ export default function SearchArtistPage({
                     searchValue={decodeURIComponent(params.value)}
                 />
 
-                {isSearching && <HomeLoading />}
+                {isSearching && <UserSectionLoading count={20} />}
 
                 {!isSearching && (
                     <InfiniteScroll

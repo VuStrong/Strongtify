@@ -8,7 +8,7 @@ import SearchItemLinkList from "@/components/SearchItemLinkList";
 import { getUsers } from "@/services/api/users";
 import UserSection from "@/components/users/UserSection";
 import { User } from "@/types/user";
-import HomeLoading from "@/app/(site)/(home)/loading";
+import UserSectionLoading from "@/components/loadings/UserSectionLoading";
 
 export default function SearchUserPage({
     params,
@@ -61,7 +61,7 @@ export default function SearchUserPage({
                     searchValue={decodeURIComponent(params.value)}
                 />
 
-                {isSearching && <HomeLoading />}
+                {isSearching && <UserSectionLoading count={20} />}
 
                 {!isSearching && (
                     <InfiniteScroll

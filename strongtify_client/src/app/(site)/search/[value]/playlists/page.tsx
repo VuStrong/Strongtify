@@ -7,8 +7,8 @@ import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
 import PlaylistSection from "@/components/playlists/PlaylistSection";
 import { Playlist } from "@/types/playlist";
-import HomeLoading from "@/app/(site)/(home)/loading";
 import { getPlaylists } from "@/services/api/playlists";
+import PlaylistSectionLoading from "@/components/loadings/PlaylistLoadingSection";
 
 export default function SearchPlaylistPage({
     params,
@@ -61,7 +61,7 @@ export default function SearchPlaylistPage({
                     searchValue={decodeURIComponent(params.value)}
                 />
 
-                {isSearching && <HomeLoading />}
+                {isSearching && <PlaylistSectionLoading count={20} />}
 
                 {!isSearching && (
                     <InfiniteScroll

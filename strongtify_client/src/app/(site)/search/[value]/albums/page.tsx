@@ -9,6 +9,7 @@ import AlbumSection from "@/components/albums/AlbumSection";
 import { Album } from "@/types/album";
 import HomeLoading from "@/app/(site)/(home)/loading";
 import { getAlbums } from "@/services/api/albums";
+import PlaylistSectionLoading from "@/components/loadings/PlaylistLoadingSection";
 
 export default function SearchAlbumPage({
     params,
@@ -61,7 +62,7 @@ export default function SearchAlbumPage({
                     searchValue={decodeURIComponent(params.value)}
                 />
 
-                {isSearching && <HomeLoading />}
+                {isSearching && <PlaylistSectionLoading count={20} />}
 
                 {!isSearching && (
                     <InfiniteScroll
