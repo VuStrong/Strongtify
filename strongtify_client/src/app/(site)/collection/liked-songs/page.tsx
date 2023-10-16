@@ -4,10 +4,11 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
 import { Song } from "@/types/song";
 import SongSection from "@/components/songs/SongSection";
 import { getLikedSongs } from "@/services/api/me";
+import SongSectionLoading from "@/components/loadings/SongSectionLoading";
 
 export default function LikedSongsPage() {
     const [end, setEnd] = useState<boolean>(false);
@@ -18,7 +19,7 @@ export default function LikedSongsPage() {
     const { data: session, status } = useSession();
 
     if (status === "loading") {
-        return <SiteLoading />;
+        return <HomeLoading />;
     }
 
     useEffect(() => {
@@ -54,7 +55,7 @@ export default function LikedSongsPage() {
                 Bài hát đã thích
             </h2>
 
-            {isLoading && <SiteLoading />}
+            {isLoading && <SongSectionLoading count={20} oneColumn />}
 
             {!isLoading && (
                 <InfiniteScroll

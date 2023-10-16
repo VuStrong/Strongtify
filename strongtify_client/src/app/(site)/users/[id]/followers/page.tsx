@@ -6,7 +6,8 @@ import { BeatLoader } from "react-spinners";
 import { getFollowers } from "@/services/api/users";
 import UserSection from "@/components/users/UserSection";
 import { User } from "@/types/user";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
+import UserSectionLoading from "@/components/loadings/UserSectionLoading";
 
 export default function UserFollowersPage({
     params,
@@ -51,7 +52,7 @@ export default function UserFollowersPage({
                 Người theo dõi
             </h2>
 
-            {isLoading && <SiteLoading />}
+            {isLoading && <UserSectionLoading count={20} />}
 
             {!isLoading && (
                 <InfiniteScroll

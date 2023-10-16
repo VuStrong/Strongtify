@@ -7,7 +7,7 @@ import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
 import AlbumSection from "@/components/albums/AlbumSection";
 import { Album } from "@/types/album";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
 import { getAlbums } from "@/services/api/albums";
 
 export default function SearchAlbumPage({
@@ -61,7 +61,7 @@ export default function SearchAlbumPage({
                     searchValue={decodeURIComponent(params.value)}
                 />
 
-                {isSearching && <SiteLoading />}
+                {isSearching && <HomeLoading />}
 
                 {!isSearching && (
                     <InfiniteScroll

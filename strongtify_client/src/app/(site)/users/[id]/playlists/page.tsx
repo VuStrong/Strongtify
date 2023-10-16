@@ -7,7 +7,8 @@ import { BeatLoader } from "react-spinners";
 import { getPlaylists } from "@/services/api/playlists";
 import PlaylistSection from "@/components/playlists/PlaylistSection";
 import { Playlist } from "@/types/playlist";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
+import PlaylistSectionLoading from "@/components/loadings/PlaylistLoadingSection";
 
 export default function UserPlaylistsPage({
     params,
@@ -63,7 +64,7 @@ export default function UserPlaylistsPage({
                 Playlist
             </h2>
 
-            {(isLoading || status === "loading") && <SiteLoading />}
+            {(isLoading || status === "loading") && <PlaylistSectionLoading count={20}/>}
 
             {!isLoading && (
                 <InfiniteScroll

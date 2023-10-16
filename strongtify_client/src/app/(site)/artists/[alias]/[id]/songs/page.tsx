@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
-import SiteLoading from "@/app/(site)/loading";
 import { Song } from "@/types/song";
 import { getSongs } from "@/services/api/songs";
 import SongSection from "@/components/songs/SongSection";
+import SongSectionLoading from "@/components/loadings/SongSectionLoading";
 
 export default function ArtistSongsPage({
     params,
@@ -55,7 +55,9 @@ export default function ArtistSongsPage({
                 Bài hát
             </h2>
 
-            {isLoading && <SiteLoading />}
+            {isLoading && (
+                <SongSectionLoading count={20} oneColumn />
+            )}
 
             {!isLoading && (
                 <InfiniteScroll

@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
 import { getFollowingArtists } from "@/services/api/users";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
 import { Artist } from "@/types/artist";
 import ArtistSection from "@/components/artists/ArtistSection";
+import UserSectionLoading from "@/components/loadings/UserSectionLoading";
 
 export default function FollowingUsersPage({
     params,
@@ -51,7 +52,7 @@ export default function FollowingUsersPage({
                 Nghệ sĩ đang theo dõi
             </h2>
 
-            {isLoading && <SiteLoading />}
+            {isLoading && <UserSectionLoading count={20} />}
 
             {!isLoading && (
                 <InfiniteScroll

@@ -1,92 +1,12 @@
-import "react-loading-skeleton/dist/skeleton.css";
-import Skeleton from "react-loading-skeleton";
+import PlaylistSectionLoading from "@/components/loadings/PlaylistLoadingSection";
+import SongSectionLoading from "@/components/loadings/SongSectionLoading";
 
-export default function SiteLoading() {
+export default function SearchValueLoading() {
     return (
         <div className="w-full h-full flex flex-col gap-10">
-            <div className="grid lg:grid-cols-5 md:grid-cols-4 grid-cols-2 gap-5">
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-            </div>
-
-            <div className="grid lg:grid-cols-5 md:grid-cols-4 grid-cols-2 gap-5">
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-            </div>
-
-            <div className="grid lg:grid-cols-5 md:grid-cols-4 grid-cols-2 gap-5">
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-                <Skeleton
-                    highlightColor="#f58c1b"
-                    baseColor="#121212"
-                    height={200}
-                />
-            </div>
+            <SongSectionLoading count={10} />
+            <PlaylistSectionLoading count={5} />
+            <PlaylistSectionLoading count={5} />
         </div>
     );
 }

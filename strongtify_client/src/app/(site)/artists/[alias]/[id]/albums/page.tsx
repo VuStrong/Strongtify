@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
 import { Album } from "@/types/album";
 import { getAlbums } from "@/services/api/albums";
 import AlbumSection from "@/components/albums/AlbumSection";
+import PlaylistSectionLoading from "@/components/loadings/PlaylistLoadingSection";
 
 export default function ArtistAlbumsPage({
     params,
@@ -53,7 +54,7 @@ export default function ArtistAlbumsPage({
         <main className="py-5">
             <h2 className="text-yellow-50 text-2xl mb-5 font-medium">Album</h2>
 
-            {isLoading && <SiteLoading />}
+            {isLoading && <PlaylistSectionLoading count={20} />}
 
             {!isLoading && (
                 <InfiniteScroll

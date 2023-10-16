@@ -19,7 +19,7 @@ export default function AlbumItem({ album }: { album: Album }) {
                     src={album.imageUrl ?? NO_IMAGE_URL}
                     alt={album.name}
                 />
-                <div className="font-bold text-xl text-yellow-50 mb-1 truncate pt-4">
+                <div className="font-bold text-xl text-yellow-50 mb-1 pt-4 line-clamp-2">
                     {album.name}
                 </div>
             </Link>

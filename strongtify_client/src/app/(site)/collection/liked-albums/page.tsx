@@ -4,10 +4,11 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
 import { Album } from "@/types/album";
 import AlbumSection from "@/components/albums/AlbumSection";
 import { getLikedAlbums } from "@/services/api/me";
+import PlaylistSectionLoading from "@/components/loadings/PlaylistLoadingSection";
 
 export default function LikedAlbumsPage() {
     const [end, setEnd] = useState<boolean>(false);
@@ -18,7 +19,7 @@ export default function LikedAlbumsPage() {
     const { data: session, status } = useSession();
 
     if (status === "loading") {
-        return <SiteLoading />;
+        return <HomeLoading />;
     }
 
     useEffect(() => {
@@ -54,7 +55,7 @@ export default function LikedAlbumsPage() {
                 Album đã thích
             </h2>
 
-            {isLoading && <SiteLoading />}
+            {isLoading && <PlaylistSectionLoading count={20} />}
 
             {!isLoading && (
                 <InfiniteScroll

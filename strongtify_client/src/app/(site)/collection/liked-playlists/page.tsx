@@ -6,8 +6,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from "react-spinners";
 import PlaylistSection from "@/components/playlists/PlaylistSection";
 import { Playlist } from "@/types/playlist";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
 import { getLikedPlaylists } from "@/services/api/me";
+import PlaylistSectionLoading from "@/components/loadings/PlaylistLoadingSection";
 
 export default function LikedPlaylistsPage() {
     const [end, setEnd] = useState<boolean>(false);
@@ -18,7 +19,7 @@ export default function LikedPlaylistsPage() {
     const { data: session, status } = useSession();
 
     if (status === "loading") {
-        return <SiteLoading />;
+        return <HomeLoading />;
     }
 
     useEffect(() => {
@@ -54,7 +55,7 @@ export default function LikedPlaylistsPage() {
                 Playlist đã thích
             </h2>
 
-            {isLoading && <SiteLoading />}
+            {isLoading && <PlaylistSectionLoading count={20} />}
 
             {!isLoading && (
                 <InfiniteScroll

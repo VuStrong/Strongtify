@@ -7,7 +7,7 @@ import SearchForm from "@/components/SearchForm";
 import SearchItemLinkList from "@/components/SearchItemLinkList";
 import SongSection from "@/components/songs/SongSection";
 import { Song } from "@/types/song";
-import SiteLoading from "@/app/(site)/loading";
+import HomeLoading from "@/app/(site)/(home)/loading";
 import { getSongs } from "@/services/api/songs";
 
 export default function SearchSongPage({
@@ -61,7 +61,7 @@ export default function SearchSongPage({
                     searchValue={decodeURIComponent(params.value)}
                 />
 
-                {isSearching && <SiteLoading />}
+                {isSearching && <HomeLoading />}
 
                 {!isSearching && (
                     <InfiniteScroll
