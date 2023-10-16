@@ -184,7 +184,7 @@ export default function PlaylistInfoCard({
             <div className="bg-darkgray rounded-lg p-10">
                 <div className="w-full lg:max-w-full md:flex mb-5 relative">
                     <Image
-                        className="w-full md:w-auto md:max-h-[150px] max-h-[250px] object-cover"
+                        className="w-full md:max-w-[150px] md:max-h-[150px] max-h-[250px] object-cover"
                         width={150}
                         height={150}
                         src={playlist.imageUrl ?? NO_IMAGE_URL}

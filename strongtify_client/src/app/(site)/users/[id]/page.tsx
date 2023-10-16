@@ -36,7 +36,7 @@ export default async function UserDetailPage({
             <div className="bg-darkgray rounded-lg p-10">
                 <div className="w-full lg:max-w-full md:flex mb-5">
                     <Image
-                        className="w-full md:w-auto md:max-h-[150px] max-h-[250px] rounded-full object-cover"
+                        className="w-full md:max-w-[150px] md:max-h-[150px] max-h-[250px] rounded-full object-cover"
                         width={150}
                         height={150}
                         src={user.imageUrl ?? DEFAULT_AVATAR_URL}
