@@ -33,6 +33,11 @@ export default function LikePlaylistButton({
     }, [status]);
 
     const handleClick = async () => {
+        if (status === "unauthenticated") {
+            toast('Thích ư?, hãy đăng nhập trước đã', { icon: '🤨' });
+            return;
+        }
+
         if (status === "loading" || isLoading) return;
 
         setIsLoading(true);

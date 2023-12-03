@@ -11,7 +11,7 @@ import LikePlaylistButton from "../buttons/LikePlaylistButton";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AiFillLock } from "react-icons/ai";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Modal from "../modals/Modal";
 import Button from "../buttons/Button";
 import { deletePlaylist, updatePlaylist } from "@/services/api/playlists";
@@ -29,6 +29,8 @@ export default function PlaylistInfoCard({
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
+
+    const songIds = useMemo(() => playlist.songs?.map((song) => song.id), [playlist.songs]);
 
     const handleDeletePlaylist = useCallback(() => {
         setIsModalOpen(false);
@@ -242,15 +244,14 @@ export default function PlaylistInfoCard({
 
                 <div className="flex gap-3 items-center mb-3">
                     <PlayButton
-                        songIds={playlist.songs?.map((song) => song.id)}
+                        songIds={songIds}
                     />
 
-                    {session?.user?.id &&
-                        session.user.id !== playlist.user.id && (
-                            <div>
-                                <LikePlaylistButton playlistId={playlist.id} />
-                            </div>
-                        )}
+                    {session?.user?.id !== playlist.user.id && (
+                        <div>
+                            <LikePlaylistButton playlistId={playlist.id} />
+                        </div>
+                    )}
 
                     <div
                         className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"

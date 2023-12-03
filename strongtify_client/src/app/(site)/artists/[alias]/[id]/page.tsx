@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { getArtistById } from "@/services/api/artists";
-import getUserSession from "@/services/getUserSession";
 import { DEFAULT_AVATAR_URL } from "@/libs/constants";
 import FollowArtistButton from "@/components/buttons/FollowArtistButton";
 import SongSection from "@/components/songs/SongSection";
@@ -14,7 +13,6 @@ export default async function ArtistDetailPage({
 }: {
     params: { id: string; alias: string };
 }) {
-    const session = await getUserSession();
     const artist = await getArtistById(params.id, {
         songLimit: 10,
         albumLimit: 5,
@@ -51,11 +49,10 @@ export default async function ArtistDetailPage({
                     </div>
                 </div>
 
-                {session?.user?.id && (
-                    <div className="mb-5">
-                        <FollowArtistButton artistId={artist.id} />
-                    </div>
-                )}
+                <div className="mb-5">
+                    <FollowArtistButton artistId={artist.id} />
+                </div>
+
                 {artist.about && (
                     <div className="text-gray-500">
                         <p className="text-yellow-50">About:</p>

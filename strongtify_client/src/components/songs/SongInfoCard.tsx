@@ -133,11 +133,9 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                 <div className="flex gap-3 items-center">
                     <PlayButton songIds={[song.id]} />
 
-                    {session?.user?.id && (
-                        <div>
-                            <LikeSongButton songId={song.id} />
-                        </div>
-                    )}
+                    <div>
+                        <LikeSongButton songId={song.id} />
+                    </div>
 
                     <div
                         className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"

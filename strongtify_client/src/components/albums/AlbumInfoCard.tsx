@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import toast from "react-hot-toast";
 
@@ -17,7 +16,8 @@ import LikeAlbumButton from "../buttons/LikeAlbumButton";
 
 export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const { data: session } = useSession();
+
+    const songIds = useMemo(() => album.songs?.map(s => s.id), [album.songs]);
 
     return (
         <>
@@ -95,13 +95,11 @@ export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
                 </div>
 
                 <div className="flex gap-3 items-center">
-                    <PlayButton songIds={album.songs?.map((song) => song.id)} />
+                    <PlayButton songIds={songIds} />
 
-                    {session?.user?.id && (
-                        <div>
-                            <LikeAlbumButton albumId={album.id} />
-                        </div>
-                    )}
+                    <div>
+                        <LikeAlbumButton albumId={album.id} />
+                    </div>
 
                     <div
                         className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"

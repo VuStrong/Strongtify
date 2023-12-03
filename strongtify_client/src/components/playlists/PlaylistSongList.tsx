@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
@@ -17,6 +17,7 @@ import {
     moveSongInPlaylist,
     removeSongFromPlaylist,
 } from "@/services/api/playlists";
+import usePlayer from "@/hooks/usePlayer";
 
 const AddSongsContent = dynamic(
     () => import("@/components/modals/modal-contents/AddSongsContent"),
@@ -34,8 +35,13 @@ export default function PlaylistSongList({
     const [isSongOptionsModalOpen, setIsSongOptionsModalOpen] =
         useState<boolean>(false);
     const [selectedSongId, setSelectedSongId] = useState<string>("");
+    const [songIds, setSongIds] = useState<string[]>(
+        playlist.songs?.map(s => s.id) ?? []
+    );
 
     const router = useRouter();
+    const player = usePlayer();
+    const pathname = usePathname();
     const { data: session } = useSession();
 
     const DraggableList = useMemo(
@@ -134,6 +140,13 @@ export default function PlaylistSongList({
                                     song={item}
                                     index={index + 1}
                                     containLink
+                                    canPlay
+                                    isActive={player.ids[player.currentIndex] === item.id}
+                                    onClickPlay={() => {
+                                        player.setIds(songIds ?? []);
+                                        player.setCurrentIndex(index);
+                                        player.setPath(pathname ?? undefined);
+                                    }}
                                 />
                             </div>
 
@@ -148,7 +161,10 @@ export default function PlaylistSongList({
                             </div>
                         </div>
                     )}
-                    onDrop={async (item: Song, index: number) => {
+                    onDrop={async (item: Song, index: number, items: Song[]) => {
+                        const newIds = items.map(i => i.id);
+                        setSongIds(newIds);
+
                         await moveSongInPlaylist(
                             playlist.id,
                             item.id,

@@ -12,7 +12,7 @@ import {
 interface DraggableListProps {
     initialItems: any[];
     formatItem: (item: any, index: number) => React.ReactNode;
-    onDrop: (item: any, index: number) => Promise<void>;
+    onDrop: (item: any, index: number, items: any[]) => Promise<void>;
 }
 
 const reOrderItems = (list: any[], startIndex: number, endIndex: number) => {
@@ -52,6 +52,7 @@ const DraggableList: React.FC<DraggableListProps> = ({
                     id: result.draggableId,
                 },
                 result.destination.index + 1,
+                newItems
             );
         },
         [items, onDrop],

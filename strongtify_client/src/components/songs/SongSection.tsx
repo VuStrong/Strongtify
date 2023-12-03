@@ -1,7 +1,10 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 import { Song } from "@/types/song";
 import SongItem from "./SongItem";
+import usePlayer from "@/hooks/usePlayer";
 
 export default function SongSection({
     songs,
@@ -12,6 +15,11 @@ export default function SongSection({
     showIndex?: boolean;
     oneColumn?: boolean;
 }) {
+    const player = usePlayer();
+    const pathname = usePathname();
+
+    const songIds = useMemo(() => songs.map(s => s.id), [songs]);
+
     return (
         <section
             className={`grid sm:gap-3 gap-1 grid-cols-1 ${
@@ -28,6 +36,13 @@ export default function SongSection({
                     index={showIndex ? index + 1 : undefined}
                     song={song}
                     containLink
+                    canPlay
+                    isActive={player.ids[player.currentIndex] === song.id}
+                    onClickPlay={() => {
+                        player.setIds(songIds);
+                        player.setCurrentIndex(index);
+                        player.setPath(pathname ?? undefined);
+                    }}
                 />
             ))}
         </section>

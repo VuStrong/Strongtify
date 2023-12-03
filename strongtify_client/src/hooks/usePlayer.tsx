@@ -3,16 +3,22 @@ import { create } from "zustand";
 interface PlayerStore {
     ids: string[];
     currentIndex: number;
-    setCurrentIndex: (index: number) => void;
+    path?: string;
+
     setIds: (ids: string[]) => void;
+    setCurrentIndex: (index: number) => void;
+    setPath: (path?: string) => void;
     reset: () => void;
 }
 
 const usePlayer = create<PlayerStore>((set) => ({
     ids: [],
     currentIndex: 0,
-    setCurrentIndex: (index: number) => set({ currentIndex: index }),
+    path: undefined,
+    
     setIds: (ids: string[]) => set({ ids }),
+    setCurrentIndex: (index: number) => set({ currentIndex: index }),
+    setPath: (path?: string) => set({ path }),
     reset: () => set({ ids: [], currentIndex: 0 }),
 }));
 

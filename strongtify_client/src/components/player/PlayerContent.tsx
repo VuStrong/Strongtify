@@ -133,7 +133,7 @@ export default function PlayerContent({
 
                         <div className="flex-1 truncate">
                             <Link
-                                href={`/songs/${song.alias}/${song.id}`}
+                                href={player.path ?? "#"}
                                 className="hover:underline text-yellow-50"
                             >
                                 {song.name}

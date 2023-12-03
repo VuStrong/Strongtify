@@ -95,11 +95,16 @@ export default function UserMenu() {
             </ul>
         </>
     ) : (
-        <a
-            href={`/login?return=${pathname}`}
-            className="bg-primary p-2 text-center font-bold"
-        >
-            Đăng nhập
-        </a>
+        <div className="">
+            <div className="text-center text-xs text-yellow-50 font-bold">
+                Đăng nhập để tạo cho riêng mình những playlist độc đáo nhé!
+            </div>
+            <a
+                href={`/login?return=${pathname}`}
+                className="bg-primary p-2 text-center font-bold mt-3 w-full block rounded-lg"
+            >
+                Đăng nhập
+            </a>
+        </div>
     );
 }

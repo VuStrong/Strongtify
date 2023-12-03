@@ -61,11 +61,12 @@ export default async function UserDetailPage({
                     </div>
                 </div>
 
-                {session?.user?.id && user.id !== session?.user.id && (
+                {user.id !== session?.user?.id && (
                     <div className="mb-5">
                         <FollowUserButton userIdToFollow={user.id} />
                     </div>
                 )}
+
                 {user.about && (
                     <div className="text-gray-500">
                         <p className="text-yellow-50">About me:</p>

@@ -1,18 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useMemo } from "react";
 import usePlayer from "@/hooks/usePlayer";
 import useGetSongById from "@/hooks/useGetSongById";
+import PlayerContent from "./PlayerContent";
 
 export default function Player() {
     const player = usePlayer();
     const { song, isLoading } = useGetSongById(player.ids[player.currentIndex]);
-
-    const PlayerContent = useMemo(
-        () => dynamic(() => import("./PlayerContent"), { ssr: false }),
-        [player.ids],
-    );
 
     if (!player.ids[0]) {
         return null;

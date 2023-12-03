@@ -25,7 +25,12 @@ export default function FollowArtistButton({ artistId }: { artistId: string }) {
     }, [status]);
 
     const handleClick = async () => {
-        if (status === "loading") return;
+        if (status === "unauthenticated") {
+            toast('Thích artist này ư?, hãy đăng nhập trước đã', { icon: '🤨' });
+            return;
+        }
+
+        if (status === "loading" || isLoading) return;
 
         setIsLoading(true);
 

@@ -29,7 +29,12 @@ export default function FollowUserButton({
     }, [status]);
 
     const handleClick = async () => {
-        if (status === "loading") return;
+        if (status === "unauthenticated") {
+            toast('Thích bạn này ư?, hãy đăng nhập trước đã', { icon: '🤨' });
+            return;
+        }
+
+        if (status === "loading" || isLoading) return;
 
         setIsLoading(true);
 
