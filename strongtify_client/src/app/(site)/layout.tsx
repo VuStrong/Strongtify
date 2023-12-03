@@ -24,7 +24,7 @@ export default async function SiteLayout({
                 <SideBar />
                 <Player />
 
-                <div className="w-full md:w-10/12 md:px-5 px-2 md:ml-auto">
+                <div className="w-full md:w-10/12 md:px-5 px-2 md:ml-auto mt-10 md:mt-0">
                     {children}
                 </div>
             </div>

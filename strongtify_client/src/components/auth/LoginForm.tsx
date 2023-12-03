@@ -163,19 +163,24 @@ export default function LoginForm() {
                     <Button
                         disabled={isLoading}
                         outline
-                        label="Đăng nhập với Facebook"
-                        icon={FaFacebook}
-                        onClick={() => {
-                            socialLogin("facebook");
-                        }}
-                    />
-                    <Button
-                        disabled={isLoading}
-                        outline
                         label="Đăng nhập với Github"
                         icon={AiFillGithub}
                         onClick={() => {
                             socialLogin("github");
+                        }}
+                    />
+                    <Button
+                        disabled
+                        outline
+                        label={
+                            <div>
+                                Đăng nhập với Facebook <br />
+                                <small>(Đang được sửa chữa)</small>
+                            </div>
+                        }
+                        icon={FaFacebook}
+                        onClick={() => {
+                            //socialLogin("facebook");
                         }}
                     />
                     <div className="text-yellow-50 text-center mt-4 font-light">

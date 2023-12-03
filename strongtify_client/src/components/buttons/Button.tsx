@@ -42,7 +42,7 @@ const Button: React.FC<ButtonProps> = ({
                 ${outline && "border-gray-300 border-2"}
             `}
         >
-            {Icon && <Icon size={24} className="absolute left-4 top-3" />}
+            {Icon && <Icon size={24} className="absolute left-4 top-1/2 -translate-y-1/2" />}
             {label}
         </button>
     );
