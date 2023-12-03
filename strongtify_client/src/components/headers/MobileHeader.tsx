@@ -13,7 +13,7 @@ export default function MobileHeader() {
     return (
         <header className={`
             fixed md:hidden flex justify-between items-center py-1
-            bg-darkgray left-0 right-0 z-20 transition-all
+            bg-orange-800 left-0 right-0 z-20 transition-all
             ${ direction === "down" ? "-top-24" : "top-0"}
         `}>
             <button
@@ -35,7 +35,7 @@ export default function MobileHeader() {
                 />
             </Link>
 
-            <div></div>
+            <div className="w-[40px]"></div>
         </header>
     );
 }
