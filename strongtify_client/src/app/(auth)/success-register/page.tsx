@@ -4,6 +4,7 @@ import getUserSession from "@/services/getUserSession";
 import SendEmailConfirmationButton from "@/components/buttons/SendEmailConfirmationButton";
 import { getAccount } from "@/services/api/me";
 import ReSignInHandler from "@/handlers/ReSignInHandler";
+import SignOutButton from "@/components/buttons/SignOutButton";
 
 export const metadata: Metadata = {
     title: "Đăng ký thành công",
@@ -43,12 +44,13 @@ export default async function SuccessRegisterPage() {
                             khoản, hãy kiểm tra hòm thư.
                         </p>
                         <br />
-                        <div>
+                        <div className="mb-3">
                             Không nhận được email?
                             <SendEmailConfirmationButton
                                 accessToken={session?.accessToken ?? ""}
                             />
                         </div>
+                        <SignOutButton accessToken={session?.accessToken ?? ""} refreshToken={session?.refreshToken ?? ""} />
                     </div>
                 </div>
             </div>

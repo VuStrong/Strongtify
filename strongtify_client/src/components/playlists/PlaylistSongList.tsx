@@ -35,9 +35,7 @@ export default function PlaylistSongList({
     const [isSongOptionsModalOpen, setIsSongOptionsModalOpen] =
         useState<boolean>(false);
     const [selectedSongId, setSelectedSongId] = useState<string>("");
-    const [songIds, setSongIds] = useState<string[]>(
-        playlist.songs?.map(s => s.id) ?? []
-    );
+    const songIds = useMemo(() => playlist.songs?.map(s => s.id) ?? [], [playlist.songs]);
 
     const router = useRouter();
     const player = usePlayer();
@@ -162,15 +160,14 @@ export default function PlaylistSongList({
                         </div>
                     )}
                     onDrop={async (item: Song, index: number, items: Song[]) => {
-                        const newIds = items.map(i => i.id);
-                        setSongIds(newIds);
-
                         await moveSongInPlaylist(
                             playlist.id,
                             item.id,
                             index,
                             session?.accessToken ?? "",
                         );
+
+                        router.refresh();
                     }}
                 />
             </section>

@@ -53,7 +53,7 @@ export default function Footer() {
                         </li>
                         <li>
                             <a
-                                href="https://github.com/VuManh1"
+                                href="https://github.com/VuStrong"
                                 className="hover:text-primary"
                                 target="_blank"
                             >
