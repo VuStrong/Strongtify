@@ -1,14 +1,22 @@
+import { getUserById } from "@/services/api/users";
+import getUserSession from "@/services/getUserSession";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
     params,
 }: {
     params: { id: string };
 }): Promise<Metadata> {
+    const session = await getUserSession();
+    const user = await getUserById(params.id, undefined, session?.accessToken);
+
+    if (!user) notFound();
+    
     return {
-        title: `Strongtify - User ${params.id}`,
+        title: `User - ${user?.name} | Strongtify`,
         openGraph: {
-            title: `Strongtify - User ${params.id}`,
+            title: `User - ${user?.name} | Strongtify`,
         }
     };
 }
