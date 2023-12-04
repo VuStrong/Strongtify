@@ -5,7 +5,7 @@ import { Playlist } from "./playlist";
 export type Account = {
     id: string;
 
-    createdAt: Date;
+    createdAt: string;
 
     name: string;
 

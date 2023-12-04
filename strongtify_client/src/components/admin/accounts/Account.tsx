@@ -58,6 +58,14 @@ export default function Account({ account }: { account: Account }) {
 
     return (
         <div className="flex flex-col gap-3">
+            <div className="text-yellow-50 mb-3">
+                <h4 className="text-2xl">Information: </h4>
+                <div> - Name: <strong>{account.name}</strong></div>
+                <div> - Email: <strong>{account.email}</strong></div>
+                <div> - Join At: <strong>{account.createdAt}</strong></div>
+                <div> - Role: <strong>{account.role}</strong></div>
+            </div>
+
             {account.locked ? (
                 <div className="w-fit">
                     <div className="text-yellow-50 text-lg">

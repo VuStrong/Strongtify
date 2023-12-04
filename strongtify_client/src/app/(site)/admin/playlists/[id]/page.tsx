@@ -32,6 +32,13 @@ export default async function AdminPlaylistDetailPage({
             <p className="text-error mb-7">Lưu ý: chỉ được thay đổi playlist của User nếu nó vi phạm nội quy :&gt;</p>
 
             <UpdatePlaylistForm playlist={playlist} />
+
+            <div className="my-7 text-yellow-50">
+                <h4 className="text-2xl">Additional infor: </h4>
+                <div> - Created At: <strong>{playlist.createdAt}</strong></div>
+                <div> - Like: <strong>{playlist.likeCount}</strong></div>
+                <div> - Song count: <strong>{playlist.songCount}</strong></div>
+            </div>
         </section>
     )
 }
