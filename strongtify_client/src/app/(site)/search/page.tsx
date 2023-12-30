@@ -20,7 +20,7 @@ export default async function SearchPage() {
     });
 
     return (
-        <main>
+        <main className="py-5">
             <SearchForm />
 
             <h3 className="text-yellow-50 text-2xl font-semibold mb-4">

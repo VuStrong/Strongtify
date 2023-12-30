@@ -19,9 +19,9 @@ export default function SideBar() {
                 fixed top-0 left-0 z-40 h-full transition-transform
                 bg-black/5
                 ${sideBar.isOpen ? "w-screen" : ""}
-                md:w-2/12 
+                lg:w-2/12 
                 ${sideBar.isOpen ? "translate-x-0" : "-translate-x-full"}
-                -translate-x-full md:translate-x-0
+                -translate-x-full lg:translate-x-0
             `}
             onClick={() => {
                 sideBar.onClose();
@@ -29,7 +29,7 @@ export default function SideBar() {
         >
             <div
                 id="sidebar-content"
-                className="flex flex-col gap-4 h-full px-5 py-4 overflow-y-auto overflow-x-hidden bg-darkgray w-[250px] md:w-full"
+                className="flex flex-col gap-4 h-full px-5 py-4 overflow-y-auto overflow-x-hidden bg-darkgray w-[250px] lg:w-full"
                 onClick={(e) => {
                     e.stopPropagation();
                 }}
@@ -39,7 +39,7 @@ export default function SideBar() {
                     onClick={() => {
                         sideBar.onClose();
                     }}
-                    className="w-[100px] hidden md:block"
+                    className="w-[100px] hidden lg:block"
                 >
                     <Image
                         src="/img/icons/LogoIcon.png"

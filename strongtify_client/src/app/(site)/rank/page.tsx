@@ -29,7 +29,7 @@ export default async function RankPage({
     const topSongs = await getTopSongs(time);
 
     return (
-        <main>
+        <main className="py-5">
             <h1 className="text-yellow-50 text-3xl font-semibold mb-4">
                 Bảng xếp hạng
             </h1>

@@ -185,7 +185,7 @@ export default function UpdateSongForm({ song }: { song: SongDetail }) {
                                         height={50}
                                         alt={option.name}
                                     />
-                                    <div>{option.name}</div>
+                                    <div className="text-black">{option.name}</div>
                                 </div>
                             )}
                         />
@@ -210,7 +210,7 @@ export default function UpdateSongForm({ song }: { song: SongDetail }) {
                                 onChange(data?.map((a) => a.id));
                             }}
                             formatOptionLabel={(option: any) => (
-                                <div>{option.name}</div>
+                                <div className="text-black">{option.name}</div>
                             )}
                         />
                     )}
@@ -258,6 +258,9 @@ export default function UpdateSongForm({ song }: { song: SongDetail }) {
                             onChange={(data) => {
                                 onChange(data?.value);
                             }}
+                            formatOptionLabel={(option: any) => (
+                                <div className="text-black">{option.label}</div>
+                            )}
                         />
                     )}
                 />

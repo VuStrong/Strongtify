@@ -14,8 +14,10 @@ import Input from "../inputs/Input";
 import Button from "../buttons/Button";
 
 export default function CreatePlaylistForm({
+    onCreating,
     onCreated,
 }: {
+    onCreating?: () => void;
     onCreated?: () => void;
 }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,6 +32,7 @@ export default function CreatePlaylistForm({
         setError,
         clearErrors,
         formState: { errors },
+        reset
     } = useForm<FieldValues>({
         defaultValues: {
             name: "",
@@ -37,26 +40,34 @@ export default function CreatePlaylistForm({
         },
     });
 
-    const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const onSubmit: SubmitHandler<FieldValues> = (data) => {
         if (isLoading) return;
 
         setIsLoading(true);
 
         if (data.image) data.image = data.image[0];
 
-        try {
+        const createTask = async () => {
+            onCreating && onCreating();
+
             await createPlaylist(
                 data as CreateUpdatePlaylistRequest,
                 session?.accessToken ?? "",
             );
 
-            toast.success(`Đã tạo playlist`);
+            // reset form
+            reset();
+
             onCreated && onCreated();
-        } catch (error: any) {
-            toast.error(error.message);
+        
+            setIsLoading(false);
         }
 
-        setIsLoading(false);
+        toast.promise(createTask(), {
+            loading: "Đang tạo playlist...",
+            success: "Đã tạo playlist mới",
+            error: "Không thể tạo playlist, hãy thử lại"
+        });
     };
 
     useEffect(() => {

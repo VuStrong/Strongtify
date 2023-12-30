@@ -48,7 +48,7 @@ export default function Pagination({
                         onChange={(e) => {
                             setPageNumber(e.target.value);
                         }}
-                        className="text-center w-[40px] h-[40px]"
+                        className="text-center w-[40px] h-[40px] text-gray-500"
                     />
                 </form>
                 <span className="text-center leading-[40px] text-gray-500 bg-white w-[40px] h-[40px]">

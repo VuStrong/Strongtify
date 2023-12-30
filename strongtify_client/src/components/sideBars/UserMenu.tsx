@@ -101,7 +101,7 @@ export default function UserMenu() {
             </div>
             <a
                 href={`/login?return=${pathname}`}
-                className="bg-primary p-2 text-center font-bold mt-3 w-full block rounded-lg"
+                className="bg-primary p-2 text-center font-bold mt-3 w-full block rounded-lg text-black"
             >
                 Đăng nhập
             </a>

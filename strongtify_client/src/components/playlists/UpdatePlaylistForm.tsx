@@ -15,9 +15,11 @@ import Button from "../buttons/Button";
 
 export default function UpdatePlaylistForm({
     playlist,
+    onUpdating,
     onUpdated,
 }: {
     playlist: PlaylistDetail;
+    onUpdating?: () => void;
     onUpdated?: () => void;
 }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -49,20 +51,25 @@ export default function UpdatePlaylistForm({
 
         if (data.image) data.image = data.image[0];
 
-        try {
+        const updateTask = async () => {
+            onUpdating && onUpdating();
+
             await updatePlaylist(
                 playlist.id,
                 data as CreateUpdatePlaylistRequest,
                 session?.accessToken ?? "",
             );
 
-            toast.success(`Đã cập nhập thông tin playlist`);
             onUpdated && onUpdated();
-        } catch (error: any) {
-            toast.error(error.message);
+        
+            setIsLoading(false);
         }
 
-        setIsLoading(false);
+        toast.promise(updateTask(), {
+            loading: "Đang câp nhập playlist...",
+            success: "Đã câp nhập playlist",
+            error: "Không thể câp nhập playlist, hãy thử lại"
+        });
     };
 
     useEffect(() => {

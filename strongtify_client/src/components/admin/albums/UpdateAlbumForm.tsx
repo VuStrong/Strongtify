@@ -182,7 +182,7 @@ export default function UpdateAlbumForm({ album }: { album: AlbumDetail }) {
                                         height={50}
                                         alt={option.name}
                                     />
-                                    <div>{option.name}</div>
+                                    <div className="text-black">{option.name}</div>
                                 </div>
                             )}
                         />
@@ -207,7 +207,7 @@ export default function UpdateAlbumForm({ album }: { album: AlbumDetail }) {
                                 onChange(data?.map((a) => a.id));
                             }}
                             formatOptionLabel={(option: any) => (
-                                <div>{option.name}</div>
+                                <div className="text-black">{option.name}</div>
                             )}
                         />
                     )}

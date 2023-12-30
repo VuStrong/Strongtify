@@ -181,6 +181,9 @@ export default function Account() {
                             onChange={(data) => {
                                 onChange(data?.value);
                             }}
+                            formatOptionLabel={(option: any) => (
+                                <div className="text-black">{option.label}</div>
+                            )}
                         />
                     )}
                 />

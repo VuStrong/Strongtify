@@ -19,6 +19,9 @@ export default function CreatePlaylistButton() {
                 }}
             >
                 <CreatePlaylistForm
+                    onCreating={() => {
+                        setIsCreateModalOpen(false);
+                    }}
                     onCreated={() => {
                         setIsCreateModalOpen(false);
                         router.refresh();

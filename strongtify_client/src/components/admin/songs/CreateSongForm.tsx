@@ -134,7 +134,7 @@ export default function CreateSongForm() {
                                     height={50}
                                     alt={option.name}
                                 />
-                                <div>{option.name}</div>
+                                <div className="text-black">{option.name}</div>
                             </div>
                         )}
                     />
@@ -158,7 +158,7 @@ export default function CreateSongForm() {
                             onChange(data?.map((a) => a.id));
                         }}
                         formatOptionLabel={(option: any) => (
-                            <div>{option.name}</div>
+                            <div className="text-black">{option.name}</div>
                         )}
                     />
                 )}
@@ -197,7 +197,7 @@ export default function CreateSongForm() {
 
             <div>
                 <small className="text-gray-400">
-                    Link: https://docs.google.com/uc?export=open&id=:id
+                    Link: https://docs.google.com/uc?export=open&id=
                 </small>
                 <Input
                     id="songUrl"
@@ -219,6 +219,9 @@ export default function CreateSongForm() {
                         onChange={(data) => {
                             onChange(data?.value);
                         }}
+                        formatOptionLabel={(option: any) => (
+                            <div className="text-black">{option.label}</div>
+                        )}
                     />
                 )}
             />

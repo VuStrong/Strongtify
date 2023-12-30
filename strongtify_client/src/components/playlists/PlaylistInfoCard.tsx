@@ -73,7 +73,7 @@ export default function PlaylistInfoCard({
                 error: "Không thể cập nhập playlist, hãy thử lại"
             });
         },
-        [session?.accessToken],
+        [session?.accessToken, playlist],
     );
 
     return (
@@ -87,6 +87,9 @@ export default function PlaylistInfoCard({
             >
                 <UpdatePlaylistForm
                     playlist={playlist}
+                    onUpdating={() => {
+                        setIsEditModalOpen(false);
+                    }}
                     onUpdated={() => {
                         setIsEditModalOpen(false);
                         router.refresh();
