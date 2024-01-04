@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:strongtify_mobile_app/components/text_input.dart';
 import 'package:strongtify_mobile_app/constants/regex_constants.dart';
+import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
 import 'package:strongtify_mobile_app/utils/common_widgets/gradient_background.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,38 +19,20 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final ValueNotifier<bool> passwordNotifier = ValueNotifier(true);
-  final ValueNotifier<bool> fieldValidNotifier = ValueNotifier(false);
 
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
-
-  void initializeControllers() {
-    emailController = TextEditingController()..addListener(controllerListener);
-    passwordController = TextEditingController()
-      ..addListener(controllerListener);
-  }
 
   void disposeControllers() {
     emailController.dispose();
     passwordController.dispose();
   }
 
-  void controllerListener() {
-    final email = emailController.text;
-    final password = passwordController.text;
-
-    if (email.isEmpty && password.isEmpty) return;
-
-    if (RegexConstants.emailRegex.hasMatch(email)) {
-      fieldValidNotifier.value = true;
-    } else {
-      fieldValidNotifier.value = false;
-    }
-  }
-
   @override
   void initState() {
-    initializeControllers();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+
     super.initState();
   }
 
@@ -136,22 +119,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text('Quên mật khẩu?'),
                   ),
                   const SizedBox(height: 20),
-                  ValueListenableBuilder(
-                    valueListenable: fieldValidNotifier,
-                    builder: (_, isValid, __) {
-                      return FilledButton(
-                        onPressed: isValid
-                            ? () {
-                                // SnackbarHelper.showSnackBar(
-                                //   'Đã đăng nhập',
-                                // );
-                                emailController.clear();
-                                passwordController.clear();
-                              }
-                            : null,
-                        child: const Text('Đăng nhập'),
-                      );
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                      }
                     },
+                    child: const Text('Đăng nhập'),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -204,7 +180,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(width: 4),
               TextButton(
-                onPressed: () => {},
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(context, RegisterScreen.id, (route) => false);
+                },
                 child: const Text('Đăng ký'),
               ),
             ],

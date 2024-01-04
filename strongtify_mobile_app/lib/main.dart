@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
+import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       initialRoute: LoginScreen.id,
       routes: {
         LoginScreen.id: (context) => const LoginScreen(),
+        RegisterScreen.id: (context) => const RegisterScreen(),
       },
     );
   }
