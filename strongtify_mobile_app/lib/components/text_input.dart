@@ -46,12 +46,15 @@ class TextInput extends StatelessWidget {
         decoration: InputDecoration(
           suffixIcon: suffixIcon,
           labelText: labelText,
+          labelStyle: const TextStyle(
+            color: Colors.white
+          ),
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
         style: const TextStyle(
           fontWeight: FontWeight.w500,
-          color: Colors.black,
+          color: Colors.white,
         ),
       ),
     );
