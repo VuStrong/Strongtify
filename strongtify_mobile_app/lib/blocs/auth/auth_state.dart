@@ -1,6 +1,7 @@
-import 'package:strongtify_mobile_app/enums/status.dart';
 
-import '../../models/user.dart';
+import 'package:strongtify_mobile_app/utils/enums.dart';
+
+import '../../models/account/account.dart';
 
 class AuthState {
   const AuthState({
@@ -8,7 +9,7 @@ class AuthState {
     required this.status,
   });
 
-  final User? user;
+  final Account? user;
   final Status status;
 
   static AuthState init() {
@@ -16,7 +17,7 @@ class AuthState {
   }
 
   AuthState copyWith({
-    User? user,
+    Account? user,
     Status? status,
   }) {
     return AuthState(

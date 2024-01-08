@@ -3,3 +3,8 @@ enum Status {
   success,
   failure,
 }
+
+enum Role {
+  member,
+  admin,
+}

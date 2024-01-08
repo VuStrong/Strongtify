@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_bloc.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_state.dart';
+import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/components/button.dart';
 import 'package:strongtify_mobile_app/components/text_input.dart';
+import 'package:strongtify_mobile_app/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/constants/regex_constants.dart';
 import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
-
-import '../../constants/color_constants.dart';
-import '../../utils/common_widgets/gradient_background.dart';
+import 'package:strongtify_mobile_app/utils/common_widgets/gradient_background.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

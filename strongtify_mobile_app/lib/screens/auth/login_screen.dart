@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_bloc.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_state.dart';
+import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/components/button.dart';
-
 import 'package:strongtify_mobile_app/components/text_input.dart';
 import 'package:strongtify_mobile_app/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/constants/regex_constants.dart';

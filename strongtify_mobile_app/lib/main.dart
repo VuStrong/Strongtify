@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_bloc.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_state.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
 import 'package:strongtify_mobile_app/screens/home_screen.dart';
+import 'package:strongtify_mobile_app/utils/enums.dart';
 
-import 'enums/status.dart';
+Future<void> main() async {
+  configureDependencies();
 
-void main() {
+  await dotenv.load(fileName: ".env");
+
   runApp(const StrongtifyApp());
 }
 
@@ -21,7 +25,7 @@ class StrongtifyApp extends StatelessWidget {
       providers: <BlocProvider<dynamic>>[
         BlocProvider<AuthBloc>(
           lazy: false,
-          create: (BuildContext context) => AuthBloc(),
+          create: (BuildContext context) => getIt<AuthBloc>(),
         ),
       ],
       child: MaterialApp(
