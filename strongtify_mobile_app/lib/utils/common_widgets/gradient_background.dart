@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:strongtify_mobile_app/constants/color_constants.dart';
+import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 import '../extensions.dart';
 

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/components/button.dart';
 import 'package:strongtify_mobile_app/components/text_input.dart';
-import 'package:strongtify_mobile_app/constants/color_constants.dart';
-import 'package:strongtify_mobile_app/constants/regex_constants.dart';
+import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
+import 'package:strongtify_mobile_app/utils/constants/regex_constants.dart';
 import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
 import 'package:strongtify_mobile_app/utils/common_widgets/gradient_background.dart';
+import 'package:strongtify_mobile_app/utils/dialogs/error_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -48,7 +50,18 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {},
+      listener: (context, state) async {
+        if (state.isLoading) {
+          context.loaderOverlay.show();
+        } else {
+          context.loaderOverlay.hide();
+
+          if (state.errorMessage != null) {
+            await showErrorDialog(
+                context: context, error: state.errorMessage!);
+          }
+        }
+      },
       child: Scaffold(
         backgroundColor: ColorConstants.background,
         body: ListView(
@@ -112,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
                               size: 20,
-                              color: Colors.black,
+                              color: Colors.white70,
                             ),
                           ),
                         );
@@ -129,9 +142,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Button(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
+                          final email = emailController.text;
+                          final password = passwordController.text;
+
+                          context.read<AuthBloc>().add(
+                              AuthEventLogin(email: email, password: password));
                         }
                       },
                       buttonText: 'Đăng nhập',

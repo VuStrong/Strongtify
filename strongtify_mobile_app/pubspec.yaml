@@ -43,6 +43,7 @@ dependencies:
   flutter_dotenv: ^5.1.0
   injectable: ^2.3.2
   get_it: ^7.6.6
+  loader_overlay: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,7 @@ flutter:
 
   assets:
     - assets/vectors/
+    - assets/img/
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

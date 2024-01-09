@@ -1,28 +1,33 @@
-
-import 'package:strongtify_mobile_app/utils/enums.dart';
-
 import '../../models/account/account.dart';
 
 class AuthState {
   const AuthState({
     this.user,
-    required this.status,
+    this.isLoading = false,
+    this.isInitializing = false,
+    this.errorMessage
   });
 
   final Account? user;
-  final Status status;
+  final bool isLoading;
+  final bool isInitializing;
+  final String? errorMessage;
 
   static AuthState init() {
-    return const AuthState(status: Status.success, user: null);
+    return const AuthState();
   }
 
   AuthState copyWith({
     Account? user,
-    Status? status,
+    bool? isLoading,
+    bool? isInitializing,
+    String? errorMessage
   }) {
     return AuthState(
       user: user ?? this.user,
-      status: status ?? this.status,
+      isLoading: isLoading ?? this.isLoading,
+      isInitializing: isInitializing ?? this.isInitializing,
+      errorMessage: errorMessage ?? this.errorMessage
     );
   }
 }

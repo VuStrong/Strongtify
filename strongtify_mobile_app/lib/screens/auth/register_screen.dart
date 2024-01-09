@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/components/button.dart';
 import 'package:strongtify_mobile_app/components/text_input.dart';
-import 'package:strongtify_mobile_app/constants/color_constants.dart';
-import 'package:strongtify_mobile_app/constants/regex_constants.dart';
+import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
+import 'package:strongtify_mobile_app/utils/constants/regex_constants.dart';
 import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/utils/common_widgets/gradient_background.dart';
 
@@ -140,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   passwordObscure
                                       ? Icons.visibility_off_outlined
                                       : Icons.visibility_outlined,
-                                  color: Colors.black,
+                                  color: Colors.white70,
                                 ),
                               ),
                             ),
@@ -184,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   confirmPasswordObscure
                                       ? Icons.visibility_off_outlined
                                       : Icons.visibility_outlined,
-                                  color: Colors.black,
+                                  color: Colors.white70,
                                 ),
                               ),
                             ),
