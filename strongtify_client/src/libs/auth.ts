@@ -48,12 +48,10 @@ export const authOptions: AuthOptions = {
     ],
     callbacks: {
         jwt: async ({ 
-            token, user, trigger, session
+            token, user,
         }: { 
             token: JWT, 
             user: SignInResponse, 
-            trigger?: "signIn" | "signUp" | "update", 
-            session?: any
         }) => {
             if (user) {
                 token.accessToken = user.access_token;
@@ -65,15 +63,6 @@ export const authOptions: AuthOptions = {
                 token.accessTokenExpiry = now;
                 
                 token.id = user.user?.id ?? "";
-                token.imageUrl = user.user?.imageUrl;
-                token.name = user.user?.name ?? "";
-                token.role = user.user?.role ?? "MEMBER";
-                token.emailConfirmed = user.user?.emailConfirmed ?? false;
-            }
-
-            if (trigger === "update") {
-                if (session.name) token.name = session.name;
-                if (session.imageUrl) token.imageUrl = session.imageUrl;
             }
             
             const shouldRefresh = new Date(token.accessTokenExpiry) < new Date();
@@ -97,11 +86,15 @@ export const authOptions: AuthOptions = {
         },
         session: async ({ session, token }) => {
             if (token) {
-                session.user.id = token.id;
-                session.user.imageUrl = token.imageUrl;
-                session.user.name = token.name;
-                session.user.role = token.role;
-                session.user.emailConfirmed = token.emailConfirmed;
+                const user = await getAccount(token.accessToken);
+
+                if (user) {
+                    session.user.id = user.id;
+                    session.user.imageUrl = user.imageUrl;
+                    session.user.name = user.name;
+                    session.user.role = user.role;
+                    session.user.emailConfirmed = user.emailConfirmed;
+                }
 
                 session.accessToken = token.accessToken;
                 session.refreshToken = token.refreshToken;
