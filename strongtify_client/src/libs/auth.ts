@@ -63,6 +63,7 @@ export const authOptions: AuthOptions = {
                 token.accessTokenExpiry = now;
                 
                 token.id = user.user?.id ?? "";
+                token.role = user.user?.role ?? "MEMBER";
             }
             
             const shouldRefresh = new Date(token.accessTokenExpiry) < new Date();
@@ -86,15 +87,8 @@ export const authOptions: AuthOptions = {
         },
         session: async ({ session, token }) => {
             if (token) {
-                const user = await getAccount(token.accessToken);
-
-                if (user) {
-                    session.user.id = user.id;
-                    session.user.imageUrl = user.imageUrl;
-                    session.user.name = user.name;
-                    session.user.role = user.role;
-                    session.user.emailConfirmed = user.emailConfirmed;
-                }
+                session.user.id = token.id;
+                session.user.role = token.role;
 
                 session.accessToken = token.accessToken;
                 session.refreshToken = token.refreshToken;

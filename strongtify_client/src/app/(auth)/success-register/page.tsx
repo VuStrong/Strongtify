@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import getUserSession from "@/services/getUserSession";
 import SendEmailConfirmationButton from "@/components/buttons/SendEmailConfirmationButton";
 import { getAccount } from "@/services/api/me";
-import ReSignInHandler from "@/handlers/ReSignInHandler";
 import SignOutButton from "@/components/buttons/SignOutButton";
 
 export const metadata: Metadata = {
@@ -12,23 +11,10 @@ export const metadata: Metadata = {
 
 export default async function SuccessRegisterPage() {
     const session = await getUserSession();
+    const account = session ? await getAccount(session.accessToken) : null;
 
-    const user = await getAccount(session?.accessToken ?? "").catch(
-        () => undefined,
-    );
-
-    if (user?.emailConfirmed) {
-        if (session?.user.emailConfirmed) {
-            redirect("/");
-        }
-
-        return (
-            <ReSignInHandler
-                userId={session?.user.id ?? ""}
-                refreshToken={session?.refreshToken ?? ""}
-                redirectAfterUpdate={true}
-            />
-        );
+    if (account?.emailConfirmed) {
+        redirect("/");
     }
 
     return (

@@ -26,17 +26,11 @@ declare module "next-auth/jwt" {
         accessTokenExpiry: Date;
         error?: string;
         id: string;
-        name: string;
-        imageUrl?: string;
         role: "ADMIN" | "MEMBER";
-        emailConfirmed: boolean;
     }
 }
 
 export type SessionUser = {
     id: string
-    name: string
-    imageUrl?: string
     role: "ADMIN" | "MEMBER"
-    emailConfirmed: boolean
 }

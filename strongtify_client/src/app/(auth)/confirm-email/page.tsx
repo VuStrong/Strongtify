@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { confirmEmail } from "@/services/api/auth";
 import getUserSession from "@/services/getUserSession";
-import ReSignInHandler from "@/handlers/ReSignInHandler";
+import { getAccount } from "@/services/api/me";
 
 export const metadata: Metadata = {
     title: "Xác thực Email",
@@ -16,12 +16,13 @@ export default async function ConfirmEmailPage({
     searchParams?: { [key: string]: string | undefined };
 }) {
     const session = await getUserSession();
+    const account = session ? await getAccount(session.accessToken) : null;
 
-    if (session?.user && session.user.emailConfirmed) {
+    if (account && account.emailConfirmed) {
         redirect("/");
     }
     // if user is already loged in and not the one who need confirm email, redirect to home page
-    else if (session?.user && session.user.id !== searchParams?.userId) {
+    else if (account && account.id !== searchParams?.userId) {
         redirect("/success-register");
     }
 
@@ -34,15 +35,6 @@ export default async function ConfirmEmailPage({
 
     return (
         <section className="lg:h-auto md:h-auto border-0 rounded-lg shadow-lg flex flex-col w-full bg-black outline-none focus:outline-none">
-            {/* if confirm success and user is loged in, refresh new access token */}
-            {isSuccess && session?.user && (
-                <ReSignInHandler
-                    userId={session.user.id}
-                    refreshToken={session.refreshToken}
-                    redirectAfterUpdate={false}
-                />
-            )}
-
             <div className="relative p-6 flex-auto">
                 <div className="flex flex-col gap-4">
                     <div className="text-center">
@@ -56,7 +48,7 @@ export default async function ConfirmEmailPage({
                                     có thể sử dụng ứng dụng này.
                                 </p>
                                 <br />
-                                {session?.user ? (
+                                {account ? (
                                     <a href="/" className="underline">
                                         Đi đến trang chủ
                                     </a>

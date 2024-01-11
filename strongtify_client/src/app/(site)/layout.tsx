@@ -4,6 +4,7 @@ import MobileHeader from "@/components/headers/MobileHeader";
 import getUserSession from "@/services/getUserSession";
 import Player from "@/components/player/Player";
 import Footer from "@/components/Footer";
+import { getAccount } from "@/services/api/me";
 
 export default async function SiteLayout({
     children,
@@ -11,9 +12,10 @@ export default async function SiteLayout({
     children: React.ReactNode;
 }) {
     const session = await getUserSession();
+    const account = session ? await getAccount(session.accessToken) : null;
 
     // if email not confirmed, redirect to confirm page
-    if (session?.user && !session.user.emailConfirmed) {
+    if (account && account.emailConfirmed === false) {
         redirect("/success-register");
     }
 

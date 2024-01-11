@@ -70,20 +70,9 @@ export default function Account() {
         if (data.image) data.image = data.image[0];
 
         try {
-            const user = await updateAccount(data, session?.accessToken ?? "");
+            await updateAccount(data, session?.accessToken ?? "");
 
-            let sessionToUpdate = undefined;
-            if (session?.user.name !== data.name) {
-                sessionToUpdate = { name: user.name };
-            }
-            if (data.image) {
-                sessionToUpdate = {
-                    ...sessionToUpdate,
-                    imageUrl: user.imageUrl,
-                };
-            }
-
-            sessionToUpdate && update(sessionToUpdate);
+            update({});
 
             toast.success("Cập nhập thành công");
         } catch (error: any) {

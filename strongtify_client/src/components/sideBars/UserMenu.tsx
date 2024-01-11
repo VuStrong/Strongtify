@@ -9,13 +9,15 @@ import useSideBar from "@/hooks/useSideBar";
 import { logout } from "@/services/api/auth";
 import { DEFAULT_AVATAR_URL } from "@/libs/constants";
 import { useState } from "react";
+import useAccount from "@/hooks/useAccount";
 
 export default function UserMenu() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const sideBar = useSideBar();
     const pathname = usePathname();
 
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
+    const { account, isLoading } = useAccount();
 
     const handleLogout = async () => {
         if (!session) return;
@@ -24,11 +26,11 @@ export default function UserMenu() {
         signOut();
     };
 
-    if (status === "loading") {
+    if (isLoading) {
         return null;
     }
 
-    return session?.user ? (
+    return account ? (
         <>
             <div
                 className="flex items-center justify-between gap-x-5 text-lg cursor-pointer"
@@ -39,13 +41,13 @@ export default function UserMenu() {
                 <div className="flex items-center gap-x-5">
                     <Image
                         className="rounded-lg"
-                        src={session.user.imageUrl ?? DEFAULT_AVATAR_URL}
+                        src={account.imageUrl ?? DEFAULT_AVATAR_URL}
                         alt="avatar"
                         width={24}
                         height={24}
                     />
                     <span className="text-yellow-50 truncate w-[130px]">
-                        {session.user.name}
+                        {account.name}
                     </span>
                 </div>
                 {isOpen ? (
@@ -57,7 +59,7 @@ export default function UserMenu() {
             <ul className={`${isOpen ? "" : "hidden"} py-2 space-y-2`}>
                 <li className="flex items-center w-full p-2 text-gray-400 pl-11">
                     <Link
-                        href={`/users/${session.user.id}`}
+                        href={`/users/${account.id}`}
                         onClick={() => {
                             sideBar.onClose();
                         }}
@@ -75,7 +77,7 @@ export default function UserMenu() {
                         Tài khoản
                     </Link>
                 </li>
-                {session.user.role === "ADMIN" && (
+                {account.role === "ADMIN" && (
                     <li className="flex items-center w-full p-2 text-gray-400 pl-11">
                         <Link
                             href={"/admin"}

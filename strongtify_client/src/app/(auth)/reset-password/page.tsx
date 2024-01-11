@@ -15,7 +15,7 @@ export default async function ResetPasswordPage({
     const session = await getUserSession();
 
     // if user is already loged in, redirect to home page
-    if (session?.user) {
+    if (session) {
         redirect("/");
     }
 
