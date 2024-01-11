@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/dio/dio_client.dart';
 import 'package:strongtify_mobile_app/exceptions/auth_exception.dart';
@@ -22,7 +23,7 @@ class AuthService extends ApiService {
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
 
-      print(Account.fromJson(data['user']));
+      await _saveToken(data);
 
       return Account.fromJson(data['user']);
     } on DioException catch (e) {
@@ -32,5 +33,15 @@ class AuthService extends ApiService {
 
       throw Exception(e.message);
     }
+  }
+
+  Future<void> _saveToken(Map<String, dynamic> data) async {
+    const storage = FlutterSecureStorage();
+
+    await storage.write(key: 'access_token', value: data['access_token']);
+    await storage.write(key: 'refresh_token', value: data['refresh_token']);
+
+    DateTime expiredAt = DateTime.now().add(const Duration(minutes: 25));
+    await storage.write(key: 'access_token_expired_at', value: expiredAt.toString());
   }
 }

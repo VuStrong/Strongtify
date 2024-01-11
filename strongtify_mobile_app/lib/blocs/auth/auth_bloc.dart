@@ -31,13 +31,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       var user = await _authService.login(event.email, event.password);
 
-      emit(state.copyWith(isLoading: false, user: user));
+      emit(state.copyWith(
+          isLoading: false, user: () => user, errorMessage: () => null));
     } on WrongCredentialException catch (e) {
       emit(state.copyWith(
-          isLoading: false, user: null, errorMessage: e.message));
+          isLoading: false, user: () => null, errorMessage: () => e.message));
     } catch (e) {
       emit(state.copyWith(
-          isLoading: false, user: null, errorMessage: 'Something went wrong!'));
+          isLoading: false,
+          user: () => null,
+          errorMessage: () => 'Something went wrong!'));
     }
   }
 }

@@ -18,16 +18,16 @@ class AuthState {
   }
 
   AuthState copyWith({
-    Account? user,
+    Account? Function()? user,
     bool? isLoading,
     bool? isInitializing,
-    String? errorMessage
+    String? Function()? errorMessage
   }) {
     return AuthState(
-      user: user ?? this.user,
+      user: user != null ? user() : this.user,
       isLoading: isLoading ?? this.isLoading,
       isInitializing: isInitializing ?? this.isInitializing,
-      errorMessage: errorMessage ?? this.errorMessage
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage
     );
   }
 }

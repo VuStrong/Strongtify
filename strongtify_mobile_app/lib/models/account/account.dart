@@ -27,7 +27,7 @@ class Account {
       name: json['name'],
       alias: json['alias'],
       email: json['email'],
-      role: json['role'],
+      role: json['role'] == 'MEMBER' ? Role.member : Role.admin,
       imageUrl: json['imageUrl'],
       emailConfirmed: json['emailConfirmed'],
       locked: json['locked'],

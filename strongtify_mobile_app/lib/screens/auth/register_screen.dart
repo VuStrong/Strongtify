@@ -57,7 +57,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {},
         child: Scaffold(
-          backgroundColor: ColorConstants.background,
           body: ListView(
             children: [
               const GradientBackground(
