@@ -21,16 +21,16 @@ class Account {
   final bool locked;
   final Role role;
 
-  static Account fromJson(Map<String, dynamic> json) {
+  static Account fromMap(Map<String, dynamic> data) {
     return Account(
-      id: json['id'],
-      name: json['name'],
-      alias: json['alias'],
-      email: json['email'],
-      role: json['role'] == 'MEMBER' ? Role.member : Role.admin,
-      imageUrl: json['imageUrl'],
-      emailConfirmed: json['emailConfirmed'],
-      locked: json['locked'],
+      id: data['id'],
+      name: data['name'],
+      alias: data['alias'],
+      email: data['email'],
+      role: data['role'] == 'MEMBER' ? Role.member : Role.admin,
+      imageUrl: data['imageUrl'],
+      emailConfirmed: data['emailConfirmed'],
+      locked: data['locked'],
     );
   }
 }

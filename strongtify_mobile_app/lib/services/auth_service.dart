@@ -1,16 +1,19 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/dio/dio_client.dart';
 import 'package:strongtify_mobile_app/exceptions/auth_exception.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/services/api_service.dart';
+import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
+import 'package:strongtify_mobile_app/utils/constants/app_constants.dart';
 
 @injectable
 class AuthService extends ApiService {
-  AuthService(DioClient dioClient) : super(dioClient);
+  final LocalStorage _storage;
+
+  AuthService(DioClient dioClient, this._storage) : super(dioClient);
 
   Future<Account> login(String email, String password) async {
     String body = jsonEncode({
@@ -19,29 +22,31 @@ class AuthService extends ApiService {
     });
 
     try {
-      Response response = await dioClient.dio.post('/v1/auth/login', data: body);
+      Response response =
+          await dioClient.dio.post('/v1/auth/login', data: body);
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
 
-      await _saveToken(data);
+      await _saveTokens(data);
 
-      return Account.fromJson(data['user']);
+      return Account.fromMap(data['user']);
     } on DioException catch (e) {
-      if (e.response!.statusCode == 400) {
-        throw WrongCredentialException(message: e.response!.data['message']);
+      if (e.response?.statusCode == 400) {
+        throw WrongCredentialException(message: e.response?.data['message']);
       }
 
       throw Exception(e.message);
     }
   }
 
-  Future<void> _saveToken(Map<String, dynamic> data) async {
-    const storage = FlutterSecureStorage();
+  Future<void> _saveTokens(Map<String, dynamic> data) async {
+    await _storage.setString(key: 'access_token', value: data['access_token']);
+    await _storage.setString(
+        key: 'refresh_token', value: data['refresh_token']);
+    await _storage.setString(key: 'user_id', value: data['user']['id']);
 
-    await storage.write(key: 'access_token', value: data['access_token']);
-    await storage.write(key: 'refresh_token', value: data['refresh_token']);
-
-    DateTime expiredAt = DateTime.now().add(const Duration(minutes: 25));
-    await storage.write(key: 'access_token_expired_at', value: expiredAt.toString());
+    DateTime expiredAt = DateTime.now().add(const Duration(minutes: AppConstants.accessTokenLiveTime));
+    await _storage.setDateTime(
+        key: 'access_token_expired_at', value: expiredAt);
   }
 }

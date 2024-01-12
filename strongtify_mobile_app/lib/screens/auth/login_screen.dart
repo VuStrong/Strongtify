@@ -61,11 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 context: context, error: state.errorMessage!);
           }
         }
-
-        // if (state.user != null && context.mounted) {
-        //   await Navigator.pushNamedAndRemoveUntil(
-        //       context, RegisterScreen.id, (route) => false);
-        // }
       },
       child: Scaffold(
         body: ListView(

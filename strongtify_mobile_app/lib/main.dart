@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:strongtify_mobile_app/blocs/app_bottom_navigation/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
-import 'package:strongtify_mobile_app/screens/home_screen.dart';
+import 'package:strongtify_mobile_app/utils/common_widgets/bottom_navigation_app.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 Future main() async {
@@ -15,23 +16,7 @@ Future main() async {
 
   configureDependencies();
 
-  await show();
-
   runApp(const StrongtifyApp());
-}
-
-Future<void> clear() async {
-  var storage = const FlutterSecureStorage();
-
-  await storage.deleteAll();
-}
-
-Future<void> show() async {
-  var storage = const FlutterSecureStorage();
-
-  print('Access Token: ' + (await storage.read(key: 'access_token'))!);
-  print('Refresh Token: ' + (await storage.read(key: 'refresh_token'))!);
-  print('Access Token: ' + (await storage.read(key: 'access_token_expired_at'))!);
 }
 
 class StrongtifyApp extends StatelessWidget {
@@ -44,6 +29,14 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<AuthBloc>(),
+        ),
+        BlocProvider<AppBottomNavigationBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<AppBottomNavigationBloc>(),
+        ),
+        BlocProvider<PlaylistBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<PlaylistBloc>(),
         ),
       ],
       child: MaterialApp(
@@ -63,7 +56,7 @@ class StrongtifyApp extends StatelessWidget {
               }
 
               if (state.user != null) {
-                return const HomeScreen();
+                return const BottomNavigationApp();
               } else {
                 return const LoginScreen();
               }

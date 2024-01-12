@@ -1,31 +1,44 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/exceptions/auth_exception.dart';
+import 'package:strongtify_mobile_app/models/account/account.dart';
+import 'package:strongtify_mobile_app/services/account_service.dart';
 import 'package:strongtify_mobile_app/services/auth_service.dart';
+import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
 
 import 'bloc.dart';
 
-@injectable
+@lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(this._authService) : super(AuthState.init()) {
-    on<AuthEventInitialize>(onInitialize);
-    on<AuthEventLogin>(onLogin);
+  AuthBloc(this._authService, this._accountService, this._storage)
+      : super(AuthState.init()) {
+    on<AuthEventInitialize>(_onInitialize);
+    on<AuthEventLogin>(_onLogin);
+    on<AuthEventLogout>(_onLogout);
 
     add(AuthEventInitialize());
   }
 
   final AuthService _authService;
+  final AccountService _accountService;
+  final LocalStorage _storage;
 
-  Future<void> onInitialize(
+  Future<void> _onInitialize(
       AuthEventInitialize event, Emitter<AuthState> emit) async {
     emit(state.copyWith(isInitializing: true));
 
-    await Future.delayed(const Duration(seconds: 3));
+    String? refreshToken = await _storage.getString('refresh_token');
 
-    emit(state.copyWith(isInitializing: false));
+    if (refreshToken != null) {
+      Account? account = await _accountService.getCurrentAccount();
+
+      emit(state.copyWith(isInitializing: false, user: () => account));
+    } else {
+      emit(state.copyWith(isInitializing: false, user: () => null));
+    }
   }
 
-  Future<void> onLogin(AuthEventLogin event, Emitter<AuthState> emit) async {
+  Future<void> _onLogin(AuthEventLogin event, Emitter<AuthState> emit) async {
     emit(state.copyWith(isLoading: true));
 
     try {
@@ -42,5 +55,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           user: () => null,
           errorMessage: () => 'Something went wrong!'));
     }
+  }
+
+  Future<void> _onLogout(AuthEventLogout event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(isLoading: true));
+
+    await _storage.deleteAll();
+
+    emit(state.copyWith(isLoading: false, user: () => null));
   }
 }
