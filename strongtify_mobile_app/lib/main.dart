@@ -6,6 +6,7 @@ import 'package:strongtify_mobile_app/blocs/app_bottom_navigation/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/screens/auth/confirm_email_screen.dart';
 import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
 import 'package:strongtify_mobile_app/utils/common_widgets/bottom_navigation_app.dart';
@@ -56,6 +57,10 @@ class StrongtifyApp extends StatelessWidget {
               }
 
               if (state.user != null) {
+                if (state.user!.emailConfirmed == false) {
+                  return const ConfirmEmailScreen();
+                }
+
                 return const BottomNavigationApp();
               } else {
                 return const LoginScreen();

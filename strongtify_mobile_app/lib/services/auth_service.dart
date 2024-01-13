@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/dio/dio_client.dart';
-import 'package:strongtify_mobile_app/exceptions/auth_exception.dart';
+import 'package:strongtify_mobile_app/exceptions/auth_exceptions.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/services/api_service.dart';
 import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
@@ -34,7 +34,19 @@ class AuthService extends ApiService {
       if (e.response?.statusCode == 400) {
         throw WrongCredentialException(message: e.response?.data['message']);
       }
+      if (e.response?.statusCode == 403) {
+        throw UserIsLockedOutException(message: e.response?.data['message']);
+      }
 
+      throw Exception(e.message);
+    }
+  }
+
+  Future<void> sendEmailConfirmation() async {
+    try {
+      Response response =
+          await dioClient.dio.post('/v1/auth/confirm-email-link');
+    } on DioException catch (e) {
       throw Exception(e.message);
     }
   }
@@ -45,7 +57,8 @@ class AuthService extends ApiService {
         key: 'refresh_token', value: data['refresh_token']);
     await _storage.setString(key: 'user_id', value: data['user']['id']);
 
-    DateTime expiredAt = DateTime.now().add(const Duration(minutes: AppConstants.accessTokenLiveTime));
+    DateTime expiredAt = DateTime.now()
+        .add(const Duration(minutes: AppConstants.accessTokenLiveTime));
     await _storage.setDateTime(
         key: 'access_token_expired_at', value: expiredAt);
   }

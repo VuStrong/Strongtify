@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:strongtify_mobile_app/exceptions/auth_exception.dart';
+import 'package:strongtify_mobile_app/exceptions/auth_exceptions.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/services/account_service.dart';
 import 'package:strongtify_mobile_app/services/auth_service.dart';
@@ -15,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventInitialize>(_onInitialize);
     on<AuthEventLogin>(_onLogin);
     on<AuthEventLogout>(_onLogout);
+    on<AuthEventSendEmailConfirmation>(_onSendEmailConfirmation);
 
     add(AuthEventInitialize());
   }
@@ -49,6 +50,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } on WrongCredentialException catch (e) {
       emit(state.copyWith(
           isLoading: false, user: () => null, errorMessage: () => e.message));
+    } on UserIsLockedOutException catch (e) {
+      emit(state.copyWith(
+          isLoading: false, user: () => null, errorMessage: () => e.message));
     } catch (e) {
       emit(state.copyWith(
           isLoading: false,
@@ -63,5 +67,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     await _storage.deleteAll();
 
     emit(state.copyWith(isLoading: false, user: () => null));
+  }
+
+  Future<void> _onSendEmailConfirmation(AuthEventSendEmailConfirmation event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(
+      isLoading: true,
+      sendCodeSuccessful: false
+    ));
+
+    try {
+      await _authService.sendEmailConfirmation();
+    } on Exception {
+      //
+    }
+
+    emit(state.copyWith(
+      isLoading: false,
+      sendCodeSuccessful: true
+    ));
   }
 }

@@ -5,13 +5,15 @@ class AuthState {
     this.user,
     this.isLoading = false,
     this.isInitializing = false,
-    this.errorMessage
+    this.errorMessage,
+    this.sendCodeSuccessful = false,
   });
 
   final Account? user;
   final bool isLoading;
   final bool isInitializing;
   final String? errorMessage;
+  final bool sendCodeSuccessful;
 
   static AuthState init() {
     return const AuthState();
@@ -21,13 +23,15 @@ class AuthState {
     Account? Function()? user,
     bool? isLoading,
     bool? isInitializing,
-    String? Function()? errorMessage
+    String? Function()? errorMessage,
+    bool? sendCodeSuccessful,
   }) {
     return AuthState(
       user: user != null ? user() : this.user,
       isLoading: isLoading ?? this.isLoading,
       isInitializing: isInitializing ?? this.isInitializing,
-      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      sendCodeSuccessful: sendCodeSuccessful ?? this.sendCodeSuccessful,
     );
   }
 }

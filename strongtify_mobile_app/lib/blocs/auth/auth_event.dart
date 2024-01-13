@@ -39,3 +39,8 @@ class AuthEventLogout extends AuthEvent {
   @override
   List<Object?> get props => <Object?>[];
 }
+
+class AuthEventSendEmailConfirmation extends AuthEvent {
+  @override
+  List<Object?> get props => <Object?>[];
+}
