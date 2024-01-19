@@ -9,6 +9,8 @@ import 'package:strongtify_mobile_app/utils/dialogs/success_dialog.dart';
 class ConfirmEmailScreen extends StatefulWidget {
   const ConfirmEmailScreen({super.key});
 
+  static String id = 'confirm_email_screen';
+
   @override
   State<ConfirmEmailScreen> createState() => _ConfirmEmailScreenState();
 }

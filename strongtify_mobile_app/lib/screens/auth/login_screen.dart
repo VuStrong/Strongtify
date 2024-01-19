@@ -5,6 +5,9 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/components/button.dart';
 import 'package:strongtify_mobile_app/components/text_input.dart';
+import 'package:strongtify_mobile_app/screens/auth/confirm_email_screen.dart';
+import 'package:strongtify_mobile_app/screens/auth/forgot_password_screen.dart';
+import 'package:strongtify_mobile_app/utils/common_widgets/bottom_navigation_app.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/constants/regex_constants.dart';
 import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
@@ -57,8 +60,17 @@ class _LoginScreenState extends State<LoginScreen> {
           context.loaderOverlay.hide();
 
           if (state.errorMessage != null) {
-            await showErrorDialog(
-                context: context, error: state.errorMessage!);
+            await showErrorDialog(context: context, error: state.errorMessage!);
+          }
+        }
+
+        if (state.user != null && context.mounted) {
+          if (state.user!.emailConfirmed) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, BottomNavigationApp.id, (route) => false);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+                context, ConfirmEmailScreen.id, (route) => false);
           }
         }
       },
@@ -131,7 +143,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          ForgotPasswordScreen.id,
+                        );
+                      },
                       child: const Text(
                         'Quên mật khẩu?',
                         style: TextStyle(color: ColorConstants.primary),

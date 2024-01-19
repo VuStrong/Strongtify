@@ -9,6 +9,8 @@ import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 class BottomNavigationApp extends StatelessWidget {
   const BottomNavigationApp({super.key});
 
+  static String id = 'bottom_navigation_app';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

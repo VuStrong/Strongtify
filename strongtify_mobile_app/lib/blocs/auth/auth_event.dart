@@ -44,3 +44,14 @@ class AuthEventSendEmailConfirmation extends AuthEvent {
   @override
   List<Object?> get props => <Object?>[];
 }
+
+class AuthEventSendPasswordResetLink extends AuthEvent {
+  AuthEventSendPasswordResetLink({
+    required this.email,
+  });
+
+  final String email;
+
+  @override
+  List<Object?> get props => <Object?>[email];
+}

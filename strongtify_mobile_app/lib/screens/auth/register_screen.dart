@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/components/button.dart';
 import 'package:strongtify_mobile_app/components/text_input.dart';
+import 'package:strongtify_mobile_app/screens/auth/confirm_email_screen.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/constants/regex_constants.dart';
 import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/utils/common_widgets/gradient_background.dart';
+import 'package:strongtify_mobile_app/utils/dialogs/error_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -55,7 +58,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {},
+        listener: (context, state) async {
+          if (state.isLoading) {
+            context.loaderOverlay.show();
+          } else {
+            context.loaderOverlay.hide();
+
+            if (state.errorMessage != null) {
+              await showErrorDialog(
+                  context: context, error: state.errorMessage!);
+            }
+          }
+
+          if (state.user != null && context.mounted) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, ConfirmEmailScreen.id, (route) => false);
+          }
+        },
         child: Scaffold(
           body: ListView(
             children: [
@@ -193,10 +212,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Button(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Processing Register')),
-                            );
+                            String name = nameController.text;
+                            String email = emailController.text;
+                            String password = passwordController.text;
+
+                            context.read<AuthBloc>().add(AuthEventRegister(
+                                  name: name,
+                                  email: email,
+                                  password: password,
+                                ));
                           }
                         },
                         buttonText: 'Đăng ký',

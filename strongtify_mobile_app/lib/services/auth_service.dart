@@ -42,11 +42,57 @@ class AuthService extends ApiService {
     }
   }
 
+  Future<Account> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    String body = jsonEncode({
+      'password': password,
+      'email': email,
+      'name': name,
+    });
+
+    try {
+      Response response =
+          await dioClient.dio.post('/v1/auth/register', data: body);
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      await _saveTokens(data);
+
+      return Account.fromMap(data['user']);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        throw EmailAlreadyExistsException(message: e.response?.data['message']);
+      }
+
+      throw Exception(e.message);
+    }
+  }
+
   Future<void> sendEmailConfirmation() async {
     try {
       Response response =
           await dioClient.dio.post('/v1/auth/confirm-email-link');
     } on DioException catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
+  Future<void> sendPasswordResetLink(String email) async {
+    String body = jsonEncode({
+      'email': email,
+    });
+
+    try {
+      Response response =
+          await dioClient.dio.post('/v1/auth/reset-password-link', data: body);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        throw EmailNotFoundException(message: e.response?.data['message']);
+      }
+
       throw Exception(e.message);
     }
   }

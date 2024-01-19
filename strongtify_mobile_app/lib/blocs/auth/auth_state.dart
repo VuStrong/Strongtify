@@ -6,6 +6,7 @@ class AuthState {
     this.isLoading = false,
     this.isInitializing = false,
     this.errorMessage,
+    this.resetPasswordErrorMessage,
     this.sendCodeSuccessful = false,
   });
 
@@ -13,6 +14,7 @@ class AuthState {
   final bool isLoading;
   final bool isInitializing;
   final String? errorMessage;
+  final String? resetPasswordErrorMessage;
   final bool sendCodeSuccessful;
 
   static AuthState init() {
@@ -24,6 +26,7 @@ class AuthState {
     bool? isLoading,
     bool? isInitializing,
     String? Function()? errorMessage,
+    String? Function()? resetPasswordErrorMessage,
     bool? sendCodeSuccessful,
   }) {
     return AuthState(
@@ -31,6 +34,9 @@ class AuthState {
       isLoading: isLoading ?? this.isLoading,
       isInitializing: isInitializing ?? this.isInitializing,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+      resetPasswordErrorMessage: resetPasswordErrorMessage != null
+          ? resetPasswordErrorMessage()
+          : this.resetPasswordErrorMessage,
       sendCodeSuccessful: sendCodeSuccessful ?? this.sendCodeSuccessful,
     );
   }

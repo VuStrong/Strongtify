@@ -7,3 +7,11 @@ class WrongCredentialException extends BaseException {
 class UserIsLockedOutException extends BaseException {
   UserIsLockedOutException({super.message});
 }
+
+class EmailAlreadyExistsException extends BaseException {
+  EmailAlreadyExistsException({super.message});
+}
+
+class EmailNotFoundException extends BaseException {
+  EmailNotFoundException({super.message});
+}
