@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:strongtify_mobile_app/blocs/auth/auth_bloc.dart';
+import 'package:strongtify_mobile_app/blocs/auth/auth_event.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/components/button.dart';
 
@@ -17,10 +19,17 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Button(
-              buttonText: 'Get',
-              onPressed: () {
-                context.read<PlaylistBloc>().add(GetCurrentUserPlaylists());
-              }),
+            buttonText: 'Logout',
+            onPressed: () {
+              context.read<AuthBloc>().add(AuthEventLogout());
+            },
+          ),
+          Button(
+            buttonText: 'Get',
+            onPressed: () {
+              context.read<PlaylistBloc>().add(GetCurrentUserPlaylists());
+            },
+          ),
           BlocBuilder<PlaylistBloc, PlaylistState>(builder: (context, state) {
             if (state.playlists != null) {
               return Expanded(

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:strongtify_mobile_app/blocs/app_bottom_navigation/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
@@ -36,10 +35,6 @@ class StrongtifyApp extends StatelessWidget {
           lazy: false,
           create: (BuildContext context) => getIt<AuthBloc>(),
         ),
-        BlocProvider<AppBottomNavigationBloc>(
-          lazy: false,
-          create: (BuildContext context) => getIt<AppBottomNavigationBloc>(),
-        ),
         BlocProvider<PlaylistBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<PlaylistBloc>(),
@@ -51,8 +46,9 @@ class StrongtifyApp extends StatelessWidget {
           title: 'Strongtify',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-              primarySwatch: Colors.orange,
-              scaffoldBackgroundColor: ColorConstants.background),
+            primarySwatch: Colors.orange,
+            scaffoldBackgroundColor: ColorConstants.background,
+          ),
           home: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, AuthState state) {
               if (state.isInitializing) {
@@ -64,7 +60,7 @@ class StrongtifyApp extends StatelessWidget {
                   return const ConfirmEmailScreen();
                 }
 
-                return const BottomNavigationApp();
+                return BottomNavigationApp();
               } else {
                 return const LoginScreen();
               }
@@ -75,7 +71,7 @@ class StrongtifyApp extends StatelessWidget {
             RegisterScreen.id: (context) => const RegisterScreen(),
             ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
             ConfirmEmailScreen.id: (context) => const ConfirmEmailScreen(),
-            BottomNavigationApp.id: (context) => const BottomNavigationApp(),
+            BottomNavigationApp.id: (context) => BottomNavigationApp(),
           },
         ),
       ),
