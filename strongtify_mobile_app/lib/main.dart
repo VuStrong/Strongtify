@@ -4,13 +4,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/blocs/home_sections/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
-import 'package:strongtify_mobile_app/screens/auth/confirm_email_screen.dart';
-import 'package:strongtify_mobile_app/screens/auth/forgot_password_screen.dart';
-import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
-import 'package:strongtify_mobile_app/screens/auth/register_screen.dart';
-import 'package:strongtify_mobile_app/utils/common_widgets/bottom_navigation_app.dart';
+import 'package:strongtify_mobile_app/ui/screens/auth/confirm_email_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/auth/forgot_password_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/auth/login_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/auth/register_screen.dart';
+import 'package:strongtify_mobile_app/ui/widgets/bottom_navigation_app.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 Future main() async {
@@ -34,6 +35,10 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<AuthBloc>(),
+        ),
+        BlocProvider<HomeSectionsBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<HomeSectionsBloc>(),
         ),
         BlocProvider<PlaylistBloc>(
           lazy: false,

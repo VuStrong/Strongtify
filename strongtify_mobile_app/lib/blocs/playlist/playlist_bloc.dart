@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
-import 'package:strongtify_mobile_app/services/playlist_service.dart';
+import 'package:strongtify_mobile_app/services/api/playlist_service.dart';
 
 @injectable
 class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {

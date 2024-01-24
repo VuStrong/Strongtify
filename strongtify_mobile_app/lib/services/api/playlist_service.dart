@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/dio/dio_client.dart';
 import 'package:strongtify_mobile_app/models/api_responses/paged_response.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
-import 'package:strongtify_mobile_app/services/api_service.dart';
+import 'package:strongtify_mobile_app/services/api/api_service.dart';
 
 @injectable
 class PlaylistService extends ApiService {

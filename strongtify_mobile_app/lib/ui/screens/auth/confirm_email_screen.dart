@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
-import 'package:strongtify_mobile_app/components/button.dart';
-import 'package:strongtify_mobile_app/screens/auth/login_screen.dart';
-import 'package:strongtify_mobile_app/utils/common_widgets/gradient_background.dart';
+import 'package:strongtify_mobile_app/ui/widgets/button.dart';
+import 'package:strongtify_mobile_app/ui/screens/auth/login_screen.dart';
+import 'package:strongtify_mobile_app/ui/widgets/gradient_background.dart';
 import 'package:strongtify_mobile_app/utils/dialogs/success_dialog.dart';
 
 class ConfirmEmailScreen extends StatefulWidget {

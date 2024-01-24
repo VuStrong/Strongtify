@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
-import 'package:strongtify_mobile_app/components/button.dart';
+import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});

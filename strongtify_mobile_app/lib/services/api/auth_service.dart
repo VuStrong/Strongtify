@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/dio/dio_client.dart';
 import 'package:strongtify_mobile_app/exceptions/auth_exceptions.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
-import 'package:strongtify_mobile_app/services/api_service.dart';
+import 'package:strongtify_mobile_app/services/api/api_service.dart';
 import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
 import 'package:strongtify_mobile_app/utils/constants/app_constants.dart';
 
