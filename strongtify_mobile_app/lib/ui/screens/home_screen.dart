@@ -8,6 +8,7 @@ import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/models/section.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
@@ -31,6 +32,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Trang chủ',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: ColorConstants.background,
+        leading: const AppbarAccount(),
+      ),
       body: BlocBuilder<HomeSectionsBloc, HomeSectionsState>(
         builder: (context, HomeSectionsState state) {
           if (state.isLoading) {

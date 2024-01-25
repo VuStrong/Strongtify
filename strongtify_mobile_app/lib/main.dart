@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/home_sections/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
@@ -43,6 +44,10 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<PlaylistBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<PlaylistBloc>(),
+        ),
+        BlocProvider<GenreBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<GenreBloc>(),
         ),
       ],
       child: GlobalLoaderOverlay(

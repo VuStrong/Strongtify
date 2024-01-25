@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
-class RankScreen extends StatefulWidget {
-  const RankScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<RankScreen> createState() => _RankScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _RankScreenState extends State<RankScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: const Text(
-          'Bảng xếp hạng',
+          'Hồ sơ',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: ColorConstants.background,
-        leading: const AppbarAccount(),
       ),
       body: const Center(
         child: Text(
-          'Rank',
+          'Profile',
           style: TextStyle(color: Colors.orange),
         ),
       ),
