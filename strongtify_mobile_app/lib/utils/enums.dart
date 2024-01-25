@@ -7,3 +7,9 @@ enum PlaylistStatus {
   public,
   private
 }
+
+enum RankTime {
+  day,
+  week,
+  month,
+}

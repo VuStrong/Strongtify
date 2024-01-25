@@ -14,21 +14,18 @@ class AlbumList extends StatefulWidget {
 class _AlbumListState extends State<AlbumList> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 830,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisExtent: 270,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-        ),
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        itemCount: widget.albums.length,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (_, index) => AlbumItem(album: widget.albums[index]),
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisExtent: 270,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
       ),
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      itemCount: widget.albums.length,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (_, index) => AlbumItem(album: widget.albums[index]),
     );
   }
 }

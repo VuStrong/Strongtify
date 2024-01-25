@@ -14,21 +14,18 @@ class ArtistList extends StatefulWidget {
 class _ArtistListState extends State<ArtistList> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 830,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisExtent: 270,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-        ),
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        itemCount: widget.artists.length,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (_, index) => ArtistItem(artist: widget.artists[index]),
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisExtent: 270,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
       ),
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      itemCount: widget.artists.length,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (_, index) => ArtistItem(artist: widget.artists[index]),
     );
   }
 }

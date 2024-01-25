@@ -81,7 +81,7 @@ class BottomNavigationApp extends StatelessWidget {
         inactiveColorPrimary: Colors.white70,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.plus_one_sharp),
+        icon: const Icon(Icons.format_list_numbered_rounded),
         title: ("Xếp hạng"),
         activeColorPrimary: ColorConstants.primary,
         inactiveColorPrimary: Colors.white70,

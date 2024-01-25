@@ -13,22 +13,32 @@ class GenreItem extends StatefulWidget {
 class _GenreItemState extends State<GenreItem> {
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
+    return Container(
+      width: double.infinity,
+      height: 120,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: widget.genre.imageUrl != null
+              ? NetworkImage(widget.genre.imageUrl!)
+              : const AssetImage('assets/img/default-song-img.png')
+                  as ImageProvider,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Container(
-        width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Colors.black.withOpacity(0.5),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: widget.genre.imageUrl != null
-              ? Image.network(
-                  widget.genre.imageUrl!,
-                  fit: BoxFit.cover,
-                )
-              : Image.asset('assets/img/default-song-img.png'),
+        child: Center(
+          child: Text(
+            widget.genre.name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.ellipsis
+            ),
+          ),
         ),
       ),
     );

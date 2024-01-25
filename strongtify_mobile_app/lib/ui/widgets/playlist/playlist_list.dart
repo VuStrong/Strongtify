@@ -14,21 +14,19 @@ class PlaylistList extends StatefulWidget {
 class _PlaylistListState extends State<PlaylistList> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 830,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisExtent: 270,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-        ),
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        itemCount: widget.playlists.length,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (_, index) => PlaylistItem(playlist: widget.playlists[index]),
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisExtent: 270,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
       ),
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      itemCount: widget.playlists.length,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (_, index) =>
+          PlaylistItem(playlist: widget.playlists[index]),
     );
   }
 }
