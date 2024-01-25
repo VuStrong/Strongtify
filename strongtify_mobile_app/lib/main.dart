@@ -8,6 +8,7 @@ import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/home_sections/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/rank/bloc.dart';
+import 'package:strongtify_mobile_app/blocs/search/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/confirm_email_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/forgot_password_screen.dart';
@@ -53,6 +54,10 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<RankBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<RankBloc>(),
+        ),
+        BlocProvider<SearchBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<SearchBloc>(),
         ),
       ],
       child: GlobalLoaderOverlay(

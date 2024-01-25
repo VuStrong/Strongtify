@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
+import 'package:strongtify_mobile_app/ui/screens/search_result_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/genre/genre_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
@@ -38,12 +40,22 @@ class _SearchScreenState extends State<SearchScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              const SearchBar(
-                padding: MaterialStatePropertyAll<EdgeInsets>(
+              SearchBar(
+                padding: const MaterialStatePropertyAll<EdgeInsets>(
                   EdgeInsets.symmetric(horizontal: 16.0),
                 ),
-                leading: Icon(Icons.search),
+                leading: const Icon(Icons.search),
                 hintText: 'Bạn muốn nghe gì?',
+                onSubmitted: (String value) {
+                  if (value.isEmpty) {
+                    return;
+                  }
+
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: SearchResultScreen(searchValue: value),
+                  );
+                },
               ),
               const SizedBox(height: 32),
               Column(
