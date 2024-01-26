@@ -14,6 +14,13 @@ class AlbumList extends StatefulWidget {
 class _AlbumListState extends State<AlbumList> {
   @override
   Widget build(BuildContext context) {
+    if (widget.albums.isEmpty) {
+      return const Text(
+        'Không có dữ liệu',
+        style: TextStyle(color: Colors.white54),
+      );
+    }
+
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

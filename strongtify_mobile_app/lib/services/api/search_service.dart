@@ -8,6 +8,7 @@ import 'package:strongtify_mobile_app/models/genre/genre.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/models/search_model.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
+import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/services/api/api_service.dart';
 
 @injectable
@@ -37,22 +38,28 @@ class SearchService extends ApiService {
         genres: (data['genres']['results'] as List)
             .map((e) => Genre.fromMap(e))
             .toList(),
+        users: (data['users']['results'] as List)
+            .map((e) => User.fromMap(e))
+            .toList(),
       );
     } on DioException {
       throw Exception();
     }
   }
 
-  Future<PagedResponse<Song>> searchSongs(String value) async {
+  Future<PagedResponse<Song>> searchSongs(
+    String value, {
+    int skip = 0,
+    int take = 10,
+  }) async {
     try {
-      Response response = await dioClient.dio
-          .get('/v1/songs', queryParameters: {'take': 10, 'q': value});
+      Response response = await dioClient.dio.get('/v1/songs',
+          queryParameters: {'take': take, 'q': value, 'skip': skip});
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
 
       return PagedResponse(
-        items:
-            (data['results'] as List).map((e) => Song.fromMap(e)).toList(),
+        items: (data['results'] as List).map((e) => Song.fromMap(e)).toList(),
         total: data['total'],
         skip: data['skip'],
         take: data['take'],

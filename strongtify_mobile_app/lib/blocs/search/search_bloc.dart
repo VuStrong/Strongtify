@@ -26,7 +26,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _onSearchSongs(SearchSongsEvent event, Emitter<SearchState> emit) async {
     emit(SearchingState(searchType: 'songs'));
 
-    PagedResponse<Song> result = await _searchService.searchSongs(event.searchValue);
+    PagedResponse<Song> result = await _searchService.searchSongs(
+      event.searchValue,
+      skip: event.skip,
+      take: event.take
+    );
 
     emit(SearchedSongsState(result: result));
   }

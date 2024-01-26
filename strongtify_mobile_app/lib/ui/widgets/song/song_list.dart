@@ -16,6 +16,13 @@ class SongList extends StatefulWidget {
 class _SongListState extends State<SongList> {
   @override
   Widget build(BuildContext context) {
+    if (widget.songs.isEmpty) {
+      return const Text(
+        'Không có dữ liệu',
+        style: TextStyle(color: Colors.white54),
+      );
+    }
+
     if (!widget.showOrder) {
       return Column(
         children: widget.songs.map((song) => SongItem(song: song)).toList(),
