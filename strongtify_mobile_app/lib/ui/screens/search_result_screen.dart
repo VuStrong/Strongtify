@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:strongtify_mobile_app/blocs/search/bloc.dart';
 import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
@@ -24,6 +25,7 @@ class SearchResultScreen extends StatefulWidget {
 
 class _SearchResultScreenState extends State<SearchResultScreen> {
   final TextEditingController _searchController = TextEditingController();
+  RefreshController? _refreshController;
 
   @override
   void initState() {
@@ -33,6 +35,11 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
         .add(SearchAllEvent(searchValue: widget.searchValue));
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -74,10 +81,10 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                     children: [
                       ClickableItem(
                         title: 'Tất cả',
-                        isActive: state.searchType == 'all',
+                        isActive: state.searchType == SearchType.all,
                         onClick: () {
-                          if (state.searchType != 'all' &&
-                              state is! SearchingState) {
+                          if (state.searchType != SearchType.all &&
+                              state.status != SearchStatus.loading) {
                             context.read<SearchBloc>().add(SearchAllEvent(
                                   searchValue: _searchController.text,
                                 ));
@@ -86,21 +93,77 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                       ),
                       ClickableItem(
                         title: 'Bài hát',
-                        isActive: state.searchType == 'songs',
+                        isActive: state.searchType == SearchType.songs,
                         onClick: () {
-                          if (state.searchType != 'songs' &&
-                              state is! SearchingState) {
+                          if (state.searchType != SearchType.songs &&
+                              state.status != SearchStatus.loading) {
                             context.read<SearchBloc>().add(SearchSongsEvent(
                                   searchValue: _searchController.text,
                                 ));
+
+                            _refreshController =
+                                RefreshController(initialRefresh: false);
                           }
                         },
                       ),
                       ClickableItem(
                         title: 'Album',
-                        isActive: state.searchType == 'albums',
+                        isActive: state.searchType == SearchType.albums,
                         onClick: () {
-                          //
+                          if (state.searchType != SearchType.albums &&
+                              state.status != SearchStatus.loading) {
+                            context.read<SearchBloc>().add(SearchAlbumsEvent(
+                                  searchValue: _searchController.text,
+                                ));
+
+                            _refreshController =
+                                RefreshController(initialRefresh: false);
+                          }
+                        },
+                      ),
+                      ClickableItem(
+                        title: 'Playlist',
+                        isActive: state.searchType == SearchType.playlists,
+                        onClick: () {
+                          if (state.searchType != SearchType.playlists &&
+                              state.status != SearchStatus.loading) {
+                            context.read<SearchBloc>().add(SearchPlaylistsEvent(
+                                  searchValue: _searchController.text,
+                                ));
+
+                            _refreshController =
+                                RefreshController(initialRefresh: false);
+                          }
+                        },
+                      ),
+                      ClickableItem(
+                        title: 'Nghệ sĩ',
+                        isActive: state.searchType == SearchType.artists,
+                        onClick: () {
+                          if (state.searchType != SearchType.artists &&
+                              state.status != SearchStatus.loading) {
+                            context.read<SearchBloc>().add(SearchArtistsEvent(
+                                  searchValue: _searchController.text,
+                                ));
+
+                            _refreshController =
+                                RefreshController(initialRefresh: false);
+                          }
+                        },
+                      ),
+                      ClickableItem(
+                        title: 'User',
+                        isActive: state.searchType == SearchType.users,
+                        onClick: () {
+                          if (state.searchType != SearchType.users &&
+                              state.status != SearchStatus.loading) {
+                            context.read<SearchBloc>().add(SearchUsersEvent(
+                                  searchValue: _searchController.text,
+                                ));
+
+                            _refreshController =
+                                RefreshController(initialRefresh: false);
+                          }
                         },
                       ),
                     ],
@@ -109,9 +172,23 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               ),
             ),
             const SizedBox(height: 25),
-            BlocBuilder<SearchBloc, SearchState>(
+            BlocConsumer<SearchBloc, SearchState>(
+              listener: (context, SearchState state) {
+                if (state.status != SearchStatus.loaded ||
+                    state is SearchAllState) return;
+
+                if (state is SearchWithPagination) {
+                  bool end = (state as SearchWithPagination).end;
+
+                  if (end == true) {
+                    _refreshController?.loadNoData();
+                  } else {
+                    _refreshController?.loadComplete();
+                  }
+                }
+              },
               builder: (context, SearchState state) {
-                if (state is SearchingState) {
+                if (state.status == SearchStatus.loading) {
                   return const Center(
                     child: CircularProgressIndicator(
                       color: ColorConstants.primary,
@@ -119,7 +196,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   );
                 }
 
-                return _buildSearchResultScreen(state);
+                return _buildSearchResultScreen(context, state);
               },
             ),
           ],
@@ -128,20 +205,27 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     );
   }
 
-  Widget _buildSearchResultScreen(SearchState state) {
-    if (state is SearchedAllState) {
+  Widget _buildSearchResultScreen(BuildContext context, SearchState state) {
+    if (state is SearchAllState) {
       return _buildSearchAllResult(state);
-    } else if (state is SearchedSongsState) {
-      return _buildSearchSongsResult(state);
+    } else if (state is SearchSongsState) {
+      return _buildSearchSongsResult(context, state);
+    } else if (state is SearchAlbumsState) {
+      return _buildSearchAlbumsResult(context, state);
+    } else if (state is SearchPlaylistsState) {
+      return _buildSearchPlaylistsResult(context, state);
+    } else if (state is SearchArtistsState) {
+      return _buildSearchArtistsResult(context, state);
+    } else if (state is SearchUsersState) {
+      return _buildSearchUsersResult(context, state);
     }
 
     return const Placeholder();
   }
 
-  Widget _buildSearchAllResult(SearchedAllState state) {
+  Widget _buildSearchAllResult(SearchAllState state) {
     return Expanded(
       child: ListView(
-        // shrinkWrap: true,
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -159,7 +243,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                SongList(songs: state.result.songs),
+                SongList(songs: state.result?.songs ?? []),
               ],
             ),
           ),
@@ -179,7 +263,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                AlbumList(albums: state.result.albums),
+                AlbumList(albums: state.result?.albums ?? []),
               ],
             ),
           ),
@@ -199,7 +283,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                PlaylistList(playlists: state.result.playlists),
+                PlaylistList(playlists: state.result?.playlists ?? []),
               ],
             ),
           ),
@@ -219,7 +303,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                GenreGrid(genres: state.result.genres),
+                GenreGrid(genres: state.result?.genres ?? []),
               ],
             ),
           ),
@@ -239,7 +323,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ArtistList(artists: state.result.artists),
+                ArtistList(artists: state.result?.artists ?? []),
               ],
             ),
           ),
@@ -259,7 +343,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                UserGrid(users: state.result.users),
+                UserGrid(users: state.result?.users ?? []),
               ],
             ),
           ),
@@ -268,7 +352,180 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     );
   }
 
-  Widget _buildSearchSongsResult(SearchedSongsState state) {
-    return const Placeholder();
+  Widget _buildSearchSongsResult(BuildContext context, SearchSongsState state) {
+    return Expanded(
+      child: SmartRefresher(
+        enablePullUp: true,
+        enablePullDown: false,
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus? mode) {
+            late final Widget body;
+
+            if (mode == LoadStatus.loading) {
+              body = const CircularProgressIndicator();
+            } else {
+              body = const SizedBox.shrink();
+            }
+
+            return SizedBox(
+              height: 55,
+              child: Center(child: body),
+            );
+          },
+        ),
+        controller:
+            _refreshController ?? RefreshController(initialRefresh: false),
+        onLoading: () {
+          context
+              .read<SearchBloc>()
+              .add(SearchMoreSongsEvent(searchValue: _searchController.text));
+        },
+        child: SingleChildScrollView(
+          child: SongList(songs: state.songs ?? []),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchAlbumsResult(
+      BuildContext context, SearchAlbumsState state) {
+    return Expanded(
+      child: SmartRefresher(
+        enablePullUp: true,
+        enablePullDown: false,
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus? mode) {
+            late final Widget body;
+
+            if (mode == LoadStatus.loading) {
+              body = const CircularProgressIndicator();
+            } else {
+              body = const SizedBox.shrink();
+            }
+
+            return SizedBox(
+              height: 55,
+              child: Center(child: body),
+            );
+          },
+        ),
+        controller:
+            _refreshController ?? RefreshController(initialRefresh: false),
+        onLoading: () {
+          context
+              .read<SearchBloc>()
+              .add(SearchMoreAlbumsEvent(searchValue: _searchController.text));
+        },
+        child: SingleChildScrollView(
+          child: AlbumList(albums: state.albums ?? []),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchPlaylistsResult(
+      BuildContext context, SearchPlaylistsState state) {
+    return Expanded(
+      child: SmartRefresher(
+        enablePullUp: true,
+        enablePullDown: false,
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus? mode) {
+            late final Widget body;
+
+            if (mode == LoadStatus.loading) {
+              body = const CircularProgressIndicator();
+            } else {
+              body = const SizedBox.shrink();
+            }
+
+            return SizedBox(
+              height: 55,
+              child: Center(child: body),
+            );
+          },
+        ),
+        controller:
+            _refreshController ?? RefreshController(initialRefresh: false),
+        onLoading: () {
+          context.read<SearchBloc>().add(
+              SearchMorePlaylistsEvent(searchValue: _searchController.text));
+        },
+        child: SingleChildScrollView(
+          child: PlaylistList(playlists: state.playlists ?? []),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchArtistsResult(
+      BuildContext context, SearchArtistsState state) {
+    return Expanded(
+      child: SmartRefresher(
+        enablePullUp: true,
+        enablePullDown: false,
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus? mode) {
+            late final Widget body;
+
+            if (mode == LoadStatus.loading) {
+              body = const CircularProgressIndicator();
+            } else {
+              body = const SizedBox.shrink();
+            }
+
+            return SizedBox(
+              height: 55,
+              child: Center(child: body),
+            );
+          },
+        ),
+        controller:
+            _refreshController ?? RefreshController(initialRefresh: false),
+        onLoading: () {
+          context
+              .read<SearchBloc>()
+              .add(SearchMoreArtistsEvent(searchValue: _searchController.text));
+        },
+        child: SingleChildScrollView(
+          child: ArtistList(artists: state.artists ?? []),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchUsersResult(BuildContext context, SearchUsersState state) {
+    return Expanded(
+      child: SmartRefresher(
+        enablePullUp: true,
+        enablePullDown: false,
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus? mode) {
+            late final Widget body;
+
+            if (mode == LoadStatus.loading) {
+              body = const CircularProgressIndicator();
+            } else {
+              body = const SizedBox.shrink();
+            }
+
+            return SizedBox(
+              height: 55,
+              child: Center(child: body),
+            );
+          },
+        ),
+        controller:
+            _refreshController ?? RefreshController(initialRefresh: false),
+        onLoading: () {
+          context
+              .read<SearchBloc>()
+              .add(SearchMoreUsersEvent(searchValue: _searchController.text));
+        },
+        child: SingleChildScrollView(
+          child: UserGrid(users: state.users ?? []),
+        ),
+      ),
+    );
   }
 }

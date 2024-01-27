@@ -53,13 +53,130 @@ class SearchService extends ApiService {
     int take = 10,
   }) async {
     try {
-      Response response = await dioClient.dio.get('/v1/songs',
-          queryParameters: {'take': take, 'q': value, 'skip': skip});
+      Response response =
+          await dioClient.dio.get('/v1/songs', queryParameters: {
+        'take': take,
+        'q': value,
+        'skip': skip,
+        'sort': 'likeCount_desc',
+      });
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
 
       return PagedResponse(
         items: (data['results'] as List).map((e) => Song.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<PagedResponse<Album>> searchAlbums(
+      String value, {
+        int skip = 0,
+        int take = 10,
+      }) async {
+    try {
+      Response response =
+      await dioClient.dio.get('/v1/albums', queryParameters: {
+        'take': take,
+        'q': value,
+        'skip': skip,
+        'sort': 'likeCount_desc',
+      });
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse(
+        items: (data['results'] as List).map((e) => Album.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<PagedResponse<Playlist>> searchPlaylists(
+      String value, {
+        int skip = 0,
+        int take = 10,
+      }) async {
+    try {
+      Response response =
+      await dioClient.dio.get('/v1/playlists', queryParameters: {
+        'take': take,
+        'q': value,
+        'skip': skip,
+        'sort': 'likeCount_desc',
+      });
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse(
+        items: (data['results'] as List).map((e) => Playlist.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<PagedResponse<Artist>> searchArtists(
+      String value, {
+        int skip = 0,
+        int take = 10,
+      }) async {
+    try {
+      Response response =
+      await dioClient.dio.get('/v1/artists', queryParameters: {
+        'take': take,
+        'q': value,
+        'skip': skip,
+        'sort': 'followerCount_desc',
+      });
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse(
+        items: (data['results'] as List).map((e) => Artist.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<PagedResponse<User>> searchUsers(
+      String value, {
+        int skip = 0,
+        int take = 10,
+      }) async {
+    try {
+      Response response =
+      await dioClient.dio.get('/v1/users', queryParameters: {
+        'take': take,
+        'q': value,
+        'skip': skip,
+        'sort': 'followerCount_desc',
+      });
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse(
+        items: (data['results'] as List).map((e) => User.fromMap(e)).toList(),
         total: data['total'],
         skip: data['skip'],
         take: data['take'],

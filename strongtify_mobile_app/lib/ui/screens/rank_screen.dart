@@ -37,68 +37,69 @@ class _RankScreenState extends State<RankScreen> {
       ),
       body: BlocBuilder<RankBloc, RankState>(
         builder: (context, RankState state) {
-          if (state is LoadedRankState) {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 25),
-                  SizedBox(
-                    height: 50,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      children: [
-                        ClickableItem(
-                          title: 'Ngày',
-                          isActive: state.time == RankTime.day,
-                          onClick: () {
-                            if (state.time != RankTime.day) {
-                              context
-                                  .read<RankBloc>()
-                                  .add(GetRankEvent(time: RankTime.day));
-                            }
-                          },
-                        ),
-                        ClickableItem(
-                          title: 'Tuần',
-                          isActive: state.time == RankTime.week,
-                          onClick: () {
-                            if (state.time != RankTime.week) {
-                              context
-                                  .read<RankBloc>()
-                                  .add(GetRankEvent(time: RankTime.week));
-                            }
-                          },
-                        ),
-                        ClickableItem(
-                          title: 'Tháng',
-                          isActive: state.time == RankTime.month,
-                          onClick: () {
-                            if (state.time != RankTime.month) {
-                              context
-                                  .read<RankBloc>()
-                                  .add(GetRankEvent(time: RankTime.month));
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 25),
+                SizedBox(
+                  height: 50,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    children: [
+                      ClickableItem(
+                        title: 'Ngày',
+                        isActive: state.time == RankTime.day,
+                        onClick: () {
+                          if (state.time != RankTime.day &&
+                              state.status != RankStatus.loading) {
+                            context
+                                .read<RankBloc>()
+                                .add(GetRankEvent(time: RankTime.day));
+                          }
+                        },
+                      ),
+                      ClickableItem(
+                        title: 'Tuần',
+                        isActive: state.time == RankTime.week,
+                        onClick: () {
+                          if (state.time != RankTime.week &&
+                              state.status != RankStatus.loading) {
+                            context
+                                .read<RankBloc>()
+                                .add(GetRankEvent(time: RankTime.week));
+                          }
+                        },
+                      ),
+                      ClickableItem(
+                        title: 'Tháng',
+                        isActive: state.time == RankTime.month,
+                        onClick: () {
+                          if (state.time != RankTime.month &&
+                              state.status != RankStatus.loading) {
+                            context
+                                .read<RankBloc>()
+                                .add(GetRankEvent(time: RankTime.month));
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 25),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 5, left: 5),
-                    child: SongList(
-                      songs: state.songs,
-                      showOrder: true,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return _buildShimmer();
+                ),
+                const SizedBox(height: 25),
+                state.status == RankStatus.loading
+                    ? _buildShimmer()
+                    : Padding(
+                        padding: const EdgeInsets.only(right: 5, left: 5),
+                        child: SongList(
+                          songs: state.songs,
+                          showOrder: true,
+                        ),
+                      ),
+              ],
+            ),
+          );
         },
       ),
     );
@@ -113,7 +114,6 @@ class _RankScreenState extends State<RankScreen> {
         physics: NeverScrollableScrollPhysics(),
         child: Column(
           children: [
-            SizedBox(height: 40.0),
             SongItemPlaceholder(),
             SizedBox(height: 12.0),
             SongItemPlaceholder(),

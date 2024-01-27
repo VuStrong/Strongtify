@@ -9,12 +9,41 @@ class SearchAllEvent extends SearchEvent {
 }
 
 class SearchSongsEvent extends SearchEvent {
-  SearchSongsEvent({
-    required super.searchValue,
-    this.skip = 0,
-    this.take = 10,
-  });
+  SearchSongsEvent({required super.searchValue});
+}
 
-  final int skip;
-  final int take;
+class SearchMoreSongsEvent extends SearchEvent {
+  SearchMoreSongsEvent({required super.searchValue});
+}
+
+class SearchAlbumsEvent extends SearchEvent {
+  SearchAlbumsEvent({required super.searchValue});
+}
+
+class SearchMoreAlbumsEvent extends SearchEvent {
+  SearchMoreAlbumsEvent({required super.searchValue});
+}
+
+class SearchPlaylistsEvent extends SearchEvent {
+  SearchPlaylistsEvent({required super.searchValue});
+}
+
+class SearchMorePlaylistsEvent extends SearchEvent {
+  SearchMorePlaylistsEvent({required super.searchValue});
+}
+
+class SearchArtistsEvent extends SearchEvent {
+  SearchArtistsEvent({required super.searchValue});
+}
+
+class SearchMoreArtistsEvent extends SearchEvent {
+  SearchMoreArtistsEvent({required super.searchValue});
+}
+
+class SearchUsersEvent extends SearchEvent {
+  SearchUsersEvent({required super.searchValue});
+}
+
+class SearchMoreUsersEvent extends SearchEvent {
+  SearchMoreUsersEvent({required super.searchValue});
 }

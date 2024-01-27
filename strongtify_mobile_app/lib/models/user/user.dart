@@ -16,7 +16,7 @@ class User {
     return User(
         id: data['id'],
         name: data['name'],
-        alias: data['alias'],
+        alias: data['alias'] ?? '',
         imageUrl: data['imageUrl'],
         followerCount: data['followerCount'] ?? 0);
   }
