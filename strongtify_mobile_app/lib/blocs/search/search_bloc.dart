@@ -10,7 +10,7 @@ import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/services/api/search_service.dart';
 
-@lazySingleton
+@injectable
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final SearchService _searchService;
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:strongtify_mobile_app/blocs/search/bloc.dart';
+import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/clickable_item.dart';
@@ -31,175 +32,173 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   void initState() {
     _searchController.text = widget.searchValue;
 
-    BlocProvider.of<SearchBloc>(context)
-        .add(SearchAllEvent(searchValue: widget.searchValue));
-
     super.initState();
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.grey.shade900,
-        title: TextField(
-          controller: _searchController,
-          style: const TextStyle(color: Colors.white),
-          cursorColor: Colors.white,
-          decoration: const InputDecoration(
-            hintText: 'Bạn muốn nghe gì?',
-            hintStyle: TextStyle(color: Colors.white54),
-            border: InputBorder.none,
+    return BlocProvider<SearchBloc>(
+      create: (context) => getIt<SearchBloc>()
+        ..add(SearchAllEvent(searchValue: widget.searchValue)),
+      child: Scaffold(
+        appBar: AppBar(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.grey.shade900,
+          title: TextField(
+            controller: _searchController,
+            style: const TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
+            decoration: const InputDecoration(
+              hintText: 'Bạn muốn nghe gì?',
+              hintStyle: TextStyle(color: Colors.white54),
+              border: InputBorder.none,
+            ),
+            onSubmitted: (value) {
+              if (value.isNotEmpty) {
+                context
+                    .read<SearchBloc>()
+                    .add(SearchAllEvent(searchValue: _searchController.text));
+              }
+            },
           ),
-          onSubmitted: (value) {
-            if (value.isNotEmpty) {
-              context
-                  .read<SearchBloc>()
-                  .add(SearchAllEvent(searchValue: _searchController.text));
-            }
-          },
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 50,
-              child: BlocBuilder<SearchBloc, SearchState>(
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 50,
+                child: BlocBuilder<SearchBloc, SearchState>(
+                  builder: (context, SearchState state) {
+                    return ListView(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      children: [
+                        ClickableItem(
+                          title: 'Tất cả',
+                          isActive: state.searchType == SearchType.all,
+                          onClick: () {
+                            if (state.searchType != SearchType.all &&
+                                state.status != SearchStatus.loading) {
+                              context.read<SearchBloc>().add(SearchAllEvent(
+                                    searchValue: _searchController.text,
+                                  ));
+                            }
+                          },
+                        ),
+                        ClickableItem(
+                          title: 'Bài hát',
+                          isActive: state.searchType == SearchType.songs,
+                          onClick: () {
+                            if (state.searchType != SearchType.songs &&
+                                state.status != SearchStatus.loading) {
+                              context.read<SearchBloc>().add(SearchSongsEvent(
+                                    searchValue: _searchController.text,
+                                  ));
+
+                              _refreshController =
+                                  RefreshController(initialRefresh: false);
+                            }
+                          },
+                        ),
+                        ClickableItem(
+                          title: 'Album',
+                          isActive: state.searchType == SearchType.albums,
+                          onClick: () {
+                            if (state.searchType != SearchType.albums &&
+                                state.status != SearchStatus.loading) {
+                              context.read<SearchBloc>().add(SearchAlbumsEvent(
+                                    searchValue: _searchController.text,
+                                  ));
+
+                              _refreshController =
+                                  RefreshController(initialRefresh: false);
+                            }
+                          },
+                        ),
+                        ClickableItem(
+                          title: 'Playlist',
+                          isActive: state.searchType == SearchType.playlists,
+                          onClick: () {
+                            if (state.searchType != SearchType.playlists &&
+                                state.status != SearchStatus.loading) {
+                              context
+                                  .read<SearchBloc>()
+                                  .add(SearchPlaylistsEvent(
+                                    searchValue: _searchController.text,
+                                  ));
+
+                              _refreshController =
+                                  RefreshController(initialRefresh: false);
+                            }
+                          },
+                        ),
+                        ClickableItem(
+                          title: 'Nghệ sĩ',
+                          isActive: state.searchType == SearchType.artists,
+                          onClick: () {
+                            if (state.searchType != SearchType.artists &&
+                                state.status != SearchStatus.loading) {
+                              context.read<SearchBloc>().add(SearchArtistsEvent(
+                                    searchValue: _searchController.text,
+                                  ));
+
+                              _refreshController =
+                                  RefreshController(initialRefresh: false);
+                            }
+                          },
+                        ),
+                        ClickableItem(
+                          title: 'User',
+                          isActive: state.searchType == SearchType.users,
+                          onClick: () {
+                            if (state.searchType != SearchType.users &&
+                                state.status != SearchStatus.loading) {
+                              context.read<SearchBloc>().add(SearchUsersEvent(
+                                    searchValue: _searchController.text,
+                                  ));
+
+                              _refreshController =
+                                  RefreshController(initialRefresh: false);
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 25),
+              BlocConsumer<SearchBloc, SearchState>(
+                listener: (context, SearchState state) {
+                  if (state.status != SearchStatus.loaded ||
+                      state is SearchAllState) return;
+
+                  if (state is SearchWithPagination) {
+                    bool end = (state as SearchWithPagination).end;
+
+                    if (end == true) {
+                      _refreshController?.loadNoData();
+                    } else {
+                      _refreshController?.loadComplete();
+                    }
+                  }
+                },
                 builder: (context, SearchState state) {
-                  return ListView(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    children: [
-                      ClickableItem(
-                        title: 'Tất cả',
-                        isActive: state.searchType == SearchType.all,
-                        onClick: () {
-                          if (state.searchType != SearchType.all &&
-                              state.status != SearchStatus.loading) {
-                            context.read<SearchBloc>().add(SearchAllEvent(
-                                  searchValue: _searchController.text,
-                                ));
-                          }
-                        },
+                  if (state.status == SearchStatus.loading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: ColorConstants.primary,
                       ),
-                      ClickableItem(
-                        title: 'Bài hát',
-                        isActive: state.searchType == SearchType.songs,
-                        onClick: () {
-                          if (state.searchType != SearchType.songs &&
-                              state.status != SearchStatus.loading) {
-                            context.read<SearchBloc>().add(SearchSongsEvent(
-                                  searchValue: _searchController.text,
-                                ));
+                    );
+                  }
 
-                            _refreshController =
-                                RefreshController(initialRefresh: false);
-                          }
-                        },
-                      ),
-                      ClickableItem(
-                        title: 'Album',
-                        isActive: state.searchType == SearchType.albums,
-                        onClick: () {
-                          if (state.searchType != SearchType.albums &&
-                              state.status != SearchStatus.loading) {
-                            context.read<SearchBloc>().add(SearchAlbumsEvent(
-                                  searchValue: _searchController.text,
-                                ));
-
-                            _refreshController =
-                                RefreshController(initialRefresh: false);
-                          }
-                        },
-                      ),
-                      ClickableItem(
-                        title: 'Playlist',
-                        isActive: state.searchType == SearchType.playlists,
-                        onClick: () {
-                          if (state.searchType != SearchType.playlists &&
-                              state.status != SearchStatus.loading) {
-                            context.read<SearchBloc>().add(SearchPlaylistsEvent(
-                                  searchValue: _searchController.text,
-                                ));
-
-                            _refreshController =
-                                RefreshController(initialRefresh: false);
-                          }
-                        },
-                      ),
-                      ClickableItem(
-                        title: 'Nghệ sĩ',
-                        isActive: state.searchType == SearchType.artists,
-                        onClick: () {
-                          if (state.searchType != SearchType.artists &&
-                              state.status != SearchStatus.loading) {
-                            context.read<SearchBloc>().add(SearchArtistsEvent(
-                                  searchValue: _searchController.text,
-                                ));
-
-                            _refreshController =
-                                RefreshController(initialRefresh: false);
-                          }
-                        },
-                      ),
-                      ClickableItem(
-                        title: 'User',
-                        isActive: state.searchType == SearchType.users,
-                        onClick: () {
-                          if (state.searchType != SearchType.users &&
-                              state.status != SearchStatus.loading) {
-                            context.read<SearchBloc>().add(SearchUsersEvent(
-                                  searchValue: _searchController.text,
-                                ));
-
-                            _refreshController =
-                                RefreshController(initialRefresh: false);
-                          }
-                        },
-                      ),
-                    ],
-                  );
+                  return _buildSearchResultScreen(context, state);
                 },
               ),
-            ),
-            const SizedBox(height: 25),
-            BlocConsumer<SearchBloc, SearchState>(
-              listener: (context, SearchState state) {
-                if (state.status != SearchStatus.loaded ||
-                    state is SearchAllState) return;
-
-                if (state is SearchWithPagination) {
-                  bool end = (state as SearchWithPagination).end;
-
-                  if (end == true) {
-                    _refreshController?.loadNoData();
-                  } else {
-                    _refreshController?.loadComplete();
-                  }
-                }
-              },
-              builder: (context, SearchState state) {
-                if (state.status == SearchStatus.loading) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: ColorConstants.primary,
-                    ),
-                  );
-                }
-
-                return _buildSearchResultScreen(context, state);
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

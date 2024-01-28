@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
-import 'package:strongtify_mobile_app/blocs/search/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/confirm_email_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/forgot_password_screen.dart';
@@ -35,10 +34,6 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<PlaylistBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<PlaylistBloc>(),
-        ),
-        BlocProvider<SearchBloc>(
-          lazy: false,
-          create: (BuildContext context) => getIt<SearchBloc>(),
         ),
       ],
       child: GlobalLoaderOverlay(

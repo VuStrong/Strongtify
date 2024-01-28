@@ -11,16 +11,18 @@
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
-import 'blocs/auth/auth_bloc.dart' as _i19;
-import 'blocs/genre/genre_bloc.dart' as _i14;
-import 'blocs/home_sections/home_sections_bloc.dart' as _i15;
-import 'blocs/playlist/playlist_bloc.dart' as _i16;
-import 'blocs/rank/rank_bloc.dart' as _i17;
-import 'blocs/search/search_bloc.dart' as _i18;
+import 'blocs/artist/artist_bloc.dart' as _i20;
+import 'blocs/auth/auth_bloc.dart' as _i21;
+import 'blocs/genre/genre_bloc.dart' as _i15;
+import 'blocs/home_sections/home_sections_bloc.dart' as _i16;
+import 'blocs/playlist/playlist_bloc.dart' as _i17;
+import 'blocs/rank/rank_bloc.dart' as _i18;
+import 'blocs/search/search_bloc.dart' as _i19;
 import 'dio/dio_client.dart' as _i3;
 import 'dio/interceptors/token_interceptor.dart' as _i11;
 import 'services/api/account_service.dart' as _i12;
-import 'services/api/auth_service.dart' as _i13;
+import 'services/api/artist_service.dart' as _i13;
+import 'services/api/auth_service.dart' as _i14;
 import 'services/api/genre_service.dart' as _i4;
 import 'services/api/home_service.dart' as _i5;
 import 'services/api/playlist_service.dart' as _i8;
@@ -52,23 +54,26 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i11.TokenInterceptor(gh<_i6.LocalStorage>()));
     gh.factory<_i12.AccountService>(
         () => _i12.AccountService(gh<_i3.DioClient>()));
-    gh.factory<_i13.AuthService>(() => _i13.AuthService(
+    gh.factory<_i13.ArtistService>(
+        () => _i13.ArtistService(gh<_i3.DioClient>()));
+    gh.factory<_i14.AuthService>(() => _i14.AuthService(
           gh<_i3.DioClient>(),
           gh<_i6.LocalStorage>(),
         ));
-    gh.factory<_i14.GenreBloc>(() => _i14.GenreBloc(gh<_i4.GenreService>()));
-    gh.lazySingleton<_i15.HomeSectionsBloc>(
-        () => _i15.HomeSectionsBloc(gh<_i5.HomeService>()));
-    gh.factory<_i16.PlaylistBloc>(() => _i16.PlaylistBloc(
+    gh.factory<_i15.GenreBloc>(() => _i15.GenreBloc(gh<_i4.GenreService>()));
+    gh.lazySingleton<_i16.HomeSectionsBloc>(
+        () => _i16.HomeSectionsBloc(gh<_i5.HomeService>()));
+    gh.factory<_i17.PlaylistBloc>(() => _i17.PlaylistBloc(
           gh<_i8.PlaylistService>(),
           gh<_i6.LocalStorage>(),
         ));
-    gh.lazySingleton<_i17.RankBloc>(
-        () => _i17.RankBloc(gh<_i10.SongService>()));
-    gh.lazySingleton<_i18.SearchBloc>(
-        () => _i18.SearchBloc(gh<_i9.SearchService>()));
-    gh.lazySingleton<_i19.AuthBloc>(() => _i19.AuthBloc(
-          gh<_i13.AuthService>(),
+    gh.lazySingleton<_i18.RankBloc>(
+        () => _i18.RankBloc(gh<_i10.SongService>()));
+    gh.factory<_i19.SearchBloc>(() => _i19.SearchBloc(gh<_i9.SearchService>()));
+    gh.factory<_i20.ArtistBloc>(
+        () => _i20.ArtistBloc(gh<_i13.ArtistService>()));
+    gh.lazySingleton<_i21.AuthBloc>(() => _i21.AuthBloc(
+          gh<_i14.AuthService>(),
           gh<_i12.AccountService>(),
           gh<_i6.LocalStorage>(),
         ));
