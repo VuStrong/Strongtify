@@ -3,10 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
-import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
-import 'package:strongtify_mobile_app/blocs/home_sections/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/playlist/bloc.dart';
-import 'package:strongtify_mobile_app/blocs/rank/rank_bloc.dart';
 import 'package:strongtify_mobile_app/blocs/search/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/confirm_email_screen.dart';
@@ -35,21 +32,9 @@ class StrongtifyApp extends StatelessWidget {
           lazy: false,
           create: (BuildContext context) => getIt<AuthBloc>(),
         ),
-        BlocProvider<HomeSectionsBloc>(
-          lazy: false,
-          create: (BuildContext context) => getIt<HomeSectionsBloc>(),
-        ),
         BlocProvider<PlaylistBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<PlaylistBloc>(),
-        ),
-        BlocProvider<GenreBloc>(
-          lazy: false,
-          create: (BuildContext context) => getIt<GenreBloc>(),
-        ),
-        BlocProvider<RankBloc>(
-          lazy: false,
-          create: (BuildContext context) => getIt<RankBloc>(),
         ),
         BlocProvider<SearchBloc>(
           lazy: false,

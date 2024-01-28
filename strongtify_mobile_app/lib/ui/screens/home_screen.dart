@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:strongtify_mobile_app/blocs/home_sections/bloc.dart';
+import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/album/album.dart';
 import 'package:strongtify_mobile_app/models/artist/artist.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
@@ -24,30 +25,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
-  void initState() {
-    BlocProvider.of<HomeSectionsBloc>(context).add(GetHomeSectionsEvent());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Trang chủ',
-          style: TextStyle(color: Colors.white),
+    return BlocProvider<HomeSectionsBloc>(
+      create: (context) => getIt<HomeSectionsBloc>()..add(GetHomeSectionsEvent()),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Trang chủ',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: ColorConstants.background,
+          leading: const AppbarAccount(),
         ),
-        backgroundColor: ColorConstants.background,
-        leading: const AppbarAccount(),
-      ),
-      body: BlocBuilder<HomeSectionsBloc, HomeSectionsState>(
-        builder: (context, HomeSectionsState state) {
-          if (state.isLoading) {
-            return _buildShimmer();
-          } else {
-            return _buildHomePage(state.sections);
-          }
-        },
+        body: BlocBuilder<HomeSectionsBloc, HomeSectionsState>(
+          builder: (context, HomeSectionsState state) {
+            if (state.isLoading) {
+              return _buildShimmer();
+            } else {
+              return _buildHomePage(state.sections);
+            }
+          },
+        ),
       ),
     );
   }

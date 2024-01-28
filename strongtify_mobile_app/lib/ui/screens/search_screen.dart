@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
+import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/search_result_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/genre/genre_grid.dart';
@@ -18,71 +19,67 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   @override
-  void initState() {
-    BlocProvider.of<GenreBloc>(context).add(GetAllGenresEvent());
-
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Tìm kiếm',
-          style: TextStyle(color: Colors.white),
+    return BlocProvider<GenreBloc>(
+      create: (context) => getIt<GenreBloc>()..add(GetAllGenresEvent()),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Tìm kiếm',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: ColorConstants.background,
+          leading: const AppbarAccount(),
         ),
-        backgroundColor: ColorConstants.background,
-        leading: const AppbarAccount(),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              SearchBar(
-                padding: const MaterialStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                SearchBar(
+                  padding: const MaterialStatePropertyAll<EdgeInsets>(
+                    EdgeInsets.symmetric(horizontal: 16.0),
+                  ),
+                  leading: const Icon(Icons.search),
+                  hintText: 'Bạn muốn nghe gì?',
+                  onSubmitted: (String value) {
+                    if (value.isEmpty) {
+                      return;
+                    }
+
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: SearchResultScreen(searchValue: value),
+                    );
+                  },
                 ),
-                leading: const Icon(Icons.search),
-                hintText: 'Bạn muốn nghe gì?',
-                onSubmitted: (String value) {
-                  if (value.isEmpty) {
-                    return;
-                  }
-
-                  PersistentNavBarNavigator.pushNewScreen(
-                    context,
-                    screen: SearchResultScreen(searchValue: value),
-                  );
-                },
-              ),
-              const SizedBox(height: 32),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Chủ đề và thể loại',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
+                const SizedBox(height: 32),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Chủ đề và thể loại',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  BlocBuilder<GenreBloc, GenreState>(
-                    builder: (context, GenreState state) {
-                      if (state is LoadedAllGenresState) {
-                        return GenreGrid(genres: state.genres);
-                      }
+                    const SizedBox(height: 16),
+                    BlocBuilder<GenreBloc, GenreState>(
+                      builder: (context, GenreState state) {
+                        if (state is LoadedAllGenresState) {
+                          return GenreGrid(genres: state.genres);
+                        }
 
-                      return _buildGenreGridShimmer();
-                    },
-                  ),
-                ],
-              ),
-            ],
+                        return _buildGenreGridShimmer();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

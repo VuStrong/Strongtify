@@ -362,7 +362,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
             late final Widget body;
 
             if (mode == LoadStatus.loading) {
-              body = const CircularProgressIndicator();
+              body = const CircularProgressIndicator(
+                color: ColorConstants.primary,
+              );
             } else {
               body = const SizedBox.shrink();
             }
@@ -398,7 +400,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
             late final Widget body;
 
             if (mode == LoadStatus.loading) {
-              body = const CircularProgressIndicator();
+              body = const CircularProgressIndicator(
+                color: ColorConstants.primary,
+              );
             } else {
               body = const SizedBox.shrink();
             }
@@ -434,7 +438,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
             late final Widget body;
 
             if (mode == LoadStatus.loading) {
-              body = const CircularProgressIndicator();
+              body = const CircularProgressIndicator(
+                color: ColorConstants.primary,
+              );
             } else {
               body = const SizedBox.shrink();
             }
@@ -469,7 +475,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
             late final Widget body;
 
             if (mode == LoadStatus.loading) {
-              body = const CircularProgressIndicator();
+              body = const CircularProgressIndicator(
+                color: ColorConstants.primary,
+              );
             } else {
               body = const SizedBox.shrink();
             }
@@ -504,7 +512,9 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
             late final Widget body;
 
             if (mode == LoadStatus.loading) {
-              body = const CircularProgressIndicator();
+              body = const CircularProgressIndicator(
+                color: ColorConstants.primary,
+              );
             } else {
               body = const SizedBox.shrink();
             }
