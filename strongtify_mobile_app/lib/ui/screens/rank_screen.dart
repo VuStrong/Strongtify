@@ -5,7 +5,7 @@ import 'package:strongtify_mobile_app/blocs/rank/bloc.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/clickable_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
-import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/song/song_rank_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/enums.dart';
 
@@ -92,9 +92,8 @@ class _RankScreenState extends State<RankScreen> {
                     ? _buildShimmer()
                     : Padding(
                         padding: const EdgeInsets.only(right: 5, left: 5),
-                        child: SongList(
+                        child: SongRankList(
                           songs: state.songs,
-                          showOrder: true,
                         ),
                       ),
               ],

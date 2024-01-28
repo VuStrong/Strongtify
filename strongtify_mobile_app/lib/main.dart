@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
@@ -21,9 +20,6 @@ Future main() async {
   await dotenv.load(fileName: ".env");
 
   configureDependencies();
-
-  // final t = FlutterSecureStorage();
-  // await t.deleteAll();
 
   runApp(const StrongtifyApp());
 }
