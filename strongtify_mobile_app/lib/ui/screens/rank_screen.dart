@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:strongtify_mobile_app/blocs/rank/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/clickable_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
@@ -31,6 +32,7 @@ class _RankScreenState extends State<RankScreen> {
           backgroundColor: ColorConstants.background,
           leading: const AppbarAccount(),
         ),
+        drawer: const AppDrawer(),
         body: BlocBuilder<RankBloc, RankState>(
           builder: (context, RankState state) {
             return SingleChildScrollView(

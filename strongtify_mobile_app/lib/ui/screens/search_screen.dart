@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/search_result_screen.dart';
+import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/genre/genre_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
@@ -31,6 +32,7 @@ class _SearchScreenState extends State<SearchScreen> {
           backgroundColor: ColorConstants.background,
           leading: const AppbarAccount(),
         ),
+        drawer: const AppDrawer(),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20),

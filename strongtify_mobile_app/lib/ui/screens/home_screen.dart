@@ -9,6 +9,7 @@ import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/models/section.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: ColorConstants.background,
           leading: const AppbarAccount(),
         ),
+        drawer: const AppDrawer(),
         body: BlocBuilder<HomeSectionsBloc, HomeSectionsState>(
           builder: (context, HomeSectionsState state) {
             if (state.isLoading) {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
-import 'package:strongtify_mobile_app/ui/screens/profile_screen.dart';
 
 class AppbarAccount extends StatelessWidget {
   const AppbarAccount({super.key});
@@ -11,21 +9,22 @@ class AppbarAccount extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5),
-      child: GestureDetector(
-        onTap: () {
-          PersistentNavBarNavigator.pushNewScreen(
-            context,
-            screen: const ProfileScreen(),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, AuthState state) {
+          return GestureDetector(
+            onTap: () {
+              Scaffold.of(context).openDrawer();
+            },
+            child: ClipOval(
+              child: state.user?.imageUrl != null
+                  ? Image.network(
+                      state.user!.imageUrl!,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset('assets/img/default-avatar.png'),
+            ),
           );
         },
-        child: ClipOval(
-          child: context.read<AuthBloc>().state.user?.imageUrl != null
-              ? Image.network(
-                  context.read<AuthBloc>().state.user!.imageUrl!,
-                  fit: BoxFit.cover,
-                )
-              : Image.asset('assets/img/default-avatar.png'),
-        ),
       ),
     );
   }

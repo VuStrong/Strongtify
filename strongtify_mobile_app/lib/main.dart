@@ -43,7 +43,11 @@ class StrongtifyApp extends StatelessWidget {
           home: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, AuthState state) {
               if (state.isInitializing) {
-                return const CircularProgressIndicator();
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: ColorConstants.primary,
+                  ),
+                );
               }
 
               if (state.user != null) {

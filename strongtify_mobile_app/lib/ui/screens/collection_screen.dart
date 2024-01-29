@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
-import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class CollectionScreen extends StatefulWidget {
@@ -27,12 +24,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
         backgroundColor: ColorConstants.background,
         leading: const AppbarAccount(),
       ),
-      body: Center(
-        child: Button(
-          buttonText: 'logout test',
-          onPressed: () {
-            context.read<AuthBloc>().add(AuthEventLogout());
-          },
+      drawer: const AppDrawer(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            //
+          ],
         ),
       ),
     );
