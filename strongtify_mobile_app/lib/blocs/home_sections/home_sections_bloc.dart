@@ -4,7 +4,7 @@ import 'package:strongtify_mobile_app/blocs/home_sections/bloc.dart';
 import 'package:strongtify_mobile_app/models/section.dart';
 import 'package:strongtify_mobile_app/services/api/home_service.dart';
 
-@lazySingleton
+@injectable
 class HomeSectionsBloc extends Bloc<HomeSectionsEvent, HomeSectionsState> {
   HomeSectionsBloc(this._homeService) : super(HomeSectionsState(sections: [])) {
     on<GetHomeSectionsEvent>(_onGetSections);

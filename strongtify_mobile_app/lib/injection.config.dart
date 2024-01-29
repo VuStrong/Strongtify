@@ -64,7 +64,7 @@ extension GetItInjectableX on _i1.GetIt {
           gh<_i6.LocalStorage>(),
         ));
     gh.factory<_i16.GenreBloc>(() => _i16.GenreBloc(gh<_i4.GenreService>()));
-    gh.lazySingleton<_i17.HomeSectionsBloc>(
+    gh.factory<_i17.HomeSectionsBloc>(
         () => _i17.HomeSectionsBloc(gh<_i5.HomeService>()));
     gh.factory<_i18.PlaylistBloc>(
         () => _i18.PlaylistBloc(gh<_i8.PlaylistService>()));
