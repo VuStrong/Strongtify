@@ -11,7 +11,7 @@ class Playlist {
     this.likeCount = 0,
     this.songCount = 0,
     this.totalLength = 0,
-    this.status = PlaylistStatus.public
+    this.status = PlaylistStatus.public,
   });
 
   final String id;
@@ -32,8 +32,8 @@ class Playlist {
       imageUrl: data['imageUrl'],
       user: User.fromMap(data['user']),
       likeCount: data['likeCount'] ?? 0,
-      songCount: data['likeCount'] ?? 0,
-      totalLength: data['likeCount'] ?? 0,
+      songCount: data['songCount'] ?? 0,
+      totalLength: data['totalLength'] ?? 0,
       status: data['status'] == 'PUBLIC' ? PlaylistStatus.public : PlaylistStatus.private
     );
   }

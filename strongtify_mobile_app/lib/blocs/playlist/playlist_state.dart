@@ -1,8 +1,13 @@
-import 'package:strongtify_mobile_app/models/api_responses/paged_response.dart';
-import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
+import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 
-class PlaylistState {
-  final PagedResponse<Playlist>? playlists;
+abstract class PlaylistState {}
 
-  PlaylistState({this.playlists});
+class LoadingPlaylistState extends PlaylistState {}
+
+class LoadedPlaylistByIdState extends PlaylistState {
+  final PlaylistDetail? playlist;
+
+  LoadedPlaylistByIdState({
+    this.playlist,
+  });
 }

@@ -28,8 +28,8 @@ class Album {
       alias: data['alias'],
       imageUrl: data['imageUrl'],
       likeCount: data['likeCount'] ?? 0,
-      songCount: data['likeCount'] ?? 0,
-      totalLength: data['likeCount'] ?? 0,
+      songCount: data['songCount'] ?? 0,
+      totalLength: data['totalLength'] ?? 0,
       artist: data['artist'] != null ? Artist.fromMap(data['artist']) : null,
     );
   }
