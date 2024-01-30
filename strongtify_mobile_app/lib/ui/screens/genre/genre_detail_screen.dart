@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/blocs/genre/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/ui/screens/album/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -45,15 +47,15 @@ class _GenreDetailScreenState extends State<GenreDetailScreen> {
                 }
 
                 return IconButton(
-                    icon: const Icon(Icons.share),
-                    tooltip: 'Chia sẻ',
-                    onPressed: () {
-                      final domain = dotenv.env['WEB_CLIENT_URL'] ?? '';
-                      final genre = state.genre;
+                  icon: const Icon(Icons.share),
+                  tooltip: 'Chia sẻ',
+                  onPressed: () {
+                    final domain = dotenv.env['WEB_CLIENT_URL'] ?? '';
+                    final genre = state.genre;
 
-                      Share.share('$domain/genres/${genre!.alias}/${genre.id}');
-                    },
-                  );
+                    Share.share('$domain/genres/${genre!.alias}/${genre.id}');
+                  },
+                );
               },
             ),
           ],
@@ -128,16 +130,27 @@ class _GenreDetailScreenState extends State<GenreDetailScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Album',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
+                ListTile(
+                  onTap: () {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: AlbumListScreen(
+                        genreId: widget.genreId,
+                        sort: 'likeCount_desc',
+                      ),
+                    );
+                  },
+                  iconColor: Colors.white,
+                  textColor: Colors.white,
+                  title: const Text(
+                    'Album',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
                   ),
+                  trailing: const Icon(Icons.arrow_forward_ios),
                 ),
-                const SizedBox(height: 16),
                 AlbumList(albums: state.genre!.albums ?? []),
               ],
             ),

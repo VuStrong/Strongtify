@@ -5,3 +5,5 @@ class GetPlaylistByIdEvent extends PlaylistEvent {
 
   GetPlaylistByIdEvent({required this.id});
 }
+
+class GetCurrentUserPlaylists extends PlaylistEvent {}

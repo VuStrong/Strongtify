@@ -7,6 +7,7 @@ import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
+import 'package:strongtify_mobile_app/utils/enums.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
 
 class PlaylistDetailScreen extends StatefulWidget {
@@ -120,9 +121,19 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              '(Playlist)',
-              style: TextStyle(color: Colors.white54),
+            RichText(
+              text: TextSpan(
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Playlist',
+                    style: TextStyle(color: Colors.white54),
+                  ),
+                  TextSpan(
+                    text: state.playlist!.status == PlaylistStatus.private ? ' (Riêng tư)' : '',
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                ],
+              ),
             ),
             Text(
               state.playlist!.name,

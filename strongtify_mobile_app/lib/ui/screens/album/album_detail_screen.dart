@@ -34,14 +34,18 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
           title: BlocBuilder<AlbumBloc, AlbumState>(
             builder: (context, AlbumState state) {
               return Text(
-                state is LoadedAlbumByIdState ? state.album?.name ?? '' : '',
+                state is LoadAlbumByIdState && !state.isLoading
+                    ? state.album?.name ?? ''
+                    : '',
               );
             },
           ),
           actions: [
             BlocBuilder<AlbumBloc, AlbumState>(
               builder: (context, AlbumState state) {
-                if (state is! LoadedAlbumByIdState || state.album == null) {
+                if (state is! LoadAlbumByIdState ||
+                    state.isLoading ||
+                    state.album == null) {
                   return const SizedBox();
                 }
 
@@ -61,7 +65,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
         ),
         body: BlocBuilder<AlbumBloc, AlbumState>(
           builder: (context, AlbumState state) {
-            if (state is LoadedAlbumByIdState) {
+            if (state is LoadAlbumByIdState && !state.isLoading) {
               if (state.album == null) {
                 return const Center(
                   child: Text(
@@ -87,7 +91,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
 
   Widget _buildAlbumDetailScreen(
     BuildContext context,
-    LoadedAlbumByIdState state,
+    LoadAlbumByIdState state,
   ) {
     return SingleChildScrollView(
       child: Padding(
