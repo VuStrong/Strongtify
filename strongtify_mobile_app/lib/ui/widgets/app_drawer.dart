@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
-import 'package:strongtify_mobile_app/ui/screens/profile_screen.dart';
-import 'package:strongtify_mobile_app/ui/screens/settings_screen.dart';
+import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/settings/settings_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});

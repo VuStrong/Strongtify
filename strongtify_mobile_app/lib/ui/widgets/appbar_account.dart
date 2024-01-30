@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 
 class AppbarAccount extends StatelessWidget {
   const AppbarAccount({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
-import 'package:strongtify_mobile_app/ui/screens/playlist/playlist_detail_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/playlist_detail/playlist_detail_screen.dart';
 
 class PlaylistItem extends StatefulWidget {
   const PlaylistItem({super.key, required this.playlist});

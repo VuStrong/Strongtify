@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_bloc.dart';
-import 'package:strongtify_mobile_app/blocs/auth/auth_state.dart';
+import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/login_screen.dart';
-import 'package:strongtify_mobile_app/ui/screens/collection_screen.dart';
-import 'package:strongtify_mobile_app/ui/screens/home_screen.dart';
-import 'package:strongtify_mobile_app/ui/screens/rank_screen.dart';
-import 'package:strongtify_mobile_app/ui/screens/search_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/collection/collection_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/home/home_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/rank/rank_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/search/search_screen.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class BottomNavigationApp extends StatelessWidget {

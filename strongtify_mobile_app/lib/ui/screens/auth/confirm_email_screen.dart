@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:strongtify_mobile_app/blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/gradient_background.dart';

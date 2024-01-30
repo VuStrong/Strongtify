@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/models/genre/genre.dart';
-import 'package:strongtify_mobile_app/ui/screens/genre/genre_detail_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/genre_detail/genre_detail_screen.dart';
 
 class GenreItem extends StatefulWidget {
   const GenreItem({super.key, required this.genre});

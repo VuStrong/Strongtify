@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/models/artist/artist.dart';
-import 'package:strongtify_mobile_app/ui/screens/artist/artist_detail_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
 
 class ArtistItem extends StatefulWidget {
   const ArtistItem({super.key, required this.artist});
