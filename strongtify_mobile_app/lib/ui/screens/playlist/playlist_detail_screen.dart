@@ -100,7 +100,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
           children: [
             Center(
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.6,
+                width: MediaQuery.of(context).size.width * 0.5,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -162,6 +162,14 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
               ),
             ),
             const SizedBox(height: 15),
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                state.playlist!.description ?? '',
+                style: const TextStyle(color: Colors.white54),
+              ),
+            ),
+            const SizedBox(height: 20),
             SongList(songs: state.playlist!.songs ?? []),
           ],
         ),
