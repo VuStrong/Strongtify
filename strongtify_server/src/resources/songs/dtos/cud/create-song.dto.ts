@@ -36,11 +36,6 @@ export class CreateSongDto {
     @IsOptional()
     songUrl?: string;
 
-    @ApiProperty({ required: false })
-    @IsString()
-    @IsOptional()
-    downloadUrl?: string;
-
     @ApiProperty({
         required: false,
         enum: Language,

@@ -29,11 +29,6 @@ export class UpdateSongDto {
     @IsOptional()
     songUrl?: string = null;
 
-    @ApiProperty({ required: false })
-    @IsString()
-    @IsOptional()
-    downloadUrl?: string = null;
-
     @ApiProperty({
         required: false,
         enum: Language,
