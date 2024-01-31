@@ -10,15 +10,11 @@ class SongListScreen extends StatefulWidget {
   const SongListScreen({
     super.key,
     this.title = 'Bài hát',
-    this.artistId,
-    this.genreId,
-    this.sort,
+    required this.event,
   });
 
   final String title;
-  final String? artistId;
-  final String? genreId;
-  final String? sort;
+  final SongsEvent event;
 
   @override
   State<SongListScreen> createState() => _SongListScreenState();
@@ -32,11 +28,7 @@ class _SongListScreenState extends State<SongListScreen> {
   Widget build(BuildContext context) {
     return BlocProvider<SongsBloc>(
       create: (context) => getIt<SongsBloc>()
-        ..add(GetSongsEvent(
-          genreId: widget.genreId,
-          artistId: widget.artistId,
-          sort: widget.sort,
-        )),
+        ..add(widget.event),
       child: Scaffold(
         appBar: AppBar(
           foregroundColor: Colors.white,
@@ -100,6 +92,7 @@ class _SongListScreenState extends State<SongListScreen> {
         context.read<SongsBloc>().add(GetMoreSongsEvent());
       },
       child: SingleChildScrollView(
+        padding: const EdgeInsets.only(right: 20, left: 20),
         child: SongList(songs: state.songs ?? []),
       ),
     );

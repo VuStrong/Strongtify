@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:strongtify_mobile_app/common_blocs/albums/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/genre_detail/bloc/bloc.dart';
@@ -116,8 +118,10 @@ class _GenreDetailScreenState extends State<GenreDetailScreen> {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: SongListScreen(
-                        genreId: widget.genreId,
-                        sort: 'listenCount_desc',
+                        event: GetSongsEvent(
+                          genreId: widget.genreId,
+                          sort: 'listenCount_desc',
+                        ),
                       ),
                     );
                   },
@@ -147,8 +151,10 @@ class _GenreDetailScreenState extends State<GenreDetailScreen> {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: AlbumListScreen(
-                        genreId: widget.genreId,
-                        sort: 'likeCount_desc',
+                        event: GetAlbumsEvent(
+                          genreId: widget.genreId,
+                          sort: 'likeCount_desc',
+                        ),
                       ),
                     );
                   },

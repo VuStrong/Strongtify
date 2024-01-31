@@ -1,10 +1,11 @@
 class User {
-  User(
-      {required this.id,
-      required this.name,
-      required this.alias,
-      this.imageUrl,
-      this.followerCount = 0});
+  User({
+    required this.id,
+    required this.name,
+    required this.alias,
+    this.imageUrl,
+    this.followerCount = 0,
+  });
 
   final String id;
   final String name;
@@ -14,10 +15,11 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> data) {
     return User(
-        id: data['id'],
-        name: data['name'],
-        alias: data['alias'] ?? '',
-        imageUrl: data['imageUrl'],
-        followerCount: data['followerCount'] ?? 0);
+      id: data['id'],
+      name: data['name'],
+      alias: data['alias'] ?? '',
+      imageUrl: data['imageUrl'],
+      followerCount: data['followerCount'] ?? 0,
+    );
   }
 }

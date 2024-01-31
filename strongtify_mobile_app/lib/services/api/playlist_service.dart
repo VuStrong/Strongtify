@@ -19,7 +19,8 @@ class PlaylistService extends ApiService {
       Response response = await dioClient.dio.get(
         '/v1/playlists',
         queryParameters: {
-          'userId': userId,
+          if (userId != null) 'userId': userId,
+          if (sort != null) 'sort': sort,
           'skip': skip,
           'take': take,
         },

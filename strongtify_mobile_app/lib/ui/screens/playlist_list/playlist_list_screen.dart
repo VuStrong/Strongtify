@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:strongtify_mobile_app/common_blocs/albums/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
-import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
-class AlbumListScreen extends StatefulWidget {
-  const AlbumListScreen({
+class PlaylistListScreen extends StatefulWidget {
+  const PlaylistListScreen({
     super.key,
-    this.title = 'Album',
+    this.title = 'Playlist',
     required this.event,
   });
 
   final String title;
-  final AlbumsEvent event;
+  final PlaylistsEvent event;
 
   @override
-  State<AlbumListScreen> createState() => _AlbumListScreenState();
+  State<PlaylistListScreen> createState() => _PlaylistListScreenState();
 }
 
-class _AlbumListScreenState extends State<AlbumListScreen> {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+class _PlaylistListScreenState extends State<PlaylistListScreen> {
+   final RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AlbumsBloc>(
-      create: (context) => getIt<AlbumsBloc>()
+    return BlocProvider<PlaylistsBloc>(
+      create: (context) => getIt<PlaylistsBloc>()
         ..add(widget.event),
       child: Scaffold(
         appBar: AppBar(
@@ -35,10 +34,10 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
           backgroundColor: ColorConstants.background,
           title: Text(widget.title),
         ),
-        body: BlocConsumer<AlbumsBloc, AlbumsState>(
-          listener: (context, AlbumsState state) {
-            if (state is! LoadAlbumsState ||
-                state.status != LoadAlbumsStatus.loaded) {
+        body: BlocConsumer<PlaylistsBloc, PlaylistsState>(
+          listener: (context, PlaylistsState state) {
+            if (state is! LoadPlaylistsState ||
+                state.status != LoadPlaylistsStatus.loaded) {
               return;
             }
 
@@ -48,9 +47,9 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
               _refreshController.loadComplete();
             }
           },
-          builder: (context, AlbumsState state) {
-            if (state is! LoadAlbumsState ||
-                state.status == LoadAlbumsStatus.loading) {
+          builder: (context, PlaylistsState state) {
+            if (state is! LoadPlaylistsState ||
+                state.status == LoadPlaylistsStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(
                   color: ColorConstants.primary,
@@ -58,14 +57,14 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
               );
             }
 
-            return _buildAlbumList(context, state);
+            return _buildPlaylistList(context, state);
           },
         ),
       ),
     );
   }
 
-  Widget _buildAlbumList(BuildContext context, LoadAlbumsState state) {
+  Widget _buildPlaylistList(BuildContext context, LoadPlaylistsState state) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: SmartRefresher(
@@ -91,9 +90,9 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
         ),
         controller: _refreshController,
         onLoading: () {
-          context.read<AlbumsBloc>().add(GetMoreAlbumsEvent());
+          context.read<PlaylistsBloc>().add(GetMorePlaylistsEvent());
         },
-        child: AlbumList(albums: state.albums ?? []),
+        child: PlaylistList(playlists: state.playlists ?? []),
       ),
     );
   }

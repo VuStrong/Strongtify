@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/exceptions/user_exceptions.dart';
@@ -78,6 +80,35 @@ class AccountService extends ApiService {
     }
   }
 
+  Future<bool> checkLikedAlbum(String albumId) async {
+    try {
+      await dioClient.dio.head('/v1/me/liked-albums/$albumId');
+
+      return true;
+    } on DioException {
+      return false;
+    }
+  }
+
+  Future<void> likeAlbum(String albumId) async {
+    try {
+      await dioClient.dio.post(
+        '/v1/me/liked-albums',
+        data: jsonEncode({'albumId': albumId}),
+      );
+    } on DioException {
+      //
+    }
+  }
+
+  Future<void> unlikeAlbum(String albumId) async {
+    try {
+      await dioClient.dio.delete('/v1/me/liked-albums/$albumId');
+    } on DioException {
+      //
+    }
+  }
+
   Future<PagedResponse<Playlist>> getLikedPlaylists({
     int skip = 0,
     int take = 5,
@@ -94,7 +125,8 @@ class AccountService extends ApiService {
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
 
       return PagedResponse<Playlist>(
-        items: (data['results'] as List).map((e) => Playlist.fromMap(e)).toList(),
+        items:
+            (data['results'] as List).map((e) => Playlist.fromMap(e)).toList(),
         total: data['total'],
         skip: data['skip'],
         take: data['take'],

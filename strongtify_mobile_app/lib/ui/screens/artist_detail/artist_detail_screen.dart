@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:strongtify_mobile_app/common_blocs/albums/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/bloc/bloc.dart';
@@ -102,8 +104,10 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: SongListScreen(
-                        sort: 'createdAt_desc',
-                        artistId: widget.artistId,
+                        event: GetSongsEvent(
+                          sort: 'createdAt_desc',
+                          artistId: widget.artistId,
+                        ),
                       ),
                     );
                   },
@@ -133,8 +137,10 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: AlbumListScreen(
-                        sort: 'createdAt_desc',
-                        artistId: widget.artistId,
+                        event: GetAlbumsEvent(
+                          sort: 'createdAt_desc',
+                          artistId: widget.artistId,
+                        ),
                       ),
                     );
                   },
@@ -166,7 +172,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
             image: state.artist?.imageUrl != null
                 ? NetworkImage(state.artist!.imageUrl!)
                 : const AssetImage('assets/img/default-avatar.png')

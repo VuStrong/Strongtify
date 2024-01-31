@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
@@ -21,7 +23,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   Widget build(BuildContext context) {
     return BlocProvider<PlaylistsBloc>(
       create: (context) =>
-          getIt<PlaylistsBloc>()..add(GetCurrentUserPlaylists()),
+          getIt<PlaylistsBloc>()..add(GetCurrentUserPlaylistsEvent()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -73,7 +75,13 @@ class _CollectionScreenState extends State<CollectionScreen> {
                   children: [
                     ListTile(
                       onTap: () {
-                        //
+                        PersistentNavBarNavigator.pushNewScreen(
+                          context,
+                          screen: PlaylistListScreen(
+                            title: 'Playlist của tôi',
+                            event: GetCurrentUserPlaylistsEvent(),
+                          ),
+                        );
                       },
                       iconColor: Colors.white,
                       textColor: Colors.white,
@@ -88,7 +96,8 @@ class _CollectionScreenState extends State<CollectionScreen> {
                     ),
                     BlocBuilder<PlaylistsBloc, PlaylistsState>(
                       builder: (context, PlaylistsState state) {
-                        if (state is LoadPlaylistsState && !state.isLoading) {
+                        if (state is LoadPlaylistsState &&
+                            state.status == LoadPlaylistsStatus.loaded) {
                           return PlaylistList(playlists: state.playlists ?? []);
                         }
 

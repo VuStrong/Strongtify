@@ -26,7 +26,9 @@ class AppDrawer extends StatelessWidget {
                   onTap: () {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
-                      screen: const ProfileScreen(),
+                      screen: ProfileScreen(
+                        userId: state.user!.id,
+                      ),
                     );
                   },
                   leading: ClipOval(

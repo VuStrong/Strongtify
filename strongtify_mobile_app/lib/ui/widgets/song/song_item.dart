@@ -20,14 +20,18 @@ class _SongItemState extends State<SongItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: widget.song.imageUrl != null
-            ? Image.network(
-                widget.song.imageUrl!,
-                fit: BoxFit.cover,
-              )
-            : Image.asset('assets/img/default-song-img.png'),
+      leading: SizedBox(
+        width: 56,
+        height: 56,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: widget.song.imageUrl != null
+              ? Image.network(
+            widget.song.imageUrl!,
+            fit: BoxFit.cover,
+          )
+              : Image.asset('assets/img/default-song-img.png'),
+        ),
       ),
       title: Text(
         widget.song.name,

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/artist/artist.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_detail/bloc/bloc.dart';
+import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
+import 'package:strongtify_mobile_app/utils/snackbars/success_snackbar.dart';
 
 class AlbumDetailScreen extends StatefulWidget {
   const AlbumDetailScreen({
@@ -147,6 +150,28 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                 color: Colors.white70,
               ),
             ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  iconSize: 50,
+                  icon: const Icon(
+                    Icons.play_circle,
+                    color: ColorConstants.primary,
+                  ),
+                ),
+                IconButton(
+                  tooltip: 'Thích',
+                  onPressed: () {},
+                  iconSize: 50,
+                  icon: const Icon(
+                    Icons.favorite_border,
+                    color: ColorConstants.primary,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 15),
             SongList(songs: state.album!.songs ?? []),
           ],
@@ -166,30 +191,38 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
       );
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: ClipOval(
-            child: artist.imageUrl != null
-                ? Image.network(
-                    artist.imageUrl!,
-                    fit: BoxFit.cover,
-                  )
-                : Image.asset('assets/img/default-avatar.png'),
+    return GestureDetector(
+      onTap: () {
+        PersistentNavBarNavigator.pushNewScreen(
+          context,
+          screen: ArtistDetailScreen(artistId: artist.id),
+        );
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: ClipOval(
+              child: artist.imageUrl != null
+                  ? Image.network(
+                      artist.imageUrl!,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset('assets/img/default-avatar.png'),
+            ),
           ),
-        ),
-        const SizedBox(width: 5),
-        Text(
-          artist.name,
-          style: const TextStyle(
-            color: Colors.white54,
-            overflow: TextOverflow.ellipsis,
+          const SizedBox(width: 5),
+          Text(
+            artist.name,
+            style: const TextStyle(
+              color: Colors.white54,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
