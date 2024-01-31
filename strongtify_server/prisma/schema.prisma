@@ -82,6 +82,7 @@ model Song {
   updatedAt    DateTime   @updatedAt
   name         String
   songUrl      String?    @db.Text
+  downloadUrl  String?    @db.Text
   imageUrl     String?    @db.Text
   imageId      String?
   length       Int        @default(0)
