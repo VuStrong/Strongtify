@@ -27,6 +27,10 @@ export class SongDetailResponseDto implements Song {
 
     @ApiProperty()
     @Expose()
+    downloadUrl: string;
+
+    @ApiProperty()
+    @Expose()
     imageUrl: string;
 
     imageId: string;
