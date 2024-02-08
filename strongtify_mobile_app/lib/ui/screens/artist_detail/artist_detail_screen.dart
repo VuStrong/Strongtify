@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:strongtify_mobile_app/common_blocs/albums/bloc.dart';
-import 'package:strongtify_mobile_app/common_blocs/songs/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/bloc/bloc.dart';
@@ -104,7 +104,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: SongListScreen(
-                        event: GetSongsEvent(
+                        event: GetSongsByParamsEvent(
                           sort: 'createdAt_desc',
                           artistId: widget.artistId,
                         ),
@@ -137,7 +137,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: AlbumListScreen(
-                        event: GetAlbumsEvent(
+                        event: GetAlbumsByParamsEvent(
                           sort: 'createdAt_desc',
                           artistId: widget.artistId,
                         ),

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:strongtify_mobile_app/common_blocs/playlists/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/song_list/song_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
@@ -21,9 +25,9 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PlaylistsBloc>(
+    return BlocProvider<GetPlaylistsBloc>(
       create: (context) =>
-          getIt<PlaylistsBloc>()..add(GetCurrentUserPlaylistsEvent()),
+          getIt<GetPlaylistsBloc>()..add(GetCurrentUserPlaylistsEvent()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -44,7 +48,13 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 title: const Text('Bài hát đã thích'),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
-                  //
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: SongListScreen(
+                      title: 'Bài hát đã thích',
+                      event: GetCurrentUserLikedSongsEvent(),
+                    ),
+                  );
                 },
               ),
               ListTile(
@@ -54,7 +64,29 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 title: const Text('Album đã thích'),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
-                  //
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: AlbumListScreen(
+                      title: 'Album đã thích',
+                      event: GetCurrentUserLikedAlbumsEvent(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                textColor: Colors.white70,
+                iconColor: Colors.white70,
+                leading: const Icon(Icons.library_music),
+                title: const Text('Playlist đã thích'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: PlaylistListScreen(
+                      title: 'Playlist đã thích',
+                      event: GetCurrentUserLikedPlaylistsEvent(),
+                    ),
+                  );
                 },
               ),
               ListTile(
@@ -94,10 +126,9 @@ class _CollectionScreenState extends State<CollectionScreen> {
                         ),
                       ),
                     ),
-                    BlocBuilder<PlaylistsBloc, PlaylistsState>(
-                      builder: (context, PlaylistsState state) {
-                        if (state is LoadPlaylistsState &&
-                            state.status == LoadPlaylistsStatus.loaded) {
+                    BlocBuilder<GetPlaylistsBloc, GetPlaylistsState>(
+                      builder: (context, GetPlaylistsState state) {
+                        if (state.status == LoadPlaylistsStatus.loaded) {
                           return PlaylistList(playlists: state.playlists ?? []);
                         }
 

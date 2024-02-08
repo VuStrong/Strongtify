@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:strongtify_mobile_app/common_blocs/playlists/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -14,7 +14,7 @@ class PlaylistListScreen extends StatefulWidget {
   });
 
   final String title;
-  final PlaylistsEvent event;
+  final GetPlaylistsEvent event;
 
   @override
   State<PlaylistListScreen> createState() => _PlaylistListScreenState();
@@ -25,8 +25,8 @@ class _PlaylistListScreenState extends State<PlaylistListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PlaylistsBloc>(
-      create: (context) => getIt<PlaylistsBloc>()
+    return BlocProvider<GetPlaylistsBloc>(
+      create: (context) => getIt<GetPlaylistsBloc>()
         ..add(widget.event),
       child: Scaffold(
         appBar: AppBar(
@@ -34,10 +34,9 @@ class _PlaylistListScreenState extends State<PlaylistListScreen> {
           backgroundColor: ColorConstants.background,
           title: Text(widget.title),
         ),
-        body: BlocConsumer<PlaylistsBloc, PlaylistsState>(
-          listener: (context, PlaylistsState state) {
-            if (state is! LoadPlaylistsState ||
-                state.status != LoadPlaylistsStatus.loaded) {
+        body: BlocConsumer<GetPlaylistsBloc, GetPlaylistsState>(
+          listener: (context, GetPlaylistsState state) {
+            if (state.status != LoadPlaylistsStatus.loaded) {
               return;
             }
 
@@ -47,9 +46,8 @@ class _PlaylistListScreenState extends State<PlaylistListScreen> {
               _refreshController.loadComplete();
             }
           },
-          builder: (context, PlaylistsState state) {
-            if (state is! LoadPlaylistsState ||
-                state.status == LoadPlaylistsStatus.loading) {
+          builder: (context, GetPlaylistsState state) {
+            if (state.status == LoadPlaylistsStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(
                   color: ColorConstants.primary,
@@ -64,7 +62,7 @@ class _PlaylistListScreenState extends State<PlaylistListScreen> {
     );
   }
 
-  Widget _buildPlaylistList(BuildContext context, LoadPlaylistsState state) {
+  Widget _buildPlaylistList(BuildContext context, GetPlaylistsState state) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: SmartRefresher(
@@ -90,7 +88,7 @@ class _PlaylistListScreenState extends State<PlaylistListScreen> {
         ),
         controller: _refreshController,
         onLoading: () {
-          context.read<PlaylistsBloc>().add(GetMorePlaylistsEvent());
+          context.read<GetPlaylistsBloc>().add(GetMorePlaylistsEvent());
         },
         child: PlaylistList(playlists: state.playlists ?? []),
       ),

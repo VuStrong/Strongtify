@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:strongtify_mobile_app/common_blocs/albums/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -14,7 +14,7 @@ class AlbumListScreen extends StatefulWidget {
   });
 
   final String title;
-  final AlbumsEvent event;
+  final GetAlbumsEvent event;
 
   @override
   State<AlbumListScreen> createState() => _AlbumListScreenState();
@@ -26,8 +26,8 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AlbumsBloc>(
-      create: (context) => getIt<AlbumsBloc>()
+    return BlocProvider<GetAlbumsBloc>(
+      create: (context) => getIt<GetAlbumsBloc>()
         ..add(widget.event),
       child: Scaffold(
         appBar: AppBar(
@@ -35,10 +35,9 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
           backgroundColor: ColorConstants.background,
           title: Text(widget.title),
         ),
-        body: BlocConsumer<AlbumsBloc, AlbumsState>(
-          listener: (context, AlbumsState state) {
-            if (state is! LoadAlbumsState ||
-                state.status != LoadAlbumsStatus.loaded) {
+        body: BlocConsumer<GetAlbumsBloc, GetAlbumsState>(
+          listener: (context, GetAlbumsState state) {
+            if (state.status != LoadAlbumsStatus.loaded) {
               return;
             }
 
@@ -48,9 +47,8 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
               _refreshController.loadComplete();
             }
           },
-          builder: (context, AlbumsState state) {
-            if (state is! LoadAlbumsState ||
-                state.status == LoadAlbumsStatus.loading) {
+          builder: (context, GetAlbumsState state) {
+            if (state.status == LoadAlbumsStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(
                   color: ColorConstants.primary,
@@ -65,7 +63,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
     );
   }
 
-  Widget _buildAlbumList(BuildContext context, LoadAlbumsState state) {
+  Widget _buildAlbumList(BuildContext context, GetAlbumsState state) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: SmartRefresher(
@@ -91,7 +89,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
         ),
         controller: _refreshController,
         onLoading: () {
-          context.read<AlbumsBloc>().add(GetMoreAlbumsEvent());
+          context.read<GetAlbumsBloc>().add(GetMoreAlbumsEvent());
         },
         child: AlbumList(albums: state.albums ?? []),
       ),

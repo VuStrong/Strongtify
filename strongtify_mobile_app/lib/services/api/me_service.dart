@@ -11,8 +11,8 @@ import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/services/api/api_service.dart';
 
 @injectable
-class AccountService extends ApiService {
-  AccountService(super.dioClient);
+class MeService extends ApiService {
+  MeService(super.dioClient);
 
   Future<Account?> getCurrentAccount() async {
     try {

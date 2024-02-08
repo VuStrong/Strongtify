@@ -1,12 +1,10 @@
 import 'package:strongtify_mobile_app/models/genre/genre.dart';
 
-abstract class GenresState {}
-
-class LoadGenresState extends GenresState {
+class GetGenresState {
   final List<Genre>? genres;
   final bool isLoading;
 
-  LoadGenresState({
+  GetGenresState({
     this.genres,
     this.isLoading = false,
   });

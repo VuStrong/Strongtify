@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:strongtify_mobile_app/common_blocs/genres/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_genres/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/search/search_result_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
@@ -21,8 +21,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GenresBloc>(
-      create: (context) => getIt<GenresBloc>()..add(GetAllGenresEvent()),
+    return BlocProvider<GetGenresBloc>(
+      create: (context) => getIt<GetGenresBloc>()..add(GetAllGenresEvent()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -69,9 +69,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    BlocBuilder<GenresBloc, GenresState>(
-                      builder: (context, GenresState state) {
-                        if (state is LoadGenresState && !state.isLoading) {
+                    BlocBuilder<GetGenresBloc, GetGenresState>(
+                      builder: (context, GetGenresState state) {
+                        if (!state.isLoading) {
                           return GenreGrid(genres: state.genres ?? []);
                         }
 

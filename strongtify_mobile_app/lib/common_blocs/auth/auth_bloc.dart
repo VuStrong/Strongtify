@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/exceptions/auth_exceptions.dart';
 import 'package:strongtify_mobile_app/exceptions/user_exceptions.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
-import 'package:strongtify_mobile_app/services/api/account_service.dart';
+import 'package:strongtify_mobile_app/services/api/me_service.dart';
 import 'package:strongtify_mobile_app/services/api/auth_service.dart';
 import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
 
@@ -24,7 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   final AuthService _authService;
-  final AccountService _accountService;
+  final MeService _accountService;
   final LocalStorage _storage;
 
   Future<void> _onInitialize(

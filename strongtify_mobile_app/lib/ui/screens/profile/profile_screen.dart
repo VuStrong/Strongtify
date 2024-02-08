@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:strongtify_mobile_app/common_blocs/playlists/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/bloc/bloc.dart';

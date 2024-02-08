@@ -9,7 +9,7 @@ import 'package:strongtify_mobile_app/services/api/api_service.dart';
 class PlaylistService extends ApiService {
   PlaylistService(super.dioClient);
 
-  Future<PagedResponse<Playlist>?> getPlaylists({
+  Future<PagedResponse<Playlist>> getPlaylists({
     String? userId,
     int skip = 0,
     int take = 5,
@@ -37,7 +37,7 @@ class PlaylistService extends ApiService {
         end: data['end'],
       );
     } on DioException {
-      return null;
+      throw Exception();
     }
   }
 
