@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -23,6 +24,28 @@ class MeService extends ApiService {
       return Account.fromMap(data);
     } on DioException catch (e) {
       throw UserNotFoundException(message: e.response?.data['message']);
+    }
+  }
+
+  Future<Account> editAccount({
+    String? name,
+    String? about,
+    File? image,
+  }) async {
+    final formData = FormData.fromMap({
+      if (name != null) 'name': name,
+      if (about != null) 'about': about,
+      if (image != null) 'image': await MultipartFile.fromFile(image.path),
+    });
+
+    try {
+      Response response = await dioClient.dio.patch('/v1/me', data: formData);
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return Account.fromMap(data);
+    } on DioException {
+      throw Exception();
     }
   }
 

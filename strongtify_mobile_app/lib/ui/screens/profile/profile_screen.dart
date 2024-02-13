@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/bloc/bloc.dart';
+import 'package:strongtify_mobile_app/ui/screens/profile/profile_edit_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/user/user_grid.dart';
@@ -39,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, ProfileState state) {
-            if (state.isLoading) {
+            if (state.status == ProfileStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(
                   color: ColorConstants.primary,
@@ -56,14 +59,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             }
 
-            return _buildProfileScreen(state);
+            Account account = context.read<AuthBloc>().state.user!;
+            return _buildProfileScreen(context.read<ProfileBloc>(), account);
           },
         ),
       ),
     );
   }
 
-  Widget _buildProfileScreen(ProfileState state) {
+  Widget _buildProfileScreen(ProfileBloc bloc, Account currentUser) {
+    final state = bloc.state;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -107,14 +113,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: const TextStyle(color: Colors.white54),
           ),
           const SizedBox(height: 16),
-          Button(
-            width: 120,
-            isOutlined: true,
-            buttonText: 'Chỉnh sửa',
-            onPressed: () {
-              //
-            },
-          ),
+          state.user!.id == currentUser.id
+              ? Button(
+                  width: 120,
+                  isOutlined: true,
+                  buttonText: 'Chỉnh sửa',
+                  onPressed: () {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      context,
+                      screen: ProfileEditScreen(profileBloc: bloc),
+                    );
+                  },
+                )
+              : Button(
+                  width: 120,
+                  isOutlined: true,
+                  buttonText: 'Theo dõi',
+                  onPressed: () {
+                    //
+                  },
+                ),
           const SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,8 +142,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   PersistentNavBarNavigator.pushNewScreen(
                     context,
                     screen: PlaylistListScreen(
-                      title: 'Playlist của tôi',
-                      event: GetCurrentUserPlaylistsEvent(),
+                      title: 'Playlist',
+                      event: GetPlaylistsByParamsEvent(
+                        userId: state.user!.id,
+                        sort: 'createdAt_desc',
+                      ),
                     ),
                   );
                 },
