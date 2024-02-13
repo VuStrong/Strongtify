@@ -10,6 +10,7 @@ class Account {
     this.emailConfirmed = false,
     this.locked = false,
     required this.role,
+    this.about,
   });
 
   final String id;
@@ -20,6 +21,7 @@ class Account {
   final bool emailConfirmed;
   final bool locked;
   final Role role;
+  final String? about;
 
   static Account fromMap(Map<String, dynamic> data) {
     return Account(
@@ -31,6 +33,7 @@ class Account {
       imageUrl: data['imageUrl'],
       emailConfirmed: data['emailConfirmed'],
       locked: data['locked'],
+      about: data['about'],
     );
   }
 }

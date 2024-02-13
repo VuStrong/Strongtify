@@ -21,7 +21,7 @@ class UserDetail extends User {
   });
 
   final DateTime createdAt;
-  final String? about;
+  String? about;
   final int playlistCount;
   final int followingUserCount;
   final int followingArtistCount;

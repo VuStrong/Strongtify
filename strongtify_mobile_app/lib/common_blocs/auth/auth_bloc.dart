@@ -11,14 +11,18 @@ import 'bloc.dart';
 
 @lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(this._authService, this._accountService, this._storage)
-      : super(AuthState.init()) {
+  AuthBloc(
+    this._authService,
+    this._accountService,
+    this._storage,
+  ) : super(AuthState.init()) {
     on<AuthEventInitialize>(_onInitialize);
     on<AuthEventLogin>(_onLogin);
     on<AuthEventRegister>(_onRegister);
     on<AuthEventLogout>(_onLogout);
     on<AuthEventSendEmailConfirmation>(_onSendEmailConfirmation);
     on<AuthEventSendPasswordResetLink>(_onSendPasswordResetLink);
+    on<UpdateUserEvent>(_onUpdateUser);
 
     add(AuthEventInitialize());
   }
@@ -27,8 +31,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final MeService _accountService;
   final LocalStorage _storage;
 
+  Future<void> _onUpdateUser(UpdateUserEvent event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(user: () => event.account));
+  }
+
   Future<void> _onInitialize(
-      AuthEventInitialize event, Emitter<AuthState> emit) async {
+    AuthEventInitialize event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(state.copyWith(isInitializing: true));
 
     String? refreshToken = await _storage.getString('refresh_token');
@@ -69,7 +79,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onRegister(
-      AuthEventRegister event, Emitter<AuthState> emit) async {
+    AuthEventRegister event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(state.copyWith(isLoading: true));
 
     try {

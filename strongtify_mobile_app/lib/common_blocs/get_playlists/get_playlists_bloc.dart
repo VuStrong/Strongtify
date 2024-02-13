@@ -12,6 +12,8 @@ class GetPlaylistsBloc extends Bloc<GetPlaylistsEvent, GetPlaylistsState> {
     this._meService,
     this._storage,
   ) : super(GetPlaylistsState()) {
+    on<GetPlaylistsByParamsEvent>(_onGetPlaylistsByParams);
+
     on<GetCurrentUserPlaylistsEvent>(_onGetCurrentUserPlaylists);
 
     on<GetCurrentUserLikedPlaylistsEvent>(_onGetCurrentUserLikedPlaylists);
@@ -48,6 +50,40 @@ class GetPlaylistsBloc extends Bloc<GetPlaylistsEvent, GetPlaylistsState> {
             userId: userId,
             sort: 'createdAt_desc',
             take: event.take,
+            skip: skip,
+          );
+        },
+      ));
+    } on Exception {
+      emit(GetPlaylistsState(
+        status: LoadPlaylistsStatus.loaded,
+      ));
+    }
+  }
+
+  Future<void> _onGetPlaylistsByParams(
+    GetPlaylistsByParamsEvent event,
+    Emitter<GetPlaylistsState> emit,
+  ) async {
+    emit(GetPlaylistsState(status: LoadPlaylistsStatus.loading));
+
+    try {
+      final result = await _playlistService.getPlaylists(
+        userId: event.userId,
+        sort: event.sort,
+        take: 10,
+      );
+
+      emit(GetPlaylistsState(
+        status: LoadPlaylistsStatus.loaded,
+        playlists: result.items,
+        end: result.end,
+        take: 10,
+        loadBySkip: (int skip) async {
+          return await _playlistService.getPlaylists(
+            userId: event.userId,
+            sort: event.sort,
+            take: 10,
             skip: skip,
           );
         },

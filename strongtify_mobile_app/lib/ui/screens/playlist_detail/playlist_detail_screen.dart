@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/bloc/bloc.dart';
+import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/enums.dart';
@@ -177,30 +179,38 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
   }
 
   Widget _buildPlaylistUser(User user) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: ClipOval(
-            child: user.imageUrl != null
-                ? Image.network(
-                    user.imageUrl!,
-                    fit: BoxFit.cover,
-                  )
-                : Image.asset('assets/img/default-avatar.png'),
+    return GestureDetector(
+      onTap: () {
+        PersistentNavBarNavigator.pushNewScreen(
+          context,
+          screen: ProfileScreen(userId: user.id),
+        );
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: ClipOval(
+              child: user.imageUrl != null
+                  ? Image.network(
+                      user.imageUrl!,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset('assets/img/default-avatar.png'),
+            ),
           ),
-        ),
-        const SizedBox(width: 5),
-        Text(
-          user.name,
-          style: const TextStyle(
-            color: Colors.white54,
-            overflow: TextOverflow.ellipsis,
+          const SizedBox(width: 5),
+          Text(
+            user.name,
+            style: const TextStyle(
+              color: Colors.white54,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

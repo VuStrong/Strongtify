@@ -7,10 +7,16 @@ class SongItem extends StatefulWidget {
     super.key,
     required this.song,
     this.isPlaying = false,
+    this.onPressed,
+    this.onPressAction,
+    this.actionIcon,
   });
 
   final Song song;
   final bool isPlaying;
+  final void Function()? onPressed;
+  final void Function()? onPressAction;
+  final Icon? actionIcon;
 
   @override
   State<SongItem> createState() => _SongItemState();
@@ -27,9 +33,9 @@ class _SongItemState extends State<SongItem> {
           borderRadius: BorderRadius.circular(10),
           child: widget.song.imageUrl != null
               ? Image.network(
-            widget.song.imageUrl!,
-            fit: BoxFit.cover,
-          )
+                  widget.song.imageUrl!,
+                  fit: BoxFit.cover,
+                )
               : Image.asset('assets/img/default-song-img.png'),
         ),
       ),
@@ -49,11 +55,21 @@ class _SongItemState extends State<SongItem> {
       ),
       tileColor: widget.isPlaying
           ? ColorConstants.primary.withOpacity(0.5)
-          : ColorConstants.background,
+          : Colors.transparent,
       contentPadding: const EdgeInsets.only(right: 5, left: 5),
-      onTap: () {
-        //
-      },
+      onTap: widget.onPressed != null
+          ? () {
+              widget.onPressed!();
+            }
+          : null,
+      trailing: widget.actionIcon != null
+          ? IconButton(
+              icon: widget.actionIcon!,
+              onPressed: () {
+                if (widget.onPressAction != null) widget.onPressAction!();
+              },
+            )
+          : null,
     );
   }
 }

@@ -1,6 +1,14 @@
+import 'package:strongtify_mobile_app/models/account/account.dart';
+
 abstract class AuthEvent {}
 
 class AuthEventInitialize extends AuthEvent {
+}
+
+class UpdateUserEvent extends AuthEvent {
+  final Account account;
+
+  UpdateUserEvent({required this.account});
 }
 
 class AuthEventLogin extends AuthEvent {

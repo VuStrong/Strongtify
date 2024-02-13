@@ -91,8 +91,10 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i22.HomeSectionsBloc(gh<_i6.HomeService>()));
     gh.factory<_i23.PlaylistDetailBloc>(
         () => _i23.PlaylistDetailBloc(gh<_i10.PlaylistService>()));
-    gh.factory<_i24.ProfileBloc>(
-        () => _i24.ProfileBloc(gh<_i14.UserService>()));
+    gh.factory<_i24.ProfileBloc>(() => _i24.ProfileBloc(
+          gh<_i14.UserService>(),
+          gh<_i9.MeService>(),
+        ));
     gh.lazySingleton<_i25.RankBloc>(
         () => _i25.RankBloc(gh<_i12.SongService>()));
     gh.factory<_i26.SearchBloc>(

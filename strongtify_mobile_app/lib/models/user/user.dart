@@ -8,9 +8,9 @@ class User {
   });
 
   final String id;
-  final String name;
+  String name;
   final String alias;
-  final String? imageUrl;
+  String? imageUrl;
   final int followerCount;
 
   factory User.fromMap(Map<String, dynamic> data) {

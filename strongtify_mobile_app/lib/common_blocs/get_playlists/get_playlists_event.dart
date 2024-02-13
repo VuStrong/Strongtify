@@ -1,5 +1,15 @@
 abstract class GetPlaylistsEvent {}
 
+class GetPlaylistsByParamsEvent extends GetPlaylistsEvent {
+  final String? userId;
+  final String? sort;
+
+  GetPlaylistsByParamsEvent({
+    this.userId,
+    this.sort,
+  });
+}
+
 class GetCurrentUserPlaylistsEvent extends GetPlaylistsEvent {
   final int take;
 
