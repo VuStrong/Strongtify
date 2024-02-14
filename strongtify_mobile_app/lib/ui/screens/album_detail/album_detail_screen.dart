@@ -10,7 +10,6 @@ import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_scr
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
-import 'package:strongtify_mobile_app/utils/snackbars/success_snackbar.dart';
 
 class AlbumDetailScreen extends StatefulWidget {
   const AlbumDetailScreen({

@@ -44,7 +44,6 @@ dependencies:
   get_it: ^7.6.6
   loader_overlay: ^4.0.0
   persistent_bottom_nav_bar: ^5.0.2
-  shimmer: ^3.0.0
   pull_to_refresh: ^2.0.0
   share_plus: ^7.2.1
   image_picker: ^1.0.7

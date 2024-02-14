@@ -106,6 +106,8 @@ class _SongListState extends State<SongList> {
               ...song.artists
                       ?.map((artist) => ListTile(
                             onTap: () {
+                              Navigator.pop(context);
+
                               PersistentNavBarNavigator.pushNewScreen(
                                 context,
                                 screen: ArtistDetailScreen(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:strongtify_mobile_app/ui/screens/home/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/album/album.dart';
@@ -12,7 +11,6 @@ import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
-import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -42,42 +40,15 @@ class _HomeScreenState extends State<HomeScreen> {
         body: BlocBuilder<HomeSectionsBloc, HomeSectionsState>(
           builder: (context, HomeSectionsState state) {
             if (state.isLoading) {
-              return _buildShimmer();
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: ColorConstants.primary,
+                ),
+              );
             } else {
               return _buildHomePage(state.sections);
             }
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildShimmer() {
-    return Shimmer.fromColors(
-      baseColor: Colors.black12,
-      highlightColor: ColorConstants.primary,
-      enabled: true,
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 670.0,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisExtent: 230,
-                ),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemCount: 5,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (_, position) => const AlbumItemPlaceholder(),
-              ),
-            ),
-            const SizedBox(height: 40.0),
-            const SongItemPlaceholder(),
-          ],
         ),
       ),
     );

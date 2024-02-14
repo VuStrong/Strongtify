@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_genres/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/search/search_result_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/genre/genre_grid.dart';
-import 'package:strongtify_mobile_app/ui/widgets/placeholders.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -75,7 +73,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           return GenreGrid(genres: state.genres ?? []);
                         }
 
-                        return _buildGenreGridShimmer();
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: ColorConstants.primary,
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -83,28 +85,6 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGenreGridShimmer() {
-    return Shimmer.fromColors(
-      baseColor: Colors.black12,
-      highlightColor: ColorConstants.primary,
-      enabled: true,
-      child: SizedBox(
-        height: 600,
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisExtent: 120,
-          ),
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          itemCount: 10,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (_, position) => const BannerPlaceholder(height: 120),
         ),
       ),
     );
