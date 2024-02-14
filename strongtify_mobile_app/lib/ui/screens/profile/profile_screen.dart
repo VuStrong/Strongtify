@@ -127,12 +127,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            state.user!.about ?? '',
-            style: const TextStyle(color: Colors.white54),
+          Padding(
+            padding: state.user!.about != null
+                ? const EdgeInsets.only(top: 16, bottom: 16)
+                : const EdgeInsets.only(top: 0, bottom: 0),
+            child: Text(
+              state.user!.about ?? '',
+              style: const TextStyle(color: Colors.white54),
+            ),
           ),
-          const SizedBox(height: 16),
           state.user!.id == currentUser.id
               ? Button(
                   width: 120,

@@ -15,3 +15,9 @@ class EmailAlreadyExistsException extends BaseException {
 class EmailNotFoundException extends BaseException {
   EmailNotFoundException({super.message});
 }
+
+class PasswordNotMatchException extends BaseException {
+  PasswordNotMatchException({
+    String? message,
+  }) : super(message: message ?? 'Mật khẩu không khớp!');
+}

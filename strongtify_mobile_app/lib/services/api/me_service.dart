@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:strongtify_mobile_app/exceptions/auth_exceptions.dart';
 import 'package:strongtify_mobile_app/exceptions/user_exceptions.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/models/album/album.dart';
@@ -45,6 +46,26 @@ class MeService extends ApiService {
 
       return Account.fromMap(data);
     } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    final body = jsonEncode({
+      'oldPassword': oldPassword,
+      'newPassword': newPassword,
+    });
+
+    try {
+      await dioClient.dio.patch('/v1/me/password', data: body);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        throw PasswordNotMatchException();
+      }
+
       throw Exception();
     }
   }
