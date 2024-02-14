@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/models/artist/artist_detail.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/song_list/song_list_screen.dart';
@@ -46,14 +47,9 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                 }
 
                 return IconButton(
-                  icon: const Icon(Icons.share),
-                  tooltip: 'Chia sẻ',
+                  icon: const Icon(Icons.more_vert_outlined),
                   onPressed: () {
-                    final domain = dotenv.env['WEB_CLIENT_URL'] ?? '';
-                    final artist = state.artist;
-
-                    Share.share(
-                        '$domain/artists/${artist!.alias}/${artist.id}');
+                    _showArtistMenuBottomSheet(context, state.artist!);
                   },
                 );
               },
@@ -288,6 +284,37 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
               : const SizedBox(),
         ],
       ),
+    );
+  }
+
+  void _showArtistMenuBottomSheet(BuildContext context, ArtistDetail artist) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.grey[850],
+      useRootNavigator: true,
+      builder: (context) {
+        return Padding(
+          padding:
+              const EdgeInsets.only(top: 20, bottom: 20, right: 12, left: 12),
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.share),
+                textColor: Colors.white70,
+                iconColor: Colors.white70,
+                title: const Text('Chia sẻ'),
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  final domain = dotenv.env['WEB_CLIENT_URL'] ?? '';
+
+                  Share.share('$domain/artists/${artist.alias}/${artist.id}');
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

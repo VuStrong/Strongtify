@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
+import 'package:strongtify_mobile_app/models/user/user_detail.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_edit_screen.dart';
@@ -39,6 +42,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: ColorConstants.background,
+          actions: [
+            BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, ProfileState state) {
+                if (state.status == ProfileStatus.loading ||
+                    state.user == null) {
+                  return const SizedBox();
+                }
+
+                return IconButton(
+                  icon: const Icon(Icons.more_vert_outlined),
+                  onPressed: () {
+                    _showProfileMenuBottomSheet(context, state.user!);
+                  },
+                );
+              },
+            ),
+          ],
         ),
         body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, ProfileState state) {
@@ -210,6 +230,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showProfileMenuBottomSheet(BuildContext context, UserDetail user) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.grey[850],
+      useRootNavigator: true,
+      builder: (context) {
+        return Padding(
+          padding:
+              const EdgeInsets.only(top: 20, bottom: 20, right: 12, left: 12),
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.share),
+                textColor: Colors.white70,
+                iconColor: Colors.white70,
+                title: const Text('Chia sẻ hồ sơ'),
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  final domain = dotenv.env['WEB_CLIENT_URL'] ?? '';
+
+                  Share.share('$domain/users/${user.id}');
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
@@ -49,13 +50,9 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                 }
 
                 return IconButton(
-                  icon: const Icon(Icons.share),
-                  tooltip: 'Chia sẻ',
+                  icon: const Icon(Icons.more_vert_outlined),
                   onPressed: () {
-                    final domain = dotenv.env['WEB_CLIENT_URL'] ?? '';
-                    final playlist = state.playlist;
-
-                    Share.share('$domain/playlists/${playlist!.id}');
+                    _showPlaylistMenuBottomSheet(context, state.playlist!);
                   },
                 );
               },
@@ -211,6 +208,54 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showPlaylistMenuBottomSheet(
+    BuildContext context,
+    PlaylistDetail playlist,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.grey[850],
+      useRootNavigator: true,
+      builder: (context) {
+        return Padding(
+          padding:
+              const EdgeInsets.only(top: 20, bottom: 20, right: 12, left: 12),
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.person_search),
+                textColor: Colors.white70,
+                iconColor: Colors.white70,
+                title: const Text('Xem hồ sơ người dùng'),
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: ProfileScreen(userId: playlist.user.id),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.share),
+                textColor: Colors.white70,
+                iconColor: Colors.white70,
+                title: const Text('Chia sẻ'),
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  final domain = dotenv.env['WEB_CLIENT_URL'] ?? '';
+
+                  Share.share('$domain/playlists/${playlist.id}');
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
