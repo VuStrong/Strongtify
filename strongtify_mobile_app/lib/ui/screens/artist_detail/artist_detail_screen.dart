@@ -88,7 +88,6 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildArtistThumbnail(state),
-          const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -107,6 +106,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                       ),
                     );
                   },
+                  contentPadding: const EdgeInsets.only(right: 0, left: 0),
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   trailing: const Icon(Icons.arrow_forward_ios),
@@ -143,6 +143,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   trailing: const Icon(Icons.arrow_forward_ios),
+                  contentPadding: const EdgeInsets.only(right: 0, left: 0),
                   title: const Text(
                     'Album',
                     style: TextStyle(

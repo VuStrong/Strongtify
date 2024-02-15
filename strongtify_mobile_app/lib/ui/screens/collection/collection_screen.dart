@@ -118,6 +118,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                       iconColor: Colors.white,
                       textColor: Colors.white,
                       trailing: const Icon(Icons.arrow_forward_ios),
+                      contentPadding: const EdgeInsets.only(right: 0, left: 0),
                       title: const Text(
                         'Playlist của tôi',
                         style: TextStyle(

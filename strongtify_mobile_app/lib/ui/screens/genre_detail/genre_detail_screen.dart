@@ -128,6 +128,7 @@ class _GenreDetailScreenState extends State<GenreDetailScreen> {
                   iconColor: Colors.white,
                   textColor: Colors.white,
                   trailing: const Icon(Icons.arrow_forward_ios),
+                  contentPadding: const EdgeInsets.only(right: 0, left: 0),
                   title: const Text(
                     'Bài hát nổi bật',
                     style: TextStyle(
@@ -160,6 +161,7 @@ class _GenreDetailScreenState extends State<GenreDetailScreen> {
                   },
                   iconColor: Colors.white,
                   textColor: Colors.white,
+                  contentPadding: const EdgeInsets.only(right: 0, left: 0),
                   title: const Text(
                     'Album',
                     style: TextStyle(

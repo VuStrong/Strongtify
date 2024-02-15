@@ -176,6 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 iconColor: Colors.white,
                 textColor: Colors.white,
                 trailing: const Icon(Icons.arrow_forward_ios),
+                contentPadding: const EdgeInsets.only(right: 0, left: 0),
                 title: const Text(
                   'Playlist',
                   style: TextStyle(
@@ -198,6 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 iconColor: Colors.white,
                 textColor: Colors.white,
                 trailing: const Icon(Icons.arrow_forward_ios),
+                contentPadding: const EdgeInsets.only(right: 0, left: 0),
                 title: const Text(
                   'Người theo dõi',
                   style: TextStyle(
@@ -220,6 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 iconColor: Colors.white,
                 textColor: Colors.white,
                 trailing: const Icon(Icons.arrow_forward_ios),
+                contentPadding: const EdgeInsets.only(right: 0, left: 0),
                 title: const Text(
                   'Đang theo dõi',
                   style: TextStyle(

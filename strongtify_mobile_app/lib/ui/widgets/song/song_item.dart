@@ -56,7 +56,7 @@ class _SongItemState extends State<SongItem> {
       tileColor: widget.isPlaying
           ? ColorConstants.primary.withOpacity(0.5)
           : Colors.transparent,
-      contentPadding: const EdgeInsets.only(right: 5, left: 5),
+      contentPadding: const EdgeInsets.only(right: 0, left: 5),
       onTap: widget.onPressed != null
           ? () {
               widget.onPressed!();
