@@ -3,16 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:strongtify_mobile_app/common_blocs/auth/auth_bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/bloc/bloc.dart';
+import 'package:strongtify_mobile_app/ui/screens/playlist_detail/playlist_edit_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
+import 'package:strongtify_mobile_app/utils/dialogs/prompt_dialog.dart';
 import 'package:strongtify_mobile_app/utils/enums.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
+import 'package:strongtify_mobile_app/utils/snackbars/success_snackbar.dart';
 
 class PlaylistDetailScreen extends StatefulWidget {
   const PlaylistDetailScreen({
@@ -39,14 +43,17 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
           title: BlocBuilder<PlaylistDetailBloc, PlaylistDetailState>(
             builder: (context, PlaylistDetailState state) {
               return Text(
-                !state.isLoading ? state.playlist?.name ?? '' : '',
+                state.status != PlaylistDetailStatus.loading
+                    ? state.playlist?.name ?? ''
+                    : '',
               );
             },
           ),
           actions: [
             BlocBuilder<PlaylistDetailBloc, PlaylistDetailState>(
               builder: (context, PlaylistDetailState state) {
-                if (state.isLoading || state.playlist == null) {
+                if (state.status == PlaylistDetailStatus.loading ||
+                    state.playlist == null) {
                   return const SizedBox();
                 }
 
@@ -60,9 +67,19 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
             ),
           ],
         ),
-        body: BlocBuilder<PlaylistDetailBloc, PlaylistDetailState>(
+        body: BlocConsumer<PlaylistDetailBloc, PlaylistDetailState>(
+          listener: (context, PlaylistDetailState state) {
+            if (state.status == PlaylistDetailStatus.deleted) {
+              Navigator.pop(context);
+
+              showSuccessSnackBar(
+                context,
+                text: 'Đã xóa playlist!',
+              );
+            }
+          },
           builder: (context, PlaylistDetailState state) {
-            if (!state.isLoading) {
+            if (state.status != PlaylistDetailStatus.loading) {
               if (state.playlist == null) {
                 return const Center(
                   child: Text(
@@ -217,6 +234,9 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
     BuildContext context,
     PlaylistDetail playlist,
   ) {
+    final bloc = context.read<PlaylistDetailBloc>();
+    final currentUser = context.read<AuthBloc>().state.user!;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.grey[850],
@@ -250,6 +270,25 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                   );
                 },
               ),
+              playlist.user.id == currentUser.id
+                  ? ListTile(
+                      leading: const Icon(Icons.edit),
+                      textColor: Colors.white70,
+                      iconColor: Colors.white70,
+                      title: const Text('Chỉnh sửa danh sách phát'),
+                      onTap: () async {
+                        Navigator.pop(context);
+
+                        PersistentNavBarNavigator.pushNewScreen(
+                          context,
+                          screen: PlaylistEditScreen(
+                            bloc: bloc,
+                          ),
+                          withNavBar: false,
+                        );
+                      },
+                    )
+                  : const SizedBox(),
               ListTile(
                 leading: const Icon(Icons.share),
                 textColor: Colors.white70,
@@ -263,6 +302,29 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                   Share.share('$domain/playlists/${playlist.id}');
                 },
               ),
+              playlist.user.id == currentUser.id
+                  ? ListTile(
+                      leading: const Icon(Icons.delete),
+                      textColor: Colors.white70,
+                      iconColor: Colors.white70,
+                      title: const Text('Xóa danh sách phát'),
+                      onTap: () async {
+                        Navigator.pop(context);
+
+                        final shouldDelete = await showPromptDialog(
+                          context: context,
+                          prompt: 'Bạn muốn xóa playlist này?',
+                          title: playlist.name,
+                        );
+
+                        if (shouldDelete) {
+                          bloc.add(DeletePlaylistEvent(
+                            playlistId: playlist.id,
+                          ));
+                        }
+                      },
+                    )
+                  : const SizedBox(),
             ],
           ),
         );

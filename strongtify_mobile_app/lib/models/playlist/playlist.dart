@@ -15,7 +15,7 @@ class Playlist {
   });
 
   final String id;
-  final String name;
+  String name;
   final String alias;
   final String? imageUrl;
   final int likeCount;
@@ -30,11 +30,15 @@ class Playlist {
       name: data['name'],
       alias: data['alias'],
       imageUrl: data['imageUrl'],
-      user: User.fromMap(data['user']),
+      user: data['user'] != null
+          ? User.fromMap(data['user'])
+          : User(id: '', name: '', alias: ''),
       likeCount: data['likeCount'] ?? 0,
       songCount: data['songCount'] ?? 0,
       totalLength: data['totalLength'] ?? 0,
-      status: data['status'] == 'PUBLIC' ? PlaylistStatus.public : PlaylistStatus.private
+      status: data['status'] == 'PUBLIC'
+          ? PlaylistStatus.public
+          : PlaylistStatus.private,
     );
   }
 }

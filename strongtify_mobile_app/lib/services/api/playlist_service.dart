@@ -75,4 +75,35 @@ class PlaylistService extends ApiService {
       throw Exception();
     }
   }
+
+  Future<PlaylistDetail> editPlaylist(
+    String id, {
+    required String name,
+    required PlaylistStatus status,
+    String? description,
+    File? image,
+  }) async {
+    final formData = FormData.fromMap({
+      'name': name,
+      'status': status.name.toUpperCase(),
+      if (description != null) 'description': description,
+      if (image != null) 'image': await MultipartFile.fromFile(image.path),
+    });
+
+    try {
+      await dioClient.dio.put('/v1/playlists/$id', data: formData);
+
+      return (await getPlaylistById(id))!;
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<void> deletePlaylist(String id) async {
+    try {
+      await dioClient.dio.delete('/v1/playlists/$id');
+    } on DioException {
+      throw Exception();
+    }
+  }
 }
