@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:strongtify_mobile_app/models/api_responses/paged_response.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 import 'package:strongtify_mobile_app/services/api/api_service.dart';
+import 'package:strongtify_mobile_app/utils/enums.dart';
 
 @injectable
 class PlaylistService extends ApiService {
@@ -50,6 +53,26 @@ class PlaylistService extends ApiService {
       return PlaylistDetail.fromMap(data);
     } on DioException {
       return null;
+    }
+  }
+
+  Future<void> createPlaylist({
+    required String name,
+    required PlaylistStatus status,
+    String? description,
+    File? image,
+  }) async {
+    final formData = FormData.fromMap({
+      'name': name,
+      'status': status.name.toUpperCase(),
+      if (description != null) 'description': description,
+      if (image != null) 'image': await MultipartFile.fromFile(image.path),
+    });
+
+    try {
+      await dioClient.dio.post('/v1/playlists', data: formData);
+    } on DioException {
+      throw Exception();
     }
   }
 }

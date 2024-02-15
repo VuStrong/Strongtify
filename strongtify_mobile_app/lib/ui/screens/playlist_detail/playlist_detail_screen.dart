@@ -98,6 +98,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
             Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.width * 0.5,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [

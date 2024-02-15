@@ -9,6 +9,7 @@ import 'package:strongtify_mobile_app/common_blocs/get_songs/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_list/artist_list_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/create_playlist/create_playlist_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/song_list/song_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
@@ -183,6 +184,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 title: const Text('Tạo danh sách phát mới'),
                 onTap: () async {
                   Navigator.pop(context);
+
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: const CreatePlaylistScreen(),
+                    withNavBar: false,
+                  );
                 },
               ),
             ],

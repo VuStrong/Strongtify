@@ -11,13 +11,13 @@
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
-import 'common_blocs/auth/auth_bloc.dart' as _i33;
-import 'common_blocs/get_albums/get_albums_bloc.dart' as _i21;
-import 'common_blocs/get_artists/get_artists_bloc.dart' as _i22;
+import 'common_blocs/auth/auth_bloc.dart' as _i34;
+import 'common_blocs/get_albums/get_albums_bloc.dart' as _i22;
+import 'common_blocs/get_artists/get_artists_bloc.dart' as _i23;
 import 'common_blocs/get_genres/get_genres_bloc.dart' as _i5;
-import 'common_blocs/get_playlists/get_playlists_bloc.dart' as _i23;
-import 'common_blocs/get_songs/get_songs_bloc.dart' as _i24;
-import 'common_blocs/get_users/get_users_bloc.dart' as _i25;
+import 'common_blocs/get_playlists/get_playlists_bloc.dart' as _i24;
+import 'common_blocs/get_songs/get_songs_bloc.dart' as _i25;
+import 'common_blocs/get_users/get_users_bloc.dart' as _i26;
 import 'common_blocs/user_recent_playlists/user_recent_playlists_bloc.dart'
     as _i14;
 import 'dio/dio_client.dart' as _i3;
@@ -34,14 +34,15 @@ import 'services/api/song_service.dart' as _i12;
 import 'services/api/user_service.dart' as _i15;
 import 'services/local_storage/local_storage.dart' as _i7;
 import 'services/local_storage/local_storage_impl.dart' as _i8;
-import 'ui/screens/album_detail/bloc/album_detail_bloc.dart' as _i31;
-import 'ui/screens/artist_detail/bloc/artist_detail_bloc.dart' as _i32;
-import 'ui/screens/genre_detail/bloc/genre_detail_bloc.dart' as _i20;
-import 'ui/screens/home/bloc/home_sections_bloc.dart' as _i26;
-import 'ui/screens/playlist_detail/bloc/playlist_detail_bloc.dart' as _i27;
-import 'ui/screens/profile/bloc/profile_bloc.dart' as _i28;
-import 'ui/screens/rank/bloc/rank_bloc.dart' as _i29;
-import 'ui/screens/search/bloc/search_bloc.dart' as _i30;
+import 'ui/screens/album_detail/bloc/album_detail_bloc.dart' as _i32;
+import 'ui/screens/artist_detail/bloc/artist_detail_bloc.dart' as _i33;
+import 'ui/screens/create_playlist/bloc/create_playlist_bloc.dart' as _i20;
+import 'ui/screens/genre_detail/bloc/genre_detail_bloc.dart' as _i21;
+import 'ui/screens/home/bloc/home_sections_bloc.dart' as _i27;
+import 'ui/screens/playlist_detail/bloc/playlist_detail_bloc.dart' as _i28;
+import 'ui/screens/profile/bloc/profile_bloc.dart' as _i29;
+import 'ui/screens/rank/bloc/rank_bloc.dart' as _i30;
+import 'ui/screens/search/bloc/search_bloc.dart' as _i31;
 import 'ui/screens/settings/change_password/bloc/change_password_bloc.dart'
     as _i19;
 
@@ -84,42 +85,44 @@ extension GetItInjectableX on _i1.GetIt {
         ));
     gh.factory<_i19.ChangePasswordBloc>(
         () => _i19.ChangePasswordBloc(gh<_i9.MeService>()));
-    gh.factory<_i20.GenreDetailBloc>(
-        () => _i20.GenreDetailBloc(gh<_i4.GenreService>()));
-    gh.factory<_i21.GetAlbumsBloc>(() => _i21.GetAlbumsBloc(
+    gh.factory<_i20.CreatePlaylistBloc>(
+        () => _i20.CreatePlaylistBloc(gh<_i10.PlaylistService>()));
+    gh.factory<_i21.GenreDetailBloc>(
+        () => _i21.GenreDetailBloc(gh<_i4.GenreService>()));
+    gh.factory<_i22.GetAlbumsBloc>(() => _i22.GetAlbumsBloc(
           gh<_i16.AlbumService>(),
           gh<_i9.MeService>(),
         ));
-    gh.factory<_i22.GetArtistsBloc>(
-        () => _i22.GetArtistsBloc(gh<_i15.UserService>()));
-    gh.factory<_i23.GetPlaylistsBloc>(() => _i23.GetPlaylistsBloc(
+    gh.factory<_i23.GetArtistsBloc>(
+        () => _i23.GetArtistsBloc(gh<_i15.UserService>()));
+    gh.factory<_i24.GetPlaylistsBloc>(() => _i24.GetPlaylistsBloc(
           gh<_i10.PlaylistService>(),
           gh<_i9.MeService>(),
           gh<_i7.LocalStorage>(),
         ));
-    gh.factory<_i24.GetSongsBloc>(() => _i24.GetSongsBloc(
+    gh.factory<_i25.GetSongsBloc>(() => _i25.GetSongsBloc(
           gh<_i12.SongService>(),
           gh<_i9.MeService>(),
         ));
-    gh.factory<_i25.GetUsersBloc>(
-        () => _i25.GetUsersBloc(gh<_i15.UserService>()));
-    gh.factory<_i26.HomeSectionsBloc>(
-        () => _i26.HomeSectionsBloc(gh<_i6.HomeService>()));
-    gh.factory<_i27.PlaylistDetailBloc>(
-        () => _i27.PlaylistDetailBloc(gh<_i10.PlaylistService>()));
-    gh.factory<_i28.ProfileBloc>(() => _i28.ProfileBloc(
+    gh.factory<_i26.GetUsersBloc>(
+        () => _i26.GetUsersBloc(gh<_i15.UserService>()));
+    gh.factory<_i27.HomeSectionsBloc>(
+        () => _i27.HomeSectionsBloc(gh<_i6.HomeService>()));
+    gh.factory<_i28.PlaylistDetailBloc>(
+        () => _i28.PlaylistDetailBloc(gh<_i10.PlaylistService>()));
+    gh.factory<_i29.ProfileBloc>(() => _i29.ProfileBloc(
           gh<_i15.UserService>(),
           gh<_i9.MeService>(),
         ));
-    gh.lazySingleton<_i29.RankBloc>(
-        () => _i29.RankBloc(gh<_i12.SongService>()));
-    gh.factory<_i30.SearchBloc>(
-        () => _i30.SearchBloc(gh<_i11.SearchService>()));
-    gh.factory<_i31.AlbumDetailBloc>(
-        () => _i31.AlbumDetailBloc(gh<_i16.AlbumService>()));
-    gh.factory<_i32.ArtistDetailBloc>(
-        () => _i32.ArtistDetailBloc(gh<_i17.ArtistService>()));
-    gh.lazySingleton<_i33.AuthBloc>(() => _i33.AuthBloc(
+    gh.lazySingleton<_i30.RankBloc>(
+        () => _i30.RankBloc(gh<_i12.SongService>()));
+    gh.factory<_i31.SearchBloc>(
+        () => _i31.SearchBloc(gh<_i11.SearchService>()));
+    gh.factory<_i32.AlbumDetailBloc>(
+        () => _i32.AlbumDetailBloc(gh<_i16.AlbumService>()));
+    gh.factory<_i33.ArtistDetailBloc>(
+        () => _i33.ArtistDetailBloc(gh<_i17.ArtistService>()));
+    gh.lazySingleton<_i34.AuthBloc>(() => _i34.AuthBloc(
           gh<_i18.AuthService>(),
           gh<_i9.MeService>(),
           gh<_i7.LocalStorage>(),

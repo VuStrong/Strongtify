@@ -71,6 +71,19 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     }
   }
 
+  void _onPressSave() {
+    if (_formKey.currentState!.validate()) {
+      final name = nameController.text;
+      final about = aboutController.text;
+
+      widget.profileBloc.add(EditProfileEvent(
+        name: name,
+        about: about,
+        image: _pickedImage,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ProfileBloc>.value(
@@ -92,16 +105,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  final name = nameController.text;
-                  final about = aboutController.text;
-
-                  widget.profileBloc.add(EditProfileEvent(
-                    name: name,
-                    about: about,
-                    image: _pickedImage,
-                  ));
-                }
+                _onPressSave();
               },
               child: const Text(
                 'Lưu',
