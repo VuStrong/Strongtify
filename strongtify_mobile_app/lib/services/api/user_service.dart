@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:strongtify_mobile_app/models/api_responses/paged_response.dart';
+import 'package:strongtify_mobile_app/models/artist/artist.dart';
+import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/models/user/user_detail.dart';
 import 'package:strongtify_mobile_app/services/api/api_service.dart';
 
@@ -23,6 +26,90 @@ class UserService extends ApiService {
       return UserDetail.fromMap(data);
     } on DioException {
       return null;
+    }
+  }
+
+  Future<PagedResponse<User>> getFollowingUsers(
+    String userId, {
+    int skip = 0,
+    int take = 10,
+  }) async {
+    try {
+      Response response = await dioClient.dio.get(
+        '/v1/users/$userId/following-users',
+        queryParameters: {
+          'skip': skip,
+          'take': take,
+        },
+      );
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse(
+        items: (data['results'] as List).map((e) => User.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<PagedResponse<User>> getFollowers(
+    String userId, {
+    int skip = 0,
+    int take = 10,
+  }) async {
+    try {
+      Response response = await dioClient.dio.get(
+        '/v1/users/$userId/followers',
+        queryParameters: {
+          'skip': skip,
+          'take': take,
+        },
+      );
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse(
+        items: (data['results'] as List).map((e) => User.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<PagedResponse<Artist>> getFollowingArtists(
+    String userId, {
+    int skip = 0,
+    int take = 10,
+  }) async {
+    try {
+      Response response = await dioClient.dio.get(
+        '/v1/users/$userId/following-artists',
+        queryParameters: {
+          'skip': skip,
+          'take': take,
+        },
+      );
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse(
+        items: (data['results'] as List).map((e) => Artist.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
     }
   }
 }

@@ -5,12 +5,14 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/get_users/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/models/user/user_detail.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_edit_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/user_list/user_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/user/user_grid.dart';
@@ -145,6 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     PersistentNavBarNavigator.pushNewScreen(
                       context,
                       screen: ProfileEditScreen(profileBloc: bloc),
+                      withNavBar: false,
                     );
                   },
                 )
@@ -194,7 +197,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               ListTile(
                 onTap: () {
-                  //
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: UserListScreen(
+                      event: GetFollowersEvent(
+                        userId: state.user!.id,
+                      ),
+                      title: 'Người theo dõi',
+                    ),
+                  );
                 },
                 iconColor: Colors.white,
                 textColor: Colors.white,
@@ -217,7 +228,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               ListTile(
                 onTap: () {
-                  //
+                  PersistentNavBarNavigator.pushNewScreen(
+                    context,
+                    screen: UserListScreen(
+                      event: GetFollowingUsersEvent(
+                        userId: state.user!.id,
+                      ),
+                      title: 'Đang theo dõi',
+                    ),
+                  );
                 },
                 iconColor: Colors.white,
                 textColor: Colors.white,
