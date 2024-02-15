@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
+import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/settings/settings_screen.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -71,7 +74,32 @@ class AppDrawer extends StatelessWidget {
               );
             },
           ),
+          const Divider(
+            height: 1,
+            thickness: 1,
+            color: Colors.white30,
+          ),
+          BlocBuilder<UserRecentPlaylistsBloc, UserRecentPlaylistsState>(
+            builder: (context, UserRecentPlaylistsState state) {
+              if (!state.isLoading) {
+                return _buildDrawerPlaylists(context, state.playlists);
+              }
+
+              return const SizedBox();
+            },
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerPlaylists(BuildContext context, List<Playlist> playlists) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        children: playlists
+            .map((playlist) => SmallPlaylistItem(playlist: playlist))
+            .toList(),
       ),
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
+import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/collection/collection_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/home/home_screen.dart';
@@ -12,6 +14,8 @@ import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 class BottomNavigationApp extends StatelessWidget {
   BottomNavigationApp({super.key}) {
     _controller = PersistentTabController(initialIndex: 0);
+
+    getIt<UserRecentPlaylistsBloc>().add(GetUserRecentPlaylistsEvent());
   }
 
   static String id = 'bottom_navigation_app';

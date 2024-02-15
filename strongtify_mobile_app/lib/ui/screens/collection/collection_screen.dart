@@ -6,7 +6,7 @@ import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_artists/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_songs/bloc.dart';
-import 'package:strongtify_mobile_app/injection.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_list/artist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
@@ -28,141 +28,138 @@ class CollectionScreen extends StatefulWidget {
 class _CollectionScreenState extends State<CollectionScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GetPlaylistsBloc>(
-      create: (context) =>
-          getIt<GetPlaylistsBloc>()..add(GetCurrentUserPlaylistsEvent()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Bộ sưu tập',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: ColorConstants.background,
-          leading: const AppbarAccount(),
-          foregroundColor: Colors.white,
-          actions: [
-            IconButton(
-              onPressed: () {
-                _showAddMenuBottomSheet(context);
-              },
-              icon: const Icon(Icons.add),
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Bộ sưu tập',
+          style: TextStyle(color: Colors.white),
         ),
-        drawer: const AppDrawer(),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              ListTile(
-                textColor: Colors.white70,
-                iconColor: Colors.white70,
-                leading: const Icon(Icons.favorite),
-                title: const Text('Bài hát đã thích'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
-                    context,
-                    screen: SongListScreen(
-                      title: 'Bài hát đã thích',
-                      event: GetCurrentUserLikedSongsEvent(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                textColor: Colors.white70,
-                iconColor: Colors.white70,
-                leading: const Icon(Icons.library_music),
-                title: const Text('Album đã thích'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
-                    context,
-                    screen: AlbumListScreen(
-                      title: 'Album đã thích',
-                      event: GetCurrentUserLikedAlbumsEvent(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                textColor: Colors.white70,
-                iconColor: Colors.white70,
-                leading: const Icon(Icons.library_music),
-                title: const Text('Playlist đã thích'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
-                    context,
-                    screen: PlaylistListScreen(
-                      title: 'Playlist đã thích',
-                      event: GetCurrentUserLikedPlaylistsEvent(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                textColor: Colors.white70,
-                iconColor: Colors.white70,
-                leading: const Icon(Icons.group),
-                title: const Text('Nghệ sĩ đang theo dõi'),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
-                    context,
-                    screen: ArtistListScreen(
-                      title: 'Nghệ sĩ đang theo dõi',
-                      event: GetFollowingArtistsEvent(
-                          userId: context.read<AuthBloc>().state.user!.id),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 32),
-              Padding(
-                padding: const EdgeInsets.only(right: 16, left: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      onTap: () {
-                        PersistentNavBarNavigator.pushNewScreen(
-                          context,
-                          screen: PlaylistListScreen(
-                            title: 'Playlist của tôi',
-                            event: GetCurrentUserPlaylistsEvent(),
-                          ),
-                        );
-                      },
-                      iconColor: Colors.white,
-                      textColor: Colors.white,
-                      trailing: const Icon(Icons.arrow_forward_ios),
-                      contentPadding: const EdgeInsets.only(right: 0, left: 0),
-                      title: const Text(
-                        'Playlist của tôi',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
+        backgroundColor: ColorConstants.background,
+        leading: const AppbarAccount(),
+        foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () {
+              _showAddMenuBottomSheet(context);
+            },
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
+      drawer: const AppDrawer(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            ListTile(
+              textColor: Colors.white70,
+              iconColor: Colors.white70,
+              leading: const Icon(Icons.favorite),
+              title: const Text('Bài hát đã thích'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                PersistentNavBarNavigator.pushNewScreen(
+                  context,
+                  screen: SongListScreen(
+                    title: 'Bài hát đã thích',
+                    event: GetCurrentUserLikedSongsEvent(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              textColor: Colors.white70,
+              iconColor: Colors.white70,
+              leading: const Icon(Icons.library_music),
+              title: const Text('Album đã thích'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                PersistentNavBarNavigator.pushNewScreen(
+                  context,
+                  screen: AlbumListScreen(
+                    title: 'Album đã thích',
+                    event: GetCurrentUserLikedAlbumsEvent(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              textColor: Colors.white70,
+              iconColor: Colors.white70,
+              leading: const Icon(Icons.library_music),
+              title: const Text('Playlist đã thích'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                PersistentNavBarNavigator.pushNewScreen(
+                  context,
+                  screen: PlaylistListScreen(
+                    title: 'Playlist đã thích',
+                    event: GetCurrentUserLikedPlaylistsEvent(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              textColor: Colors.white70,
+              iconColor: Colors.white70,
+              leading: const Icon(Icons.group),
+              title: const Text('Nghệ sĩ đang theo dõi'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                PersistentNavBarNavigator.pushNewScreen(
+                  context,
+                  screen: ArtistListScreen(
+                    title: 'Nghệ sĩ đang theo dõi',
+                    event: GetFollowingArtistsEvent(
+                        userId: context.read<AuthBloc>().state.user!.id),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.only(right: 16, left: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    onTap: () {
+                      PersistentNavBarNavigator.pushNewScreen(
+                        context,
+                        screen: PlaylistListScreen(
+                          title: 'Playlist của tôi',
+                          event: GetCurrentUserPlaylistsEvent(),
                         ),
+                      );
+                    },
+                    iconColor: Colors.white,
+                    textColor: Colors.white,
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    contentPadding: const EdgeInsets.only(right: 0, left: 0),
+                    title: const Text(
+                      'Playlist của tôi',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
                       ),
                     ),
-                    BlocBuilder<GetPlaylistsBloc, GetPlaylistsState>(
-                      builder: (context, GetPlaylistsState state) {
-                        if (state.status == LoadPlaylistsStatus.loaded) {
-                          return PlaylistList(playlists: state.playlists ?? []);
-                        }
+                  ),
+                  BlocBuilder<UserRecentPlaylistsBloc,
+                      UserRecentPlaylistsState>(
+                    builder: (context, UserRecentPlaylistsState state) {
+                      if (!state.isLoading) {
+                        return PlaylistList(playlists: state.playlists);
+                      }
 
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 40),
-            ],
-          ),
+            ),
+            const SizedBox(height: 40),
+          ],
         ),
       ),
     );

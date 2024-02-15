@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/confirm_email_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/forgot_password_screen.dart';
@@ -29,6 +30,10 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<AuthBloc>(),
+        ),
+        BlocProvider<UserRecentPlaylistsBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<UserRecentPlaylistsBloc>(),
         ),
       ],
       child: GlobalLoaderOverlay(

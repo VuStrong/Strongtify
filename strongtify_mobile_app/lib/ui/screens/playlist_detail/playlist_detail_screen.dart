@@ -8,6 +8,7 @@ import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/enums.dart';
@@ -225,6 +226,15 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
               const EdgeInsets.only(top: 20, bottom: 20, right: 12, left: 12),
           child: Wrap(
             children: [
+              SmallPlaylistItem(
+                playlist: playlist,
+                tapToRedirectToDetailScreen: false,
+              ),
+              const Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.white30,
+              ),
               ListTile(
                 leading: const Icon(Icons.person_search),
                 textColor: Colors.white70,

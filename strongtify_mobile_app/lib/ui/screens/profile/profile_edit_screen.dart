@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -117,8 +116,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   }
 
   Widget _buildEditForm(BuildContext context) {
-    final user = widget.profileBloc.state.user!;
-
     return BlocListener<ProfileBloc, ProfileState>(
       listener: (context, ProfileState state) async {
         if (state.status == ProfileStatus.editing) {
