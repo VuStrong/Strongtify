@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_artists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
-import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/artist/artist_grid.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class ArtistListScreen extends StatefulWidget {
@@ -90,7 +90,7 @@ class _ArtistListScreenState extends State<ArtistListScreen> {
         onLoading: () {
           context.read<GetArtistsBloc>().add(GetMoreArtistsEvent());
         },
-        child: ArtistList(artists: state.artists ?? []),
+        child: ArtistGrid(artists: state.artists ?? []),
       ),
     );
   }

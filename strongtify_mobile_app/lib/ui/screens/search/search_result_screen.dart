@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:strongtify_mobile_app/ui/screens/search/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
-import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
-import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/album/album_grid.dart';
+import 'package:strongtify_mobile_app/ui/widgets/artist/artist_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/clickable_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/genre/genre_grid.dart';
-import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/ui/widgets/user/user_grid.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -44,21 +44,24 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
         appBar: AppBar(
           foregroundColor: Colors.white,
           backgroundColor: Colors.grey.shade900,
-          title: TextField(
-            controller: _searchController,
-            style: const TextStyle(color: Colors.white),
-            cursorColor: Colors.white,
-            decoration: const InputDecoration(
-              hintText: 'Bạn muốn nghe gì?',
-              hintStyle: TextStyle(color: Colors.white54),
-              border: InputBorder.none,
-            ),
-            onSubmitted: (value) {
-              if (value.isNotEmpty) {
-                context
-                    .read<SearchBloc>()
-                    .add(SearchAllEvent(searchValue: _searchController.text));
-              }
+          title: BlocBuilder<SearchBloc, SearchState>(
+            builder: (context, SearchState state) {
+              return TextField(
+                controller: _searchController,
+                style: const TextStyle(color: Colors.white),
+                cursorColor: Colors.white,
+                decoration: const InputDecoration(
+                  hintText: 'Bạn muốn nghe gì?',
+                  hintStyle: TextStyle(color: Colors.white54),
+                  border: InputBorder.none,
+                ),
+                onSubmitted: (value) {
+                  if (value.isNotEmpty) {
+                    context.read<SearchBloc>().add(
+                        SearchAllEvent(searchValue: _searchController.text));
+                  }
+                },
+              );
             },
           ),
         ),
@@ -262,7 +265,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                AlbumList(albums: state.result?.albums ?? []),
+                AlbumGrid(albums: state.result?.albums ?? []),
               ],
             ),
           ),
@@ -282,7 +285,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                PlaylistList(playlists: state.result?.playlists ?? []),
+                PlaylistGrid(playlists: state.result?.playlists ?? []),
               ],
             ),
           ),
@@ -322,7 +325,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                ArtistList(artists: state.result?.artists ?? []),
+                ArtistGrid(artists: state.result?.artists ?? []),
               ],
             ),
           ),
@@ -420,7 +423,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               .add(SearchMoreAlbumsEvent(searchValue: _searchController.text));
         },
         child: SingleChildScrollView(
-          child: AlbumList(albums: state.albums ?? []),
+          child: AlbumGrid(albums: state.albums ?? []),
         ),
       ),
     );
@@ -457,7 +460,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               SearchMorePlaylistsEvent(searchValue: _searchController.text));
         },
         child: SingleChildScrollView(
-          child: PlaylistList(playlists: state.playlists ?? []),
+          child: PlaylistGrid(playlists: state.playlists ?? []),
         ),
       ),
     );
@@ -495,7 +498,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
               .add(SearchMoreArtistsEvent(searchValue: _searchController.text));
         },
         child: SingleChildScrollView(
-          child: ArtistList(artists: state.artists ?? []),
+          child: ArtistGrid(artists: state.artists ?? []),
         ),
       ),
     );

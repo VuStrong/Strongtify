@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
+import 'package:strongtify_mobile_app/ui/screens/create_playlist/create_playlist_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/playlist_detail/playlist_detail_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/settings/settings_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
@@ -27,7 +29,7 @@ class AppDrawer extends StatelessWidget {
               if (state.user != null) {
                 return ListTile(
                   onTap: () {
-                    PersistentNavBarNavigator.pushNewScreen(
+                    pushNewScreen(
                       context,
                       screen: ProfileScreen(
                         userId: state.user!.id,
@@ -68,7 +70,7 @@ class AppDrawer extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: const Text('Cài đặt'),
             onTap: () {
-              PersistentNavBarNavigator.pushNewScreen(
+              pushNewScreen(
                 context,
                 screen: const SettingsScreen(),
               );
@@ -97,9 +99,43 @@ class AppDrawer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
-        children: playlists
-            .map((playlist) => SmallPlaylistItem(playlist: playlist))
-            .toList(),
+        children: [
+          ListTile(
+            onTap: () {
+              pushNewScreen(
+                context,
+                screen: const CreatePlaylistScreen(),
+                withNavBar: false,
+              );
+            },
+            leading: Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.grey[850],
+              ),
+              child: const Center(
+                child: Icon(Icons.add, color: Colors.white),
+              ),
+            ),
+            title: const Text(
+              'Tạo playlist mới',
+              style: TextStyle(color: Colors.white),
+            ),
+            contentPadding: const EdgeInsets.only(right: 0, left: 5),
+          ),
+          ...playlists.map(
+            (playlist) => SmallPlaylistItem(
+              playlist: playlist,
+              onTap: () {
+                pushNewScreen(
+                  context,
+                  screen: PlaylistDetailScreen(playlistId: playlist.id),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

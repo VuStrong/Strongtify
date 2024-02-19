@@ -96,7 +96,7 @@ class _PlaylistEditScreenState extends State<PlaylistEditScreen> {
         appBar: AppBar(
           foregroundColor: Colors.white,
           title: const Text(
-            'Chỉnh sửa danh sách phát',
+            'Chỉnh sửa playlist',
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: ColorConstants.background,
@@ -134,7 +134,7 @@ class _PlaylistEditScreenState extends State<PlaylistEditScreen> {
 
         context.loaderOverlay.hide();
 
-        if (state.status == PlaylistDetailStatus.error) {
+        if (state.status == PlaylistDetailStatus.editFailed) {
           await showErrorDialog(
             context: context,
             error: state.errorMessage ?? '',

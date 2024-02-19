@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
-import 'package:strongtify_mobile_app/ui/screens/playlist_detail/playlist_detail_screen.dart';
 
 class SmallPlaylistItem extends StatefulWidget {
   const SmallPlaylistItem({
     super.key,
     required this.playlist,
-    this.tapToRedirectToDetailScreen = true,
+    this.onTap,
   });
 
   final Playlist playlist;
-  final bool tapToRedirectToDetailScreen;
+  final void Function()? onTap;
 
   @override
   State<SmallPlaylistItem> createState() => _SmallPlaylistItemState();
@@ -49,14 +47,7 @@ class _SmallPlaylistItemState extends State<SmallPlaylistItem> {
       ),
       tileColor: Colors.transparent,
       contentPadding: const EdgeInsets.only(right: 0, left: 5),
-      onTap: widget.tapToRedirectToDetailScreen
-          ? () {
-              PersistentNavBarNavigator.pushNewScreen(
-                context,
-                screen: PlaylistDetailScreen(playlistId: widget.playlist.id),
-              );
-            }
-          : null,
+      onTap: widget.onTap,
     );
   }
 }

@@ -11,6 +11,10 @@ class PlaylistDetailBloc
   PlaylistDetailBloc(this._playlistService) : super(PlaylistDetailState()) {
     on<GetPlaylistByIdEvent>(_onGetPlaylistById);
 
+    on<AddSongToPlaylistStateEvent>(_onAddSongToPlaylistState);
+
+    on<RemoveSongFromPlaylistStateEvent>(_onRemoveSongFromPlaylistState);
+
     on<EditPlaylistEvent>(_onEditPlaylist);
 
     on<DeletePlaylistEvent>(_onDeletePlaylist);
@@ -30,6 +34,36 @@ class PlaylistDetailBloc
       playlist: playlist,
       status: PlaylistDetailStatus.loaded,
     ));
+  }
+
+  Future<void> _onAddSongToPlaylistState(
+    AddSongToPlaylistStateEvent event,
+    Emitter<PlaylistDetailState> emit,
+  ) async {
+    state.playlist?.songs?.add(event.song);
+    state.playlist!.totalLength += event.song.length;
+    state.playlist!.songCount += 1;
+
+    emit(state.copyWith());
+  }
+
+  Future<void> _onRemoveSongFromPlaylistState(
+    RemoveSongFromPlaylistStateEvent event,
+    Emitter<PlaylistDetailState> emit,
+  ) async {
+    try {
+      final matchedSong = state.playlist!.songs!.firstWhere(
+        (song) => song.id == event.songId,
+      );
+
+      state.playlist?.songs?.removeWhere((song) => song.id == matchedSong.id);
+      state.playlist!.totalLength -= matchedSong.length;
+      state.playlist!.songCount -= 1;
+
+      emit(state.copyWith());
+    } on StateError {
+      //
+    }
   }
 
   Future<void> _onEditPlaylist(
@@ -56,7 +90,7 @@ class PlaylistDetailBloc
       getIt<UserRecentPlaylistsBloc>().add(GetUserRecentPlaylistsEvent());
     } on Exception {
       emit(state.copyWith(
-        status: PlaylistDetailStatus.error,
+        status: PlaylistDetailStatus.editFailed,
         errorMessage: () => 'Không thể chỉnh sửa playlist!',
       ));
     }
@@ -81,7 +115,7 @@ class PlaylistDetailBloc
       getIt<UserRecentPlaylistsBloc>().add(GetUserRecentPlaylistsEvent());
     } on Exception {
       emit(state.copyWith(
-        status: PlaylistDetailStatus.error,
+        status: PlaylistDetailStatus.deleteFailed,
         errorMessage: () => 'Không thể xóa playlist!',
       ));
     }

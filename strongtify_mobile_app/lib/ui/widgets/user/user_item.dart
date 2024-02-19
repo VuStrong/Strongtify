@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
 
@@ -17,7 +17,7 @@ class _UserItemState extends State<UserItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        PersistentNavBarNavigator.pushNewScreen(
+        pushNewScreen(
           context,
           screen: ProfileScreen(userId: widget.user.id),
         );

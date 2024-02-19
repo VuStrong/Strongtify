@@ -78,13 +78,15 @@ class _SongRankListState extends State<SongRankList> {
             Expanded(
               child: SongItem(
                 song: song,
-                actionIcon: const Icon(
-                  Icons.more_vert_outlined,
-                  color: Colors.white,
+                action: IconButton(
+                  icon: const Icon(
+                    Icons.more_vert_outlined,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    showSongMenuBottomSheet(context, song: song);
+                  },
                 ),
-                onPressAction: () {
-                  showSongMenuBottomSheet(context, song: song);
-                },
                 onPressed: () {
                   //
                 },

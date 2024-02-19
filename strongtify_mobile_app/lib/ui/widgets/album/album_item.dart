@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/models/album/album.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_detail/album_detail_screen.dart';
 
@@ -17,7 +17,7 @@ class _AlbumItemState extends State<AlbumItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        PersistentNavBarNavigator.pushNewScreen(
+        pushNewScreen(
           context,
           screen: AlbumDetailScreen(albumId: widget.album.id),
         );

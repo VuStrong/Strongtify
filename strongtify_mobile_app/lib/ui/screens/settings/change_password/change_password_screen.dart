@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/settings/change_password/bloc/bloc.dart';
@@ -7,7 +8,7 @@ import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/widgets/text_input.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/dialogs/error_dialog.dart';
-import 'package:strongtify_mobile_app/utils/snackbars/success_snackbar.dart';
+import 'package:strongtify_mobile_app/utils/extensions.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -19,6 +20,7 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  FToast fToast = FToast();
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController oldPasswordController;
@@ -42,6 +44,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     confirmPasswordController = TextEditingController();
 
     super.initState();
+
+    fToast.init(context);
   }
 
   @override
@@ -81,7 +85,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
             if (state.isSuccess) {
               Navigator.pop(context);
-              showSuccessSnackBar(context, text: 'Đổi mật khẩu thành công!');
+              fToast.showSuccessToast(msg: 'Đổi mật khẩu thành công!');
             }
           },
           builder: (context, ChangePasswordState state) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/models/genre/genre.dart';
 import 'package:strongtify_mobile_app/ui/screens/genre_detail/genre_detail_screen.dart';
 
@@ -17,7 +17,7 @@ class _GenreItemState extends State<GenreItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        PersistentNavBarNavigator.pushNewScreen(
+        pushNewScreen(
           context,
           screen: GenreDetailScreen(genreId: widget.genre.id),
         );

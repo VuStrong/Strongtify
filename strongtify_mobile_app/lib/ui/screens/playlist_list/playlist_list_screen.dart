@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
-import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_grid.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class PlaylistListScreen extends StatefulWidget {
@@ -90,7 +90,7 @@ class _PlaylistListScreenState extends State<PlaylistListScreen> {
         onLoading: () {
           context.read<GetPlaylistsBloc>().add(GetMorePlaylistsEvent());
         },
-        child: PlaylistList(playlists: state.playlists ?? []),
+        child: PlaylistGrid(playlists: state.playlists ?? []),
       ),
     );
   }

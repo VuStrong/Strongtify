@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/album/album_detail.dart';
@@ -189,7 +189,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
 
     return GestureDetector(
       onTap: () {
-        PersistentNavBarNavigator.pushNewScreen(
+        pushNewScreen(
           context,
           screen: ArtistDetailScreen(artistId: artist.id),
         );
@@ -242,7 +242,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                       onTap: () async {
                         Navigator.pop(context);
 
-                        PersistentNavBarNavigator.pushNewScreen(
+                        pushNewScreen(
                           context,
                           screen:
                               ArtistDetailScreen(artistId: album.artist!.id),

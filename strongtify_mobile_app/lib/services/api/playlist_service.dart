@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:strongtify_mobile_app/exceptions/base_exception.dart';
 import 'package:strongtify_mobile_app/models/api_responses/paged_response.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
@@ -103,6 +105,34 @@ class PlaylistService extends ApiService {
     try {
       await dioClient.dio.delete('/v1/playlists/$id');
     } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<void> addSongToPlaylist(String playlistId, String songId) async {
+    final body = jsonEncode({
+      'songIds': [songId]
+    });
+
+    try {
+      await dioClient.dio.post('/v1/playlists/$playlistId/songs', data: body);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw BaseException(message: e.response?.data['message']);
+      }
+
+      throw Exception();
+    }
+  }
+
+  Future<void> removeSongFromPlaylist(String playlistId, String songId) async {
+    try {
+      await dioClient.dio.delete('/v1/playlists/$playlistId/songs/$songId');
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw BaseException(message: e.response?.data['message']);
+      }
+
       throw Exception();
     }
   }

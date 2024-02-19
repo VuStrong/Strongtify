@@ -8,15 +8,13 @@ class SongItem extends StatefulWidget {
     required this.song,
     this.isPlaying = false,
     this.onPressed,
-    this.onPressAction,
-    this.actionIcon,
+    this.action,
   });
 
   final Song song;
   final bool isPlaying;
   final void Function()? onPressed;
-  final void Function()? onPressAction;
-  final Icon? actionIcon;
+  final Widget? action;
 
   @override
   State<SongItem> createState() => _SongItemState();
@@ -62,14 +60,7 @@ class _SongItemState extends State<SongItem> {
               widget.onPressed!();
             }
           : null,
-      trailing: widget.actionIcon != null
-          ? IconButton(
-              icon: widget.actionIcon!,
-              onPressed: () {
-                if (widget.onPressAction != null) widget.onPressAction!();
-              },
-            )
-          : null,
+      trailing: widget.action,
     );
   }
 }

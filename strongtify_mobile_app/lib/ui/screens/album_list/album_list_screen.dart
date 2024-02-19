@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
-import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/album/album_grid.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class AlbumListScreen extends StatefulWidget {
@@ -91,7 +91,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
         onLoading: () {
           context.read<GetAlbumsBloc>().add(GetMoreAlbumsEvent());
         },
-        child: AlbumList(albums: state.albums ?? []),
+        child: AlbumGrid(albums: state.albums ?? []),
       ),
     );
   }

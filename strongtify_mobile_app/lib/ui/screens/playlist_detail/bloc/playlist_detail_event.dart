@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/utils/enums.dart';
 
 abstract class PlaylistDetailEvent {}
@@ -31,5 +32,21 @@ class DeletePlaylistEvent extends PlaylistDetailEvent {
 
   DeletePlaylistEvent({
     required this.playlistId,
+  });
+}
+
+class AddSongToPlaylistStateEvent extends PlaylistDetailEvent {
+  final Song song;
+
+  AddSongToPlaylistStateEvent({
+    required this.song,
+  });
+}
+
+class RemoveSongFromPlaylistStateEvent extends PlaylistDetailEvent {
+  final String songId;
+
+  RemoveSongFromPlaylistStateEvent({
+    required this.songId,
   });
 }

@@ -19,8 +19,8 @@ class Playlist {
   final String alias;
   final String? imageUrl;
   final int likeCount;
-  final int songCount;
-  final int totalLength;
+  int songCount;
+  int totalLength;
   final PlaylistStatus status;
   final User user;
 
@@ -30,9 +30,7 @@ class Playlist {
       name: data['name'],
       alias: data['alias'],
       imageUrl: data['imageUrl'],
-      user: data['user'] != null
-          ? User.fromMap(data['user'])
-          : User(id: '', name: '', alias: ''),
+      user: User.fromMap(data['user']),
       likeCount: data['likeCount'] ?? 0,
       songCount: data['songCount'] ?? 0,
       totalLength: data['totalLength'] ?? 0,

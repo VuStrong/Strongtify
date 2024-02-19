@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/auth_bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
+import 'package:strongtify_mobile_app/ui/screens/playlist_detail/add_songs_to_playlist_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/playlist_edit_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
-import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/song/song_item.dart';
+import 'package:strongtify_mobile_app/utils/bottom_sheet/song_menu_bottom_sheet.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/dialogs/prompt_dialog.dart';
 import 'package:strongtify_mobile_app/utils/enums.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
-import 'package:strongtify_mobile_app/utils/snackbars/success_snackbar.dart';
 
 class PlaylistDetailScreen extends StatefulWidget {
   const PlaylistDetailScreen({
@@ -31,11 +34,28 @@ class PlaylistDetailScreen extends StatefulWidget {
 }
 
 class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
+  late final FToast fToast;
+
+  @override
+  void initState() {
+    super.initState();
+
+    fToast = FToast();
+    fToast.init(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PlaylistDetailBloc>(
-      create: (context) => getIt<PlaylistDetailBloc>()
-        ..add(GetPlaylistByIdEvent(id: widget.playlistId)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PlaylistDetailBloc>(
+          create: (context) => getIt<PlaylistDetailBloc>()
+            ..add(GetPlaylistByIdEvent(id: widget.playlistId)),
+        ),
+        BlocProvider<PlaylistSongsBloc>(
+          create: (context) => getIt<PlaylistSongsBloc>(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           foregroundColor: Colors.white,
@@ -67,37 +87,61 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
             ),
           ],
         ),
-        body: BlocConsumer<PlaylistDetailBloc, PlaylistDetailState>(
-          listener: (context, PlaylistDetailState state) {
-            if (state.status == PlaylistDetailStatus.deleted) {
-              Navigator.pop(context);
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<PlaylistDetailBloc, PlaylistDetailState>(
+              listener: (context, PlaylistDetailState state) {
+                if (state.status == PlaylistDetailStatus.deleting) {
+                  fToast.showLoadingToast(msg: 'Đang xóa playlist');
+                } else if (state.status == PlaylistDetailStatus.deleted) {
+                  Navigator.pop(context);
 
-              showSuccessSnackBar(
-                context,
-                text: 'Đã xóa playlist!',
-              );
-            }
-          },
-          builder: (context, PlaylistDetailState state) {
-            if (state.status != PlaylistDetailStatus.loading) {
-              if (state.playlist == null) {
-                return const Center(
-                  child: Text(
-                    'Không có dữ liệu',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                );
+                  fToast.showSuccessToast(msg: 'Đã xóa playlist!');
+                } else if (state.status == PlaylistDetailStatus.deleteFailed) {
+                  fToast.showErrorToast(msg: state.errorMessage ?? '');
+                }
+              },
+            ),
+            BlocListener<PlaylistSongsBloc, PlaylistSongsState>(
+              listener: (context, PlaylistSongsState state) {
+                if (state.status == PlaylistSongsStatus.removing) {
+                  fToast.showLoadingToast(msg: 'Đang xóa bài hát...');
+                } else if (state.status == PlaylistSongsStatus.removed) {
+                  context.read<PlaylistDetailBloc>().add(
+                        RemoveSongFromPlaylistStateEvent(
+                          songId: state.removedSongId ?? '',
+                        ),
+                      );
+
+                  fToast.showSuccessToast(msg: 'Đã cập nhập playlist!');
+                } else if (state.status == PlaylistSongsStatus.error) {
+                  fToast.showErrorToast(msg: state.errorMessage ?? '');
+                }
+              },
+            ),
+          ],
+          child: BlocBuilder<PlaylistDetailBloc, PlaylistDetailState>(
+            builder: (context, PlaylistDetailState state) {
+              if (state.status != PlaylistDetailStatus.loading) {
+                if (state.playlist == null) {
+                  return const Center(
+                    child: Text(
+                      'Không có dữ liệu',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  );
+                }
+
+                return _buildPlaylistDetailScreen(context, state);
               }
 
-              return _buildPlaylistDetailScreen(context, state);
-            }
-
-            return const Center(
-              child: CircularProgressIndicator(
-                color: ColorConstants.primary,
-              ),
-            );
-          },
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: ColorConstants.primary,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -107,6 +151,8 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
     BuildContext context,
     PlaylistDetailState state,
   ) {
+    final bloc = context.read<PlaylistDetailBloc>();
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -178,16 +224,44 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                 color: Colors.white70,
               ),
             ),
-            const SizedBox(height: 15),
-            SizedBox(
-              width: double.infinity,
-              child: Text(
-                state.playlist!.description ?? '',
-                style: const TextStyle(color: Colors.white54),
-              ),
-            ),
+            state.playlist!.description?.isNotEmpty ?? false
+                ? Container(
+                    padding: const EdgeInsets.only(top: 15),
+                    width: double.infinity,
+                    child: Text(
+                      state.playlist!.description!,
+                      style: const TextStyle(color: Colors.white54),
+                    ),
+                  )
+                : const SizedBox(),
             const SizedBox(height: 20),
-            SongList(songs: state.playlist!.songs ?? []),
+            ListTile(
+              onTap: () {
+                pushNewScreen(
+                  context,
+                  screen: AddSongsToPlaylistScreen(
+                    bloc: bloc,
+                  ),
+                  withNavBar: false,
+                );
+              },
+              leading: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.grey[850],
+                ),
+                child: const Center(
+                  child: Icon(Icons.add, color: Colors.white),
+                ),
+              ),
+              title: const Text(
+                'Thêm bài hát',
+                style: TextStyle(color: Colors.white),
+              ),
+              contentPadding: const EdgeInsets.only(right: 0, left: 5),
+            ),
+            _buildPlaylistSongs(context, state),
           ],
         ),
       ),
@@ -197,7 +271,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
   Widget _buildPlaylistUser(User user) {
     return GestureDetector(
       onTap: () {
-        PersistentNavBarNavigator.pushNewScreen(
+        pushNewScreen(
           context,
           screen: ProfileScreen(userId: user.id),
         );
@@ -230,6 +304,59 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
     );
   }
 
+  Widget _buildPlaylistSongs(BuildContext context, PlaylistDetailState state) {
+    final songs = state.playlist!.songs!;
+    final playlistSongsBloc = context.read<PlaylistSongsBloc>();
+
+    if (songs.isEmpty) {
+      return const Text(
+        'Không có dữ liệu',
+        style: TextStyle(color: Colors.white54),
+      );
+    }
+
+    return Column(
+      children: songs
+          .map((song) => SongItem(
+                song: song,
+                action: IconButton(
+                  icon: const Icon(
+                    Icons.more_vert_outlined,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    showSongMenuBottomSheet(
+                      context,
+                      song: song,
+                      anotherOptions: (context) => [
+                        ListTile(
+                          leading: const Icon(Icons.remove_circle_outline),
+                          textColor: Colors.white70,
+                          iconColor: Colors.white70,
+                          title: const Text('Xóa khỏi danh sách phát này'),
+                          onTap: () async {
+                            Navigator.pop(context);
+
+                            playlistSongsBloc.add(
+                              RemoveSongFromPlaylistEvent(
+                                playlistId: state.playlist!.id,
+                                songId: song.id,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                onPressed: () {
+                  //
+                },
+              ))
+          .toList(),
+    );
+  }
+
   void _showPlaylistMenuBottomSheet(
     BuildContext context,
     PlaylistDetail playlist,
@@ -247,10 +374,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
               const EdgeInsets.only(top: 20, bottom: 20, right: 12, left: 12),
           child: Wrap(
             children: [
-              SmallPlaylistItem(
-                playlist: playlist,
-                tapToRedirectToDetailScreen: false,
-              ),
+              SmallPlaylistItem(playlist: playlist),
               const Divider(
                 height: 1,
                 thickness: 1,
@@ -264,12 +388,31 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                 onTap: () async {
                   Navigator.pop(context);
 
-                  PersistentNavBarNavigator.pushNewScreen(
+                  pushNewScreen(
                     context,
                     screen: ProfileScreen(userId: playlist.user.id),
                   );
                 },
               ),
+              playlist.user.id == currentUser.id
+                  ? ListTile(
+                      leading: const Icon(Icons.add),
+                      textColor: Colors.white70,
+                      iconColor: Colors.white70,
+                      title: const Text('Thêm bài hát'),
+                      onTap: () async {
+                        Navigator.pop(context);
+
+                        pushNewScreen(
+                          context,
+                          screen: AddSongsToPlaylistScreen(
+                            bloc: bloc,
+                          ),
+                          withNavBar: false,
+                        );
+                      },
+                    )
+                  : const SizedBox(),
               playlist.user.id == currentUser.id
                   ? ListTile(
                       leading: const Icon(Icons.edit),
@@ -279,7 +422,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                       onTap: () async {
                         Navigator.pop(context);
 
-                        PersistentNavBarNavigator.pushNewScreen(
+                        pushNewScreen(
                           context,
                           screen: PlaylistEditScreen(
                             bloc: bloc,

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_item.dart';
 
-class PlaylistList extends StatefulWidget {
-  const PlaylistList({super.key, required this.playlists});
+class PlaylistGrid extends StatefulWidget {
+  const PlaylistGrid({super.key, required this.playlists});
 
   final List<Playlist> playlists;
 
   @override
-  State<PlaylistList> createState() => _PlaylistListState();
+  State<PlaylistGrid> createState() => _PlaylistGridState();
 }
 
-class _PlaylistListState extends State<PlaylistList> {
+class _PlaylistGridState extends State<PlaylistGrid> {
   @override
   Widget build(BuildContext context) {
     if (widget.playlists.isEmpty) {

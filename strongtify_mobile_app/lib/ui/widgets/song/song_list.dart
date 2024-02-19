@@ -29,13 +29,15 @@ class _SongListState extends State<SongList> {
       children: widget.songs
           .map((song) => SongItem(
                 song: song,
-                actionIcon: const Icon(
-                  Icons.more_vert_outlined,
-                  color: Colors.white,
+                action: IconButton(
+                  icon: const Icon(
+                    Icons.more_vert_outlined,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    showSongMenuBottomSheet(context, song: song);
+                  },
                 ),
-                onPressAction: () {
-                  showSongMenuBottomSheet(context, song: song);
-                },
                 onPressed: () {
                   //
                 },

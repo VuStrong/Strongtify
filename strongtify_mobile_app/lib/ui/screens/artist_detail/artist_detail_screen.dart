@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_songs/bloc.dart';
@@ -10,7 +10,7 @@ import 'package:strongtify_mobile_app/models/artist/artist_detail.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/song_list/song_list_screen.dart';
-import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/album/album_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -96,7 +96,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
               children: [
                 ListTile(
                   onTap: () {
-                    PersistentNavBarNavigator.pushNewScreen(
+                    pushNewScreen(
                       context,
                       screen: SongListScreen(
                         event: GetSongsByParamsEvent(
@@ -130,7 +130,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
               children: [
                 ListTile(
                   onTap: () {
-                    PersistentNavBarNavigator.pushNewScreen(
+                    pushNewScreen(
                       context,
                       screen: AlbumListScreen(
                         event: GetAlbumsByParamsEvent(
@@ -152,7 +152,7 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                     ),
                   ),
                 ),
-                AlbumList(albums: state.artist!.albums ?? []),
+                AlbumGrid(albums: state.artist!.albums ?? []),
               ],
             ),
           ),

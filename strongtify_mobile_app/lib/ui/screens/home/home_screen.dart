@@ -7,11 +7,11 @@ import 'package:strongtify_mobile_app/models/artist/artist.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/models/section.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
-import 'package:strongtify_mobile_app/ui/widgets/album/album_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/album/album_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
-import 'package:strongtify_mobile_app/ui/widgets/artist/artist_list.dart';
-import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/artist/artist_grid.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHomePage(List<Section> sections) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.only(right: 20, left: 20),
       child: ListView.builder(
         itemCount: sections.length,
         itemBuilder: (BuildContext context, int index) {
@@ -76,15 +76,15 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (section.type == 'albums') {
       List<Album> albums = section.items as List<Album>;
 
-      sectionItemsWidget = AlbumList(albums: albums);
+      sectionItemsWidget = AlbumGrid(albums: albums);
     } else if (section.type == 'playlists') {
       List<Playlist> playlists = section.items as List<Playlist>;
 
-      sectionItemsWidget = PlaylistList(playlists: playlists);
+      sectionItemsWidget = PlaylistGrid(playlists: playlists);
     } else if (section.type == 'artists') {
       List<Artist> artists = section.items as List<Artist>;
 
-      sectionItemsWidget = ArtistList(artists: artists);
+      sectionItemsWidget = ArtistGrid(artists: artists);
     }
 
     return Padding(

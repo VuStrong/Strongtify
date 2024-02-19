@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_genres/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/search/search_result_screen.dart';
@@ -47,7 +47,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       return;
                     }
 
-                    PersistentNavBarNavigator.pushNewScreen(
+                    pushNewScreen(
                       context,
                       screen: SearchResultScreen(searchValue: value),
                     );

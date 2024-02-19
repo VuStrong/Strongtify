@@ -3,11 +3,14 @@ import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 enum PlaylistDetailStatus {
   loading,
   loaded,
+  //
   editing,
   edited,
+  editFailed,
+  //
   deleting,
   deleted,
-  error,
+  deleteFailed,
 }
 
 class PlaylistDetailState {

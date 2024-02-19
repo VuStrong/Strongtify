@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
@@ -14,7 +14,7 @@ import 'package:strongtify_mobile_app/ui/screens/profile/bloc/bloc.dart';
 import 'package:strongtify_mobile_app/ui/screens/profile/profile_edit_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/user_list/user_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/button.dart';
-import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/user/user_grid.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
@@ -144,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   isOutlined: true,
                   buttonText: 'Chỉnh sửa',
                   onPressed: () {
-                    PersistentNavBarNavigator.pushNewScreen(
+                    pushNewScreen(
                       context,
                       screen: ProfileEditScreen(profileBloc: bloc),
                       withNavBar: false,
@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               ListTile(
                 onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
+                  pushNewScreen(
                     context,
                     screen: PlaylistListScreen(
                       title: 'Playlist',
@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              PlaylistList(playlists: state.user!.playlists ?? []),
+              PlaylistGrid(playlists: state.user!.playlists ?? []),
             ],
           ),
           const SizedBox(height: 16),
@@ -197,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               ListTile(
                 onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
+                  pushNewScreen(
                     context,
                     screen: UserListScreen(
                       event: GetFollowersEvent(
@@ -228,7 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               ListTile(
                 onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
+                  pushNewScreen(
                     context,
                     screen: UserListScreen(
                       event: GetFollowingUsersEvent(

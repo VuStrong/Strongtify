@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/auth_bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_artists/bloc.dart';
@@ -14,7 +14,7 @@ import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_scr
 import 'package:strongtify_mobile_app/ui/screens/song_list/song_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
-import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_list.dart';
+import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_grid.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class CollectionScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
               title: const Text('Bài hát đã thích'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                PersistentNavBarNavigator.pushNewScreen(
+                pushNewScreen(
                   context,
                   screen: SongListScreen(
                     title: 'Bài hát đã thích',
@@ -74,7 +74,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
               title: const Text('Album đã thích'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                PersistentNavBarNavigator.pushNewScreen(
+                pushNewScreen(
                   context,
                   screen: AlbumListScreen(
                     title: 'Album đã thích',
@@ -90,7 +90,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
               title: const Text('Playlist đã thích'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                PersistentNavBarNavigator.pushNewScreen(
+                pushNewScreen(
                   context,
                   screen: PlaylistListScreen(
                     title: 'Playlist đã thích',
@@ -106,7 +106,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
               title: const Text('Nghệ sĩ đang theo dõi'),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                PersistentNavBarNavigator.pushNewScreen(
+                pushNewScreen(
                   context,
                   screen: ArtistListScreen(
                     title: 'Nghệ sĩ đang theo dõi',
@@ -124,7 +124,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 children: [
                   ListTile(
                     onTap: () {
-                      PersistentNavBarNavigator.pushNewScreen(
+                      pushNewScreen(
                         context,
                         screen: PlaylistListScreen(
                           title: 'Playlist của tôi',
@@ -148,7 +148,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                       UserRecentPlaylistsState>(
                     builder: (context, UserRecentPlaylistsState state) {
                       if (!state.isLoading) {
-                        return PlaylistList(playlists: state.playlists);
+                        return PlaylistGrid(playlists: state.playlists);
                       }
 
                       return const Center(
@@ -185,7 +185,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                 onTap: () async {
                   Navigator.pop(context);
 
-                  PersistentNavBarNavigator.pushNewScreen(
+                  pushNewScreen(
                     context,
                     screen: const CreatePlaylistScreen(),
                     withNavBar: false,

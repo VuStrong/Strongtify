@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:strongtify_mobile_app/models/album/album.dart';
-import 'package:strongtify_mobile_app/ui/widgets/album/album_item.dart';
+import 'package:strongtify_mobile_app/models/artist/artist.dart';
+import 'package:strongtify_mobile_app/ui/widgets/artist/artist_item.dart';
 
-class AlbumList extends StatefulWidget {
-  const AlbumList({super.key, required this.albums});
+class ArtistGrid extends StatefulWidget {
+  const ArtistGrid({super.key, required this.artists});
 
-  final List<Album> albums;
+  final List<Artist> artists;
 
   @override
-  State<AlbumList> createState() => _AlbumListState();
+  State<ArtistGrid> createState() => _ArtistGridState();
 }
 
-class _AlbumListState extends State<AlbumList> {
+class _ArtistGridState extends State<ArtistGrid> {
   @override
   Widget build(BuildContext context) {
-    if (widget.albums.isEmpty) {
+    if (widget.artists.isEmpty) {
       return const Text(
         'Không có dữ liệu',
         style: TextStyle(color: Colors.white54),
@@ -30,9 +30,9 @@ class _AlbumListState extends State<AlbumList> {
       ),
       shrinkWrap: true,
       padding: EdgeInsets.zero,
-      itemCount: widget.albums.length,
+      itemCount: widget.artists.length,
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (_, index) => AlbumItem(album: widget.albums[index]),
+      itemBuilder: (_, index) => ArtistItem(artist: widget.artists[index]),
     );
   }
 }

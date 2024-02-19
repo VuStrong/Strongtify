@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/injection.dart';
@@ -11,7 +12,7 @@ import 'package:strongtify_mobile_app/ui/widgets/text_input.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/dialogs/error_dialog.dart';
 import 'package:strongtify_mobile_app/utils/enums.dart';
-import 'package:strongtify_mobile_app/utils/snackbars/success_snackbar.dart';
+import 'package:strongtify_mobile_app/utils/extensions.dart';
 
 class CreatePlaylistScreen extends StatefulWidget {
   const CreatePlaylistScreen({super.key});
@@ -21,6 +22,7 @@ class CreatePlaylistScreen extends StatefulWidget {
 }
 
 class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
+  FToast fToast = FToast();
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
 
@@ -42,6 +44,8 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
     descController = TextEditingController();
 
     super.initState();
+
+    fToast.init(context);
   }
 
   @override
@@ -120,7 +124,7 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
 
         if (state.status == CreatePlaylistStatus.success) {
           Navigator.pop(context);
-          showSuccessSnackBar(context, text: 'Đã tạo danh sách phát');
+          fToast.showSuccessToast(msg: 'Đã tạo danh sách phát');
         }
       },
       builder: (context, CreatePlaylistState state) {
@@ -137,7 +141,7 @@ class _CreatePlaylistScreenState extends State<CreatePlaylistScreen> {
                   child: SizedBox(
                     width: 150,
                     height: 150,
-                    child: ClipOval(
+                    child: ClipRect(
                       child: _imagePath != null
                           ? Image.file(
                               File(_imagePath!),
