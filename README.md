@@ -34,7 +34,7 @@ A music streaming website and application using `NestJS` for backend, `NextJS` f
 |  |  |  |
 | :---:  | :---:  | :---:  |
 | ![](Screenshots/mobile_app_login_screen.jpg)            | ![](Screenshots/mobile_app_home_screen.jpg)               | ![](Screenshots/mobile_app_search_screen.jpg) 
-| ![](Screenshots/mobile_app_album_screen.jpg)            | ![](Screenshots/mobile_app_artist_screen.jpg)               | ![](Screenshots/mobile_app_rank_screen.jpg) 
-
+| ![](Screenshots/mobile_app_album_screen.jpg)            | ![](Screenshots/mobile_app_artist_screen.jpg)             | ![](Screenshots/mobile_app_genre_screen.jpg) 
+| ![](Screenshots/mobile_app_collection_screen.jpg)       | ![](Screenshots/mobile_app_rank_screen.jpg)               |
 
 </details>  
