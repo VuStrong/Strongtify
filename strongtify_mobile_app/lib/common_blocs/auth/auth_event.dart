@@ -46,3 +46,15 @@ class AuthEventSendPasswordResetLink extends AuthEvent {
 
   final String email;
 }
+
+class AuthEventSaveTokens extends AuthEvent {
+  final String accessToken;
+  final String refreshToken;
+  final Account account;
+
+  AuthEventSaveTokens({
+    required this.accessToken,
+    required this.refreshToken,
+    required this.account,
+  });
+}

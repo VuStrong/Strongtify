@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/ui/screens/auth/login_web_view.dart';
 import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/widgets/text_input.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/confirm_email_screen.dart';
@@ -187,9 +188,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () {},
-                            icon: SvgPicture.asset('assets/vectors/google.svg',
-                                width: 14),
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return const LoginWebView();
+                                },
+                              ));
+                            },
+                            icon: SvgPicture.asset(
+                              'assets/vectors/google.svg',
+                              width: 14,
+                            ),
                             label: const Text(
                               'Google',
                               style: TextStyle(color: Colors.white70),

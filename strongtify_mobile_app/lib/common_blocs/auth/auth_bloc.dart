@@ -6,6 +6,7 @@ import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/services/api/me_service.dart';
 import 'package:strongtify_mobile_app/services/api/auth_service.dart';
 import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
+import 'package:strongtify_mobile_app/utils/constants/app_constants.dart';
 
 import 'bloc.dart';
 
@@ -23,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventSendEmailConfirmation>(_onSendEmailConfirmation);
     on<AuthEventSendPasswordResetLink>(_onSendPasswordResetLink);
     on<UpdateUserEvent>(_onUpdateUser);
+    on<AuthEventSaveTokens>(_onSaveTokens);
 
     add(AuthEventInitialize());
   }
@@ -31,7 +33,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final MeService _accountService;
   final LocalStorage _storage;
 
-  Future<void> _onUpdateUser(UpdateUserEvent event, Emitter<AuthState> emit) async {
+  Future<void> _onUpdateUser(
+      UpdateUserEvent event, Emitter<AuthState> emit) async {
     emit(state.copyWith(user: () => event.account));
   }
 
@@ -162,5 +165,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         resetPasswordErrorMessage: () => 'Gửi mã xác thực thất bại!',
       ));
     }
+  }
+
+  Future<void> _onSaveTokens(
+    AuthEventSaveTokens event,
+    Emitter<AuthState> emit,
+  ) async {
+    await _storage.setString(key: 'access_token', value: event.accessToken);
+    await _storage.setString(key: 'refresh_token', value: event.refreshToken);
+    await _storage.setString(key: 'user_id', value: event.account.id);
+
+    DateTime expiredAt = DateTime.now()
+        .add(const Duration(minutes: AppConstants.accessTokenLiveTime));
+    await _storage.setDateTime(
+        key: 'access_token_expired_at', value: expiredAt);
+
+    emit(state.copyWith(
+      isLoading: false,
+      user: () => event.account,
+      errorMessage: () => null,
+    ));
   }
 }
