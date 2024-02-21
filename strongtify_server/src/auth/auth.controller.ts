@@ -169,9 +169,14 @@ export class AuthController {
         const result = await this.socialAuthService.socialLogin(user);
 
         res.send(
-            `<script>window.opener.postMessage('${JSON.stringify(
-                result,
-            )}', '*');window.close()</script>`,
+            `<script>
+                window.opener.postMessage('${JSON.stringify(
+                    result,
+                )}', '*');
+
+                window.flutter_inappwebview.callHandler('messageHandler', '${JSON.stringify(result)}');
+                window.close();
+            </script>`,
         );
         return result;
     }
