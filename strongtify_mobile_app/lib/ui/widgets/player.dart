@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
+import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
+import 'package:strongtify_mobile_app/services/api/song_service.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 class Player extends StatefulWidget {
@@ -35,7 +37,12 @@ class _PlayerState extends State<Player> {
 
     _player.currentIndexStream.listen((index) {
       if (index != null) {
-        context.read<PlayerBloc>().add(SkipToEvent(index: index));
+        final bloc = context.read<PlayerBloc>();
+
+        bloc.add(SkipToEvent(index: index));
+
+        getIt<SongService>()
+            .increaseListenCount(bloc.state.songs?[index].id ?? '');
       }
     });
 

@@ -67,4 +67,12 @@ class SongService extends ApiService {
       return null;
     }
   }
+
+  Future<void> increaseListenCount(String songId) async {
+    try {
+      await dioClient.dio.patch('/v1/songs/$songId/listen');
+    } on DioException {
+      //
+    }
+  }
 }
