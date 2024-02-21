@@ -8,6 +8,7 @@ import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
+import 'package:strongtify_mobile_app/ui/widgets/artist/small_artist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_item.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -17,6 +18,8 @@ void showSongMenuBottomSheet(
   required Song song,
   List<Widget> Function(BuildContext context)? anotherOptions,
 }) {
+  final topContext = context;
+
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.grey[850],
@@ -56,7 +59,7 @@ void showSongMenuBottomSheet(
               onTap: () async {
                 Navigator.pop(context);
 
-                _showSelectSongArtistBottomSheet(context, song);
+                _showSelectSongArtistBottomSheet(topContext, song);
               },
             ),
             ListTile(
@@ -80,6 +83,8 @@ void showSongMenuBottomSheet(
 }
 
 void _showSelectSongArtistBottomSheet(BuildContext context, Song song) {
+  final topContext = context;
+
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.grey[850],
@@ -103,31 +108,19 @@ void _showSelectSongArtistBottomSheet(BuildContext context, Song song) {
               ],
             ),
             ...song.artists
-                    ?.map((artist) => ListTile(
-                          onTap: () {
-                            Navigator.pop(context);
+                    ?.map(
+                      (artist) => SmallArtistItem(
+                        artist: artist,
+                        onTap: () {
+                          Navigator.pop(context);
 
-                            pushNewScreen(
-                              context,
-                              screen: ArtistDetailScreen(
-                                artistId: artist.id,
-                              ),
-                            );
-                          },
-                          leading: ClipOval(
-                            child: artist.imageUrl != null
-                                ? Image.network(
-                                    artist.imageUrl!,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.asset('assets/img/default-avatar.png'),
-                          ),
-                          title: Text(
-                            artist.name,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          contentPadding: const EdgeInsets.only(bottom: 5),
-                        ))
+                          pushNewScreen(
+                            topContext,
+                            screen: ArtistDetailScreen(artistId: artist.id),
+                          );
+                        },
+                      ),
+                    )
                     .toList() ??
                 [],
           ],

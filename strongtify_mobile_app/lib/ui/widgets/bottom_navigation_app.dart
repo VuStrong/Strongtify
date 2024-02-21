@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
@@ -38,6 +39,7 @@ class _BottomNavigationAppState extends State<BottomNavigationApp> {
 
   late final PersistentTabController _controller;
   late final FToast fToast;
+  double _navBarHeight = 61;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,21 @@ class _BottomNavigationAppState extends State<BottomNavigationApp> {
             }
           },
         ),
+        BlocListener<PlayerBloc, PlayerState>(
+          listener: (context, PlayerState state) {
+            if (state.songs == null || state.songs!.isEmpty) {
+              setState(() {
+                _navBarHeight = 61;
+              });
+
+              return;
+            }
+
+            setState(() {
+              _navBarHeight = 131;
+            });
+          },
+        ),
       ],
       child: _buildNavBar(context),
     );
@@ -74,7 +91,7 @@ class _BottomNavigationAppState extends State<BottomNavigationApp> {
       itemCount: 4,
       screens: _buildScreens(),
       backgroundColor: Colors.transparent,
-      navBarHeight: 120,
+      navBarHeight: _navBarHeight,
       confineInSafeArea: true,
       popAllScreensOnTapOfSelectedTab: true,
       handleAndroidBackButtonPress: false,

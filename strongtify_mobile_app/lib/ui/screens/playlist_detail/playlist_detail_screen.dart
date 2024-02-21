@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/auth_bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
@@ -35,6 +36,7 @@ class PlaylistDetailScreen extends StatefulWidget {
 
 class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
   late final FToast fToast;
+  late final String _currentUserId;
 
   @override
   void initState() {
@@ -42,6 +44,8 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
 
     fToast = FToast();
     fToast.init(context);
+
+    _currentUserId = context.read<AuthBloc>().state.user!.id;
   }
 
   @override
@@ -235,32 +239,34 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                   )
                 : const SizedBox(),
             const SizedBox(height: 20),
-            ListTile(
-              onTap: () {
-                pushNewScreen(
-                  context,
-                  screen: AddSongsToPlaylistScreen(
-                    bloc: bloc,
-                  ),
-                  withNavBar: false,
-                );
-              },
-              leading: Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: Colors.grey[850],
-                ),
-                child: const Center(
-                  child: Icon(Icons.add, color: Colors.white),
-                ),
-              ),
-              title: const Text(
-                'Thêm bài hát',
-                style: TextStyle(color: Colors.white),
-              ),
-              contentPadding: const EdgeInsets.only(right: 0, left: 5),
-            ),
+            state.playlist!.user.id == _currentUserId
+                ? ListTile(
+                    onTap: () {
+                      pushNewScreen(
+                        context,
+                        screen: AddSongsToPlaylistScreen(
+                          bloc: bloc,
+                        ),
+                        withNavBar: false,
+                      );
+                    },
+                    leading: Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[850],
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.add, color: Colors.white),
+                      ),
+                    ),
+                    title: const Text(
+                      'Thêm bài hát',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    contentPadding: const EdgeInsets.only(right: 0, left: 5),
+                  )
+                : const SizedBox(),
             _buildPlaylistSongs(context, state),
           ],
         ),
@@ -304,8 +310,9 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
     );
   }
 
-  Widget _buildPlaylistSongs(BuildContext context, PlaylistDetailState state) {
-    final songs = state.playlist!.songs!;
+  Widget _buildPlaylistSongs(
+      BuildContext context, PlaylistDetailState playlistDetailState) {
+    final songs = playlistDetailState.playlist!.songs!;
     final playlistSongsBloc = context.read<PlaylistSongsBloc>();
 
     if (songs.isEmpty) {
@@ -315,45 +322,63 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
       );
     }
 
-    return Column(
-      children: songs
-          .map((song) => SongItem(
-                song: song,
-                action: IconButton(
-                  icon: const Icon(
-                    Icons.more_vert_outlined,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    showSongMenuBottomSheet(
-                      context,
-                      song: song,
-                      anotherOptions: (context) => [
-                        ListTile(
-                          leading: const Icon(Icons.remove_circle_outline),
-                          textColor: Colors.white70,
-                          iconColor: Colors.white70,
-                          title: const Text('Xóa khỏi danh sách phát này'),
-                          onTap: () async {
-                            Navigator.pop(context);
+    int index = -1;
+    return BlocBuilder<PlayerBloc, PlayerState>(
+      builder: (context, PlayerState state) {
+        return Column(
+          children: songs.map((song) {
+            index++;
+            int currentIndex = index;
 
-                            playlistSongsBloc.add(
-                              RemoveSongFromPlaylistEvent(
-                                playlistId: state.playlist!.id,
-                                songId: song.id,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
+            return SongItem(
+              song: song,
+              isPlaying: song.id == state.playingSong?.id,
+              action: IconButton(
+                icon: const Icon(
+                  Icons.more_vert_outlined,
+                  color: Colors.white,
                 ),
                 onPressed: () {
-                  //
+                  showSongMenuBottomSheet(
+                    context,
+                    song: song,
+                    anotherOptions: playlistDetailState.playlist!.user.id ==
+                            _currentUserId
+                        ? (context) => [
+                              ListTile(
+                                leading:
+                                    const Icon(Icons.remove_circle_outline),
+                                textColor: Colors.white70,
+                                iconColor: Colors.white70,
+                                title:
+                                    const Text('Xóa khỏi danh sách phát này'),
+                                onTap: () async {
+                                  Navigator.pop(context);
+
+                                  playlistSongsBloc.add(
+                                    RemoveSongFromPlaylistEvent(
+                                      playlistId:
+                                          playlistDetailState.playlist!.id,
+                                      songId: song.id,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ]
+                        : null,
+                  );
                 },
-              ))
-          .toList(),
+              ),
+              onPressed: () {
+                context.read<PlayerBloc>().add(CreatePlayerEvent(
+                      songs: songs,
+                      index: currentIndex,
+                    ));
+              },
+            );
+          }).toList(),
+        );
+      },
     );
   }
 

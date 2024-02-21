@@ -55,4 +55,16 @@ class SongService extends ApiService {
       throw Exception();
     }
   }
+
+  Future<Song?> getSongById(String id) async {
+    try {
+      Response response = await dioClient.dio.get('/v1/songs/$id');
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return Song.fromMap(data);
+    } on DioException {
+      return null;
+    }
+  }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
@@ -17,6 +19,12 @@ Future main() async {
   await dotenv.load(fileName: ".env");
 
   configureDependencies();
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
 
   runApp(const StrongtifyApp());
 }
@@ -39,6 +47,10 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<PlaylistSongsBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<PlaylistSongsBloc>(),
+        ),
+        BlocProvider<PlayerBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<PlayerBloc>(),
         ),
       ],
       child: GlobalLoaderOverlay(

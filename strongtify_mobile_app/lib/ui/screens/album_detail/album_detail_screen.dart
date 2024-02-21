@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/album/album_detail.dart';
 import 'package:strongtify_mobile_app/models/artist/artist.dart';
@@ -115,7 +116,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                     : Image.asset('assets/img/default-song-img.png'),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             const Text(
               '(Album)',
               style: TextStyle(color: Colors.white54),
@@ -129,9 +130,9 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 5),
             _buildAlbumArtist(state.album!.artist),
-            const SizedBox(height: 8),
+            const SizedBox(height: 5),
             Text(
               '${state.album!.songCount} bài hát - ${state.album!.totalLength.toFormattedLength()}',
               style: const TextStyle(
@@ -146,11 +147,14 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                 color: Colors.white70,
               ),
             ),
-            const SizedBox(height: 10),
             Row(
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<PlayerBloc>().add(CreatePlayerEvent(
+                          songs: state.album!.songs ?? [],
+                        ));
+                  },
                   iconSize: 50,
                   icon: const Icon(
                     Icons.play_circle,
@@ -168,7 +172,6 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
             SongList(songs: state.album!.songs ?? []),
           ],
         ),

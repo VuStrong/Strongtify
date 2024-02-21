@@ -62,6 +62,11 @@ class CustomNavBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Player(),
+        const Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.white30,
+        ),
         SizedBox(
           height: 60,
           child: Row(
