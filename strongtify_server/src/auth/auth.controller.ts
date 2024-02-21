@@ -170,11 +170,11 @@ export class AuthController {
 
         res.send(
             `<script>
-                window.opener.postMessage('${JSON.stringify(
+                window.opener?.postMessage('${JSON.stringify(
                     result,
                 )}', '*');
 
-                window.flutter_inappwebview.callHandler('messageHandler', '${JSON.stringify(result)}');
+                Print.postMessage('${JSON.stringify(result)}');
                 window.close();
             </script>`,
         );
