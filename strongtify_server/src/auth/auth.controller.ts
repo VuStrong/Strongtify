@@ -174,7 +174,10 @@ export class AuthController {
                     result,
                 )}', '*');
 
-                Print.postMessage('${JSON.stringify(result)}');
+                try {
+                    Print.postMessage('${JSON.stringify(result)}');
+                } catch {}
+
                 window.close();
             </script>`,
         );
