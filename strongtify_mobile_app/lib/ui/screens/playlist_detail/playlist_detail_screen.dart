@@ -322,9 +322,10 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
       );
     }
 
-    int index = -1;
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, PlayerState state) {
+        int index = -1;
+
         return Column(
           children: songs.map((song) {
             index++;

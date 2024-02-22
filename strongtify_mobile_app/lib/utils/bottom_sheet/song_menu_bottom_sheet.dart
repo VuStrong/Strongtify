@@ -88,6 +88,7 @@ void _showSelectSongArtistBottomSheet(BuildContext context, Song song) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.grey[850],
+    useRootNavigator: true,
     builder: (context) {
       return Padding(
         padding:
@@ -134,6 +135,7 @@ void _showAddSongToPlaylistBottomSheet(BuildContext context, Song song) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.grey[850],
+    useRootNavigator: true,
     builder: (context) {
       return BlocProvider<GetPlaylistsBloc>(
         create: (context) => getIt<GetPlaylistsBloc>()

@@ -77,7 +77,7 @@ class StrongtifyApp extends StatelessWidget {
                   return const ConfirmEmailScreen();
                 }
 
-                return BottomNavigationApp();
+                return const BottomNavigationApp();
               } else {
                 return const LoginScreen();
               }
@@ -88,7 +88,7 @@ class StrongtifyApp extends StatelessWidget {
             RegisterScreen.id: (context) => const RegisterScreen(),
             ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
             ConfirmEmailScreen.id: (context) => const ConfirmEmailScreen(),
-            BottomNavigationApp.id: (context) => BottomNavigationApp(),
+            BottomNavigationApp.id: (context) => const BottomNavigationApp(),
           },
         ),
       ),
