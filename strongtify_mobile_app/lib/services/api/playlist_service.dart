@@ -136,4 +136,21 @@ class PlaylistService extends ApiService {
       throw Exception();
     }
   }
+
+  Future<void> moveSong(
+    String playlistId, {
+    required String songId,
+    required int to,
+  }) async {
+    final body = jsonEncode({'to': to});
+
+    try {
+      await dioClient.dio.put(
+        '/v1/playlists/$playlistId/songs/$songId',
+        data: body,
+      );
+    } on DioException {
+      //
+    }
+  }
 }

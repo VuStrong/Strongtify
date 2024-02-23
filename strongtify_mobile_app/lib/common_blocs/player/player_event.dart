@@ -12,14 +12,24 @@ class CreatePlayerEvent extends PlayerEvent {
   });
 }
 
-class SkipToEvent extends PlayPlayerEvent {
-  final int index;
+class PlayPlayerEvent extends PlayerEvent {
+  final bool onlyUpdateState;
 
-  SkipToEvent({
-    required this.index,
-  });
+  PlayPlayerEvent({this.onlyUpdateState = false});
 }
 
-class PlayPlayerEvent extends PlayerEvent {}
+class PausePlayerEvent extends PlayerEvent {
+  final bool onlyUpdateState;
 
-class PausePlayerEvent extends PlayerEvent {}
+  PausePlayerEvent({this.onlyUpdateState = false});
+}
+
+class SkipToPreviousEvent extends PlayerEvent {}
+
+class SkipToNextEvent extends PlayerEvent {}
+
+class SeekToEvent extends PlayerEvent {
+  final Duration duration;
+
+  SeekToEvent({this.duration = Duration.zero});
+}

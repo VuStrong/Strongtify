@@ -50,3 +50,13 @@ class RemoveSongFromPlaylistStateEvent extends PlaylistDetailEvent {
     required this.songId,
   });
 }
+
+class MoveSongInPlaylistEvent extends PlaylistDetailEvent {
+  final int from;
+  final int to;
+
+  MoveSongInPlaylistEvent({
+    required this.from,
+    required this.to,
+  });
+}

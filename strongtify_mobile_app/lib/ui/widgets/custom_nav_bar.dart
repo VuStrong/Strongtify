@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-import 'package:strongtify_mobile_app/ui/widgets/player.dart';
+import 'package:strongtify_mobile_app/ui/widgets/mini_player.dart';
 
 class CustomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -61,7 +61,7 @@ class CustomNavBar extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Player(),
+        const MiniPlayer(),
         const Divider(
           height: 1,
           thickness: 1,

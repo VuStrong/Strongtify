@@ -18,6 +18,8 @@ class PlaylistDetailBloc
     on<EditPlaylistEvent>(_onEditPlaylist);
 
     on<DeletePlaylistEvent>(_onDeletePlaylist);
+
+    on<MoveSongInPlaylistEvent>(_onMoveSong);
   }
 
   final PlaylistService _playlistService;
@@ -119,5 +121,35 @@ class PlaylistDetailBloc
         errorMessage: () => 'Không thể xóa playlist!',
       ));
     }
+  }
+
+  Future<void> _onMoveSong(
+    MoveSongInPlaylistEvent event,
+    Emitter<PlaylistDetailState> emit,
+  ) async {
+    if (state.playlist == null ||
+        state.playlist!.songs == null ||
+        state.playlist!.songs!.isEmpty) return;
+
+    int length = state.playlist!.songs!.length;
+
+    if (event.from < 1 ||
+        event.from > length ||
+        event.to < 1 ||
+        event.to > length ||
+        event.from == event.to) return;
+
+    final songToMove = state.playlist!.songs![event.from - 1];
+
+    _playlistService.moveSong(
+      state.playlist!.id,
+      songId: songToMove.id,
+      to: event.to,
+    );
+
+    final song = state.playlist!.songs!.removeAt(event.from - 1);
+    state.playlist!.songs!.insert(event.to - 1, song);
+
+    emit(state.copyWith());
   }
 }

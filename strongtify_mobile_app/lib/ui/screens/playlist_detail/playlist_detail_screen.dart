@@ -9,6 +9,7 @@ import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
+import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/models/user/user.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/add_songs_to_playlist_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_detail/bloc/bloc.dart';
@@ -46,6 +47,51 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
     fToast.init(context);
 
     _currentUserId = context.read<AuthBloc>().state.user!.id;
+  }
+
+  void _onTapRemoveSong(
+    BuildContext context, {
+    required String songId,
+    required PlaylistSongsBloc bloc,
+  }) {
+    Navigator.pop(context);
+
+    bloc.add(
+      RemoveSongFromPlaylistEvent(
+        playlistId: widget.playlistId,
+        songId: songId,
+      ),
+    );
+  }
+
+  void _onTapSongMenu(
+    BuildContext context, {
+    required PlaylistDetail playlist,
+    required Song song,
+  }) {
+    final playlistSongsBloc = context.read<PlaylistSongsBloc>();
+
+    showSongMenuBottomSheet(
+      context,
+      song: song,
+      anotherOptions: playlist.user.id == _currentUserId
+          ? (context) => [
+                ListTile(
+                  leading: const Icon(Icons.remove_circle_outline),
+                  textColor: Colors.white70,
+                  iconColor: Colors.white70,
+                  title: const Text('Xóa khỏi danh sách phát này'),
+                  onTap: () {
+                    _onTapRemoveSong(
+                      context,
+                      songId: song.id,
+                      bloc: playlistSongsBloc,
+                    );
+                  },
+                ),
+              ]
+          : null,
+    );
   }
 
   @override
@@ -111,11 +157,11 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                 if (state.status == PlaylistSongsStatus.removing) {
                   fToast.showLoadingToast(msg: 'Đang xóa bài hát...');
                 } else if (state.status == PlaylistSongsStatus.removed) {
-                  context.read<PlaylistDetailBloc>().add(
-                        RemoveSongFromPlaylistStateEvent(
-                          songId: state.removedSongId ?? '',
-                        ),
-                      );
+                  context
+                      .read<PlaylistDetailBloc>()
+                      .add(RemoveSongFromPlaylistStateEvent(
+                        songId: state.removedSongId ?? '',
+                      ));
 
                   fToast.showSuccessToast(msg: 'Đã cập nhập playlist!');
                 } else if (state.status == PlaylistSongsStatus.error) {
@@ -313,7 +359,6 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
   Widget _buildPlaylistSongs(
       BuildContext context, PlaylistDetailState playlistDetailState) {
     final songs = playlistDetailState.playlist!.songs!;
-    final playlistSongsBloc = context.read<PlaylistSongsBloc>();
 
     if (songs.isEmpty) {
       return const Text(
@@ -326,12 +371,17 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
       builder: (context, PlayerState state) {
         int index = -1;
 
-        return Column(
+        return ReorderableListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles:
+              playlistDetailState.playlist!.user.id == _currentUserId,
           children: songs.map((song) {
             index++;
             int currentIndex = index;
 
             return SongItem(
+              key: Key(song.id),
               song: song,
               isPlaying: song.id == state.playingSong?.id,
               action: IconButton(
@@ -340,33 +390,10 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  showSongMenuBottomSheet(
+                  _onTapSongMenu(
                     context,
+                    playlist: playlistDetailState.playlist!,
                     song: song,
-                    anotherOptions: playlistDetailState.playlist!.user.id ==
-                            _currentUserId
-                        ? (context) => [
-                              ListTile(
-                                leading:
-                                    const Icon(Icons.remove_circle_outline),
-                                textColor: Colors.white70,
-                                iconColor: Colors.white70,
-                                title:
-                                    const Text('Xóa khỏi danh sách phát này'),
-                                onTap: () async {
-                                  Navigator.pop(context);
-
-                                  playlistSongsBloc.add(
-                                    RemoveSongFromPlaylistEvent(
-                                      playlistId:
-                                          playlistDetailState.playlist!.id,
-                                      songId: song.id,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ]
-                        : null,
                   );
                 },
               ),
@@ -378,6 +405,15 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
               },
             );
           }).toList(),
+          onReorder: (int oldIndex, int newIndex) {
+            if (oldIndex > newIndex) {
+              newIndex++;
+            }
+
+            context
+                .read<PlaylistDetailBloc>()
+                .add(MoveSongInPlaylistEvent(from: oldIndex + 1, to: newIndex));
+          },
         );
       },
     );
@@ -389,6 +425,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
   ) {
     final bloc = context.read<PlaylistDetailBloc>();
     final currentUser = context.read<AuthBloc>().state.user!;
+    final playlistContext = context;
 
     showModalBottomSheet(
       context: context,
@@ -415,7 +452,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                   Navigator.pop(context);
 
                   pushNewScreen(
-                    context,
+                    playlistContext,
                     screen: ProfileScreen(userId: playlist.user.id),
                   );
                 },

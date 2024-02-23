@@ -226,6 +226,8 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
   }
 
   void _showAlbumMenuBottomSheet(BuildContext context, AlbumDetail album) {
+    final albumContext = context;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.grey[850],
@@ -246,7 +248,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                         Navigator.pop(context);
 
                         pushNewScreen(
-                          context,
+                          albumContext,
                           screen:
                               ArtistDetailScreen(artistId: album.artist!.id),
                         );

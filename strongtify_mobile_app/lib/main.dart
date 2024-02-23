@@ -1,7 +1,7 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
@@ -13,6 +13,7 @@ import 'package:strongtify_mobile_app/ui/screens/auth/forgot_password_screen.dar
 import 'package:strongtify_mobile_app/ui/screens/auth/login_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/register_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/bottom_navigation_app.dart';
+import 'package:strongtify_mobile_app/services/audio_handler_impl.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 
 Future main() async {
@@ -20,10 +21,12 @@ Future main() async {
 
   configureDependencies();
 
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
+  await AudioService.init(
+    builder: () => AudioHandlerImpl(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelName: 'Music playback',
+      androidNotificationOngoing: true,
+    ),
   );
 
   runApp(const StrongtifyApp());

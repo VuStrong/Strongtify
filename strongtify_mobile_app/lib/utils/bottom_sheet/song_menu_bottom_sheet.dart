@@ -8,6 +8,7 @@ import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/home/home_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/small_artist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_item.dart';
@@ -17,6 +18,7 @@ void showSongMenuBottomSheet(
   BuildContext context, {
   required Song song,
   List<Widget> Function(BuildContext context)? anotherOptions,
+  void Function()? onTapArtist,
 }) {
   final topContext = context;
 
@@ -59,7 +61,11 @@ void showSongMenuBottomSheet(
               onTap: () async {
                 Navigator.pop(context);
 
-                _showSelectSongArtistBottomSheet(topContext, song);
+                _showSelectSongArtistBottomSheet(
+                  topContext,
+                  song,
+                  onTapArtist: onTapArtist,
+                );
               },
             ),
             ListTile(
@@ -82,9 +88,8 @@ void showSongMenuBottomSheet(
   );
 }
 
-void _showSelectSongArtistBottomSheet(BuildContext context, Song song) {
-  final topContext = context;
-
+void _showSelectSongArtistBottomSheet(BuildContext context, Song song,
+    {void Function()? onTapArtist}) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.grey[850],
@@ -115,8 +120,10 @@ void _showSelectSongArtistBottomSheet(BuildContext context, Song song) {
                         onTap: () {
                           Navigator.pop(context);
 
+                          if(onTapArtist != null) onTapArtist();
+
                           pushNewScreen(
-                            topContext,
+                            HomeScreen.homeContext,
                             screen: ArtistDetailScreen(artistId: artist.id),
                           );
                         },

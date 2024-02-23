@@ -24,6 +24,7 @@ class _SongItemState extends State<SongItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      key: Key(widget.song.id),
       leading: SizedBox(
         width: 56,
         height: 56,
