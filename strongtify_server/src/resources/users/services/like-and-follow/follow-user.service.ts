@@ -131,4 +131,19 @@ export class FollowUserServiceImpl implements FollowUserService {
 
         return user._count.followings > 0;
     }
+
+    async getAllFollowingUserIds(userId: string): Promise<string[]> {
+        const data = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { 
+                followings: {
+                    select: {
+                        id: true,
+                    }
+                }
+            }
+        });
+
+        return data.followings.map(e => e.id);
+    }
 }

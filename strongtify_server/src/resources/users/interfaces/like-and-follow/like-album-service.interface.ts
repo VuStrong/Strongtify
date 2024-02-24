@@ -34,4 +34,6 @@ export interface LikeAlbumService {
      * Check if an user is liked album or not
      */
     checkLikedAlbum(userId: string, albumId: string): Promise<boolean>;
+
+    getAllLikedAlbumIds(userId: string): Promise<string[]>;
 }

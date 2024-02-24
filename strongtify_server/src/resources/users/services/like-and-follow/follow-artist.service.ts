@@ -105,7 +105,7 @@ export class FollowArtistServiceImpl implements FollowArtistService {
                     error?.code === PrismaError.ENTITY_NOT_FOUND ||
                     error?.code === PrismaError.QUERY_INTERPRETATION_ERROR
                 ) {
-                    throw new ArtistNotFoundException();
+                    
                 } else {
                     throw new InternalServerErrorException();
                 }
@@ -127,5 +127,18 @@ export class FollowArtistServiceImpl implements FollowArtistService {
         } catch (error) {
             return false;
         }
+    }
+
+    async getAllFollowingArtistIds(userId: string): Promise<string[]> {
+        const data = await this.prisma.userArtist.findMany({
+            where: {
+                userId,
+            },
+            select: {
+                artistId: true,
+            }
+        });
+
+        return data.map(d => d.artistId);
     }
 }

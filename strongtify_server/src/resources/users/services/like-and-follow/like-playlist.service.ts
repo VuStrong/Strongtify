@@ -119,7 +119,7 @@ export class LikePlaylistServiceImpl implements LikePlaylistService {
                     error?.code === PrismaError.ENTITY_NOT_FOUND ||
                     error?.code === PrismaError.QUERY_INTERPRETATION_ERROR
                 ) {
-                    throw new PlaylistNotFoundException();
+                    
                 } else {
                     throw new InternalServerErrorException();
                 }
@@ -138,5 +138,18 @@ export class LikePlaylistServiceImpl implements LikePlaylistService {
         } catch (error) {
             return false;
         }
+    }
+
+    async getAllLikedPlaylistIds(userId: string): Promise<string[]> {
+        const data = await this.prisma.userPlaylist.findMany({
+            where: {
+                userId,
+            },
+            select: {
+                playlistId: true,
+            }
+        });
+
+        return data.map(d => d.playlistId);
     }
 }

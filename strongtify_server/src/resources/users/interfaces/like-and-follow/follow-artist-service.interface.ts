@@ -34,4 +34,6 @@ export interface FollowArtistService {
      * Check if an user is following an artist or not
      */
     checkFollowingArtist(userId: string, artistId: string): Promise<boolean>;
+
+    getAllFollowingArtistIds(userId: string): Promise<string[]>;
 }

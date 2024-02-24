@@ -333,4 +333,23 @@ export class MeController {
         await this.likePlaylistService.unlikePlaylist(id, playlistId);
         return { success: true };
     }
+
+    @Get("fav-ids")
+    async getFavoriteIds(
+        @User("sub") id: string,
+    ) {
+        const songIds = await this.likeSongService.getAllLikedSongIds(id);
+        const albumIds = await this.likeAlbumService.getAllLikedAlbumIds(id);
+        const playlistIds = await this.likePlaylistService.getAllLikedPlaylistIds(id);
+        const artistIds = await this.followArtistService.getAllFollowingArtistIds(id);
+        const userIds = await this.followUserService.getAllFollowingUserIds(id);
+
+        return {
+            'songIds': songIds,
+            'albumIds': albumIds,
+            'playlistIds': playlistIds,
+            'artistIds': artistIds,
+            'userIds': userIds,
+        }
+    }
 }

@@ -46,4 +46,6 @@ export interface FollowUserService {
      * @param idToCheck - User's ID to check if following or not
      **/
     checkFollowingUser(userId: string, idToCheck: string): Promise<boolean>;
+
+    getAllFollowingUserIds(userId: string): Promise<string[]>;
 }

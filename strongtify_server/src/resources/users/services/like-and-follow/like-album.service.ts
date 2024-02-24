@@ -105,7 +105,7 @@ export class LikeAlbumServiceImpl implements LikeAlbumService {
                     error?.code === PrismaError.ENTITY_NOT_FOUND ||
                     error?.code === PrismaError.QUERY_INTERPRETATION_ERROR
                 ) {
-                    throw new AlbumNotFoundException();
+                    
                 } else {
                     throw new InternalServerErrorException();
                 }
@@ -124,5 +124,18 @@ export class LikeAlbumServiceImpl implements LikeAlbumService {
         } catch (error) {
             return false;
         }
+    }
+
+    async getAllLikedAlbumIds(userId: string): Promise<string[]> {
+        const data = await this.prisma.userAlbum.findMany({
+            where: {
+                userId,
+            },
+            select: {
+                albumId: true,
+            }
+        });
+
+        return data.map(d => d.albumId);
     }
 }
