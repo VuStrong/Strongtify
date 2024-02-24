@@ -147,12 +147,11 @@ class PlaylistDetailBloc
 
     final songToMove = state.playlist!.songs![event.from - 1];
 
-    // _playlistService.moveSong(
-    //   state.playlist!.id,
-    //   songId: songToMove.id,
-    //   to: event.to,
-    // );
-    print('1');
+    _playlistService.moveSong(
+      state.playlist!.id,
+      songId: songToMove.id,
+      to: event.to,
+    );
 
     final song = state.playlist!.songs!.removeAt(event.from - 1);
     state.playlist!.songs!.insert(event.to - 1, song);
