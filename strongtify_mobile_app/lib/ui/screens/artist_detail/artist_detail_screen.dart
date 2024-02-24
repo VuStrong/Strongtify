@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_albums/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_songs/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/artist/artist_detail.dart';
 import 'package:strongtify_mobile_app/ui/screens/album_list/album_list_screen.dart';
@@ -14,6 +16,7 @@ import 'package:strongtify_mobile_app/ui/widgets/album/album_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_list.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
+import 'package:strongtify_mobile_app/utils/extensions.dart';
 
 class ArtistDetailScreen extends StatefulWidget {
   const ArtistDetailScreen({
@@ -28,6 +31,15 @@ class ArtistDetailScreen extends StatefulWidget {
 }
 
 class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
+  final FToast _fToast = FToast();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fToast.init(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ArtistDetailBloc>(
@@ -205,12 +217,31 @@ class _ArtistDetailScreenState extends State<ArtistDetailScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Button(
-                  width: 120,
-                  isOutlined: true,
-                  buttonText: 'Theo dõi',
-                  onPressed: () {
-                    //
+                BlocBuilder<UserFavsBloc, UserFavsState>(
+                  builder: (context, UserFavsState state) {
+                    final followed =
+                        state.data.followingArtistIds.contains(widget.artistId);
+
+                    return Button(
+                      width: 120,
+                      isOutlined: !followed,
+                      buttonText: followed ? 'Bỏ theo dõi' : 'Theo dõi',
+                      onPressed: () {
+                        if (followed) {
+                          context.read<UserFavsBloc>().add(UnFollowArtistEvent(
+                            artistId: widget.artistId,
+                          ));
+
+                          _fToast.showSuccessToast(msg: 'Đã bỏ theo dõi');
+                        } else {
+                          context.read<UserFavsBloc>().add(FollowArtistEvent(
+                            artistId: widget.artistId,
+                          ));
+
+                          _fToast.showSuccessToast(msg: 'Đã theo dõi');
+                        }
+                      },
+                    );
                   },
                 ),
               ],

@@ -18,8 +18,6 @@ import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  static late BuildContext homeContext;
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -27,8 +25,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    HomeScreen.homeContext = context;
-
     return BlocProvider<HomeSectionsBloc>(
       create: (context) => getIt<HomeSectionsBloc>()..add(GetHomeSectionsEvent()),
       child: Scaffold(

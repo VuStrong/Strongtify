@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
-import 'package:strongtify_mobile_app/main.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
+import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
-import 'package:strongtify_mobile_app/ui/screens/home/home_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/small_artist_item.dart';
+import 'package:strongtify_mobile_app/ui/widgets/bottom_navigation_app.dart';
 import 'package:strongtify_mobile_app/utils/bottom_sheet/song_menu_bottom_sheet.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
@@ -42,13 +43,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
               return IconButton(
                 onPressed: () {
-                  showSongMenuBottomSheet(
-                    context,
-                    song: state.playingSong!,
-                    onTapArtist: () {
-                      Navigator.pop(context);
-                    }
-                  );
+                  showSongMenuBottomSheet(context, song: state.playingSong!,
+                      onTapArtist: () {
+                    Navigator.pop(context);
+                  });
                 },
                 icon: const Icon(Icons.more_vert_outlined),
               );
@@ -117,7 +115,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   fontSize: 12,
                 ),
               ),
-              const SizedBox(height: 12),
+              Row(
+                children: [_buildLikeButton(context, song)],
+              ),
               _buildSeekBar(context),
               _buildControl(context, state),
               const SizedBox(height: 20),
@@ -135,7 +135,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             Navigator.pop(context);
 
                             pushNewScreen(
-                              HomeScreen.homeContext,
+                              BottomNavigationApp.tabContext,
                               screen: ArtistDetailScreen(artistId: artist.id),
                             );
                           },
@@ -144,6 +144,34 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       .toList() ??
                   [],
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLikeButton(BuildContext context, Song song) {
+    return BlocBuilder<UserFavsBloc, UserFavsState>(
+      builder: (context, UserFavsState state) {
+        final liked = state.data.likedSongIds.contains(song.id);
+
+        return IconButton(
+          tooltip: liked ? 'Bỏ thích' : 'Thích',
+          onPressed: () {
+            if (liked) {
+              context.read<UserFavsBloc>().add(UnlikeSongEvent(
+                    songId: song.id,
+                  ));
+            } else {
+              context.read<UserFavsBloc>().add(LikeSongEvent(
+                    songId: song.id,
+                  ));
+            }
+          },
+          iconSize: 50,
+          icon: Icon(
+            liked ? Icons.favorite : Icons.favorite_border,
+            color: ColorConstants.primary,
           ),
         );
       },

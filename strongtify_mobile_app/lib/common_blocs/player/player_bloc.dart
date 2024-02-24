@@ -54,6 +54,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       songs: event.songs,
       playingSong: songToPlay,
       status: PlayerStatus.paused,
+      playlistId: event.playlistId,
     ));
 
     await player.setUrl(songToPlay.songUrl ?? '');

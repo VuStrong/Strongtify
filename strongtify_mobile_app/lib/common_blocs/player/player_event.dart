@@ -5,10 +5,12 @@ abstract class PlayerEvent {}
 class CreatePlayerEvent extends PlayerEvent {
   final List<Song> songs;
   final int index;
+  final String? playlistId;
 
   CreatePlayerEvent({
     required this.songs,
     this.index = 0,
+    this.playlistId,
   });
 }
 

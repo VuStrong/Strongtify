@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/album/album_detail.dart';
 import 'package:strongtify_mobile_app/models/artist/artist.dart';
@@ -26,6 +28,15 @@ class AlbumDetailScreen extends StatefulWidget {
 }
 
 class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
+  final FToast _fToast = FToast();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fToast.init(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AlbumDetailBloc>(
@@ -161,14 +172,37 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                     color: ColorConstants.primary,
                   ),
                 ),
-                IconButton(
-                  tooltip: 'Thích',
-                  onPressed: () {},
-                  iconSize: 50,
-                  icon: const Icon(
-                    Icons.favorite_border,
-                    color: ColorConstants.primary,
-                  ),
+                BlocBuilder<UserFavsBloc, UserFavsState>(
+                  builder: (context, UserFavsState state) {
+                    final liked =
+                        state.data.likedAlbumIds.contains(widget.albumId);
+
+                    return IconButton(
+                      tooltip: liked ? 'Bỏ thích' : 'Thích',
+                      onPressed: () {
+                        if (liked) {
+                          context.read<UserFavsBloc>().add(UnlikeAlbumEvent(
+                                albumId: widget.albumId,
+                              ));
+
+                          _fToast.showSuccessToast(
+                              msg: 'Đã xóa khỏi mục yêu thích');
+                        } else {
+                          context.read<UserFavsBloc>().add(LikeAlbumEvent(
+                                albumId: widget.albumId,
+                              ));
+
+                          _fToast.showSuccessToast(
+                              msg: 'Đã thêm vào mục yêu thích');
+                        }
+                      },
+                      iconSize: 50,
+                      icon: Icon(
+                        liked ? Icons.favorite : Icons.favorite_border,
+                        color: ColorConstants.primary,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

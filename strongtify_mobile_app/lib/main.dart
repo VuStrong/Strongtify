@@ -6,6 +6,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/confirm_email_screen.dart';
@@ -54,6 +55,10 @@ class StrongtifyApp extends StatelessWidget {
         BlocProvider<PlayerBloc>(
           lazy: false,
           create: (BuildContext context) => getIt<PlayerBloc>(),
+        ),
+        BlocProvider<UserFavsBloc>(
+          lazy: false,
+          create: (BuildContext context) => getIt<UserFavsBloc>(),
         ),
       ],
       child: GlobalLoaderOverlay(

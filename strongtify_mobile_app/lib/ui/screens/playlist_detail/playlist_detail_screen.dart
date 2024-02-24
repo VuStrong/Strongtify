@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/auth_bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist_detail.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
@@ -274,9 +275,10 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                 color: Colors.white70,
               ),
             ),
+            _buildPlaylistActions(context, state),
             state.playlist!.description?.isNotEmpty ?? false
                 ? Container(
-                    padding: const EdgeInsets.only(top: 15),
+                    padding: const EdgeInsets.only(bottom: 10),
                     width: double.infinity,
                     child: Text(
                       state.playlist!.description!,
@@ -284,7 +286,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                     ),
                   )
                 : const SizedBox(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             state.playlist!.user.id == _currentUserId
                 ? ListTile(
                     onTap: () {
@@ -356,6 +358,65 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
     );
   }
 
+  Widget _buildPlaylistActions(
+    BuildContext context,
+    PlaylistDetailState state,
+  ) {
+    return Row(
+      children: [
+        // Play button
+        IconButton(
+          onPressed: () {
+            context.read<PlayerBloc>().add(CreatePlayerEvent(
+                  songs: state.playlist!.songs ?? [],
+                  playlistId: widget.playlistId,
+                ));
+          },
+          iconSize: 50,
+          icon: const Icon(
+            Icons.play_circle,
+            color: ColorConstants.primary,
+          ),
+        ),
+        // Like button
+        state.playlist!.user.id != _currentUserId
+            ? BlocBuilder<UserFavsBloc, UserFavsState>(
+                builder: (context, UserFavsState state) {
+                  final liked =
+                      state.data.likedPlaylistIds.contains(widget.playlistId);
+
+                  return IconButton(
+                    tooltip: liked ? 'Bỏ thích' : 'Thích',
+                    onPressed: () {
+                      if (liked) {
+                        context.read<UserFavsBloc>().add(UnlikePlaylistEvent(
+                              playlistId: widget.playlistId,
+                            ));
+
+                        fToast.showSuccessToast(
+                            msg: 'Đã xóa khỏi mục yêu thích');
+                      } else {
+                        context.read<UserFavsBloc>().add(LikePlaylistEvent(
+                              playlistId: widget.playlistId,
+                            ));
+
+                        fToast.showSuccessToast(
+                            msg: 'Đã thêm vào mục yêu thích');
+                      }
+                    },
+                    iconSize: 50,
+                    icon: Icon(
+                      liked ? Icons.favorite : Icons.favorite_border,
+                      color: ColorConstants.primary,
+                    ),
+                  );
+                },
+              )
+            : const SizedBox(),
+      ],
+    );
+  }
+
   Widget _buildPlaylistSongs(
       BuildContext context, PlaylistDetailState playlistDetailState) {
     final songs = playlistDetailState.playlist!.songs!;
@@ -401,6 +462,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                 context.read<PlayerBloc>().add(CreatePlayerEvent(
                       songs: songs,
                       index: currentIndex,
+                      playlistId: widget.playlistId,
                     ));
               },
             );
@@ -424,7 +486,6 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
     PlaylistDetail playlist,
   ) {
     final bloc = context.read<PlaylistDetailBloc>();
-    final currentUser = context.read<AuthBloc>().state.user!;
     final playlistContext = context;
 
     showModalBottomSheet(
@@ -457,7 +518,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                   );
                 },
               ),
-              playlist.user.id == currentUser.id
+              playlist.user.id == _currentUserId
                   ? ListTile(
                       leading: const Icon(Icons.add),
                       textColor: Colors.white70,
@@ -476,7 +537,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                       },
                     )
                   : const SizedBox(),
-              playlist.user.id == currentUser.id
+              playlist.user.id == _currentUserId
                   ? ListTile(
                       leading: const Icon(Icons.edit),
                       textColor: Colors.white70,
@@ -508,7 +569,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                   Share.share('$domain/playlists/${playlist.id}');
                 },
               ),
-              playlist.user.id == currentUser.id
+              playlist.user.id == _currentUserId
                   ? ListTile(
                       leading: const Icon(Icons.delete),
                       textColor: Colors.white70,

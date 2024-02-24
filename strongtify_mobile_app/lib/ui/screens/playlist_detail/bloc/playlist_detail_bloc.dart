@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/services/api/playlist_service.dart';
@@ -36,6 +37,11 @@ class PlaylistDetailBloc
       playlist: playlist,
       status: PlaylistDetailStatus.loaded,
     ));
+
+    final playerBloc = getIt<PlayerBloc>();
+    if (playlist != null && playerBloc.state.playlistId == playlist.id) {
+      playerBloc.state.songs = playlist.songs;
+    }
   }
 
   Future<void> _onAddSongToPlaylistState(
@@ -141,11 +147,12 @@ class PlaylistDetailBloc
 
     final songToMove = state.playlist!.songs![event.from - 1];
 
-    _playlistService.moveSong(
-      state.playlist!.id,
-      songId: songToMove.id,
-      to: event.to,
-    );
+    // _playlistService.moveSong(
+    //   state.playlist!.id,
+    //   songId: songToMove.id,
+    //   to: event.to,
+    // );
+    print('1');
 
     final song = state.playlist!.songs!.removeAt(event.from - 1);
     state.playlist!.songs!.insert(event.to - 1, song);

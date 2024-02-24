@@ -5,11 +5,12 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
-import 'package:strongtify_mobile_app/ui/screens/home/home_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/small_artist_item.dart';
+import 'package:strongtify_mobile_app/ui/widgets/bottom_navigation_app.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/small_playlist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/song/song_item.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
@@ -42,6 +43,35 @@ void showSongMenuBottomSheet(
               color: Colors.white30,
             ),
             ...options,
+            BlocBuilder<UserFavsBloc, UserFavsState>(
+              builder: (context, UserFavsState state) {
+                final liked = state.data.likedSongIds.contains(song.id);
+
+                return ListTile(
+                  leading: liked
+                      ? const Icon(Icons.favorite)
+                      : const Icon(Icons.favorite_border),
+                  textColor: Colors.white70,
+                  iconColor: Colors.white70,
+                  title: Text(liked
+                      ? 'Xóa khỏi danh sách yêu thích'
+                      : 'Thêm vào danh sách yêu thích'),
+                  onTap: () async {
+                    Navigator.pop(context);
+
+                    if (liked) {
+                      context.read<UserFavsBloc>().add(UnlikeSongEvent(
+                            songId: song.id,
+                          ));
+                    } else {
+                      context.read<UserFavsBloc>().add(LikeSongEvent(
+                            songId: song.id,
+                          ));
+                    }
+                  },
+                );
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.add_circle_outline_outlined),
               textColor: Colors.white70,
@@ -120,10 +150,10 @@ void _showSelectSongArtistBottomSheet(BuildContext context, Song song,
                         onTap: () {
                           Navigator.pop(context);
 
-                          if(onTapArtist != null) onTapArtist();
+                          if (onTapArtist != null) onTapArtist();
 
                           pushNewScreen(
-                            HomeScreen.homeContext,
+                            BottomNavigationApp.tabContext,
                             screen: ArtistDetailScreen(artistId: artist.id),
                           );
                         },

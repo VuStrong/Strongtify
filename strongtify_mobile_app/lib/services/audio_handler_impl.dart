@@ -19,7 +19,7 @@ class AudioHandlerImpl extends BaseAudioHandler with QueueHandler, SeekHandler {
       final song = state.playingSong!;
 
       if (song.id != mediaItem.value?.id) {
-        mediaItem.add(songToMediaItem(song));
+        mediaItem.add(_songToMediaItem(song));
       }
     });
   }
@@ -49,7 +49,7 @@ class AudioHandlerImpl extends BaseAudioHandler with QueueHandler, SeekHandler {
     _playerBloc.add(SkipToNextEvent());
   }
 
-  MediaItem songToMediaItem(Song song) {
+  MediaItem _songToMediaItem(Song song) {
     return MediaItem(
       id: song.id,
       title: song.name,

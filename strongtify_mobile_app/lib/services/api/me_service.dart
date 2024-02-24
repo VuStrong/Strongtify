@@ -10,11 +10,15 @@ import 'package:strongtify_mobile_app/models/album/album.dart';
 import 'package:strongtify_mobile_app/models/api_responses/paged_response.dart';
 import 'package:strongtify_mobile_app/models/playlist/playlist.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
+import 'package:strongtify_mobile_app/models/user_favs.dart';
 import 'package:strongtify_mobile_app/services/api/api_service.dart';
+import 'package:strongtify_mobile_app/services/local_storage/local_storage.dart';
 
 @injectable
 class MeService extends ApiService {
-  MeService(super.dioClient);
+  MeService(super.dioClient, this._storage);
+
+  final LocalStorage _storage;
 
   Future<Account?> getCurrentAccount() async {
     try {
@@ -153,6 +157,64 @@ class MeService extends ApiService {
     }
   }
 
+  Future<bool> checkLikedSong(String songId) async {
+    try {
+      await dioClient.dio.head('/v1/me/liked-songs/$songId');
+
+      return true;
+    } on DioException {
+      return false;
+    }
+  }
+
+  Future<void> likeSong(String songId) async {
+    try {
+      await dioClient.dio.post(
+        '/v1/me/liked-songs',
+        data: jsonEncode({'songId': songId}),
+      );
+    } on DioException {
+      //
+    }
+  }
+
+  Future<void> unlikeSong(String songId) async {
+    try {
+      await dioClient.dio.delete('/v1/me/liked-songs/$songId');
+    } on DioException {
+      //
+    }
+  }
+
+  Future<bool> checkLikedPlaylist(String playlistId) async {
+    try {
+      await dioClient.dio.head('/v1/me/liked-playlists/$playlistId');
+
+      return true;
+    } on DioException {
+      return false;
+    }
+  }
+
+  Future<void> likePlaylist(String playlistId) async {
+    try {
+      await dioClient.dio.post(
+        '/v1/me/liked-playlists',
+        data: jsonEncode({'playlistId': playlistId}),
+      );
+    } on DioException {
+      //
+    }
+  }
+
+  Future<void> unlikePlaylist(String playlistId) async {
+    try {
+      await dioClient.dio.delete('/v1/me/liked-playlists/$playlistId');
+    } on DioException {
+      //
+    }
+  }
+
   Future<PagedResponse<Playlist>> getLikedPlaylists({
     int skip = 0,
     int take = 5,
@@ -175,6 +237,86 @@ class MeService extends ApiService {
         skip: data['skip'],
         take: data['take'],
         end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<void> followUser(String userId) async {
+    try {
+      await dioClient.dio.post(
+        '/v1/me/following-users',
+        data: jsonEncode({'idToFollow': userId}),
+      );
+    } on DioException {
+      //
+    }
+  }
+
+  Future<void> unfollowUser(String userId) async {
+    try {
+      await dioClient.dio.delete('/v1/me/following-users/$userId');
+    } on DioException {
+      //
+    }
+  }
+
+  Future<void> followArtist(String artistId) async {
+    try {
+      await dioClient.dio.post(
+        '/v1/me/following-artists',
+        data: jsonEncode({'artistId': artistId}),
+      );
+    } on DioException {
+      //
+    }
+  }
+
+  Future<void> unfollowArtist(String artistId) async {
+    try {
+      await dioClient.dio.delete('/v1/me/following-artists/$artistId');
+    } on DioException {
+      //
+    }
+  }
+
+  Future<bool> checkFollowingUser(String userIdToCheck) async {
+    final userId = await _storage.getString('user_id');
+
+    try {
+      await dioClient.dio.head('/v1/users/$userId/following-users/$userIdToCheck');
+
+      return true;
+    } on DioException {
+      return false;
+    }
+  }
+
+  Future<bool> checkFollowingArtist(String artistId) async {
+    final userId = await _storage.getString('user_id');
+
+    try {
+      await dioClient.dio.head('/v1/users/$userId/following-artists/$artistId');
+
+      return true;
+    } on DioException {
+      return false;
+    }
+  }
+
+  Future<UserFavs> getFavs() async {
+    try {
+      Response response = await dioClient.dio.get('/v1/me/fav-ids');
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return UserFavs(
+        likedSongIds: (data['songIds'] as List).map((e) => e.toString()).toSet(),
+        likedAlbumIds: (data['albumIds'] as List).map((e) => e.toString()).toSet(),
+        likedPlaylistIds: (data['playlistIds'] as List).map((e) => e.toString()).toSet(),
+        followingArtistIds: (data['artistIds'] as List).map((e) => e.toString()).toSet(),
+        followingUserIds: (data['userIds'] as List).map((e) => e.toString()).toSet(),
       );
     } on DioException {
       throw Exception();

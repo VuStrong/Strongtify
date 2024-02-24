@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/get_users/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/models/account/account.dart';
 import 'package:strongtify_mobile_app/models/user/user_detail.dart';
@@ -17,6 +19,7 @@ import 'package:strongtify_mobile_app/ui/widgets/button.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_grid.dart';
 import 'package:strongtify_mobile_app/ui/widgets/user/user_grid.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
+import 'package:strongtify_mobile_app/utils/extensions.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({
@@ -31,6 +34,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final FToast _fToast = FToast();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fToast.init(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ProfileBloc>(
@@ -151,12 +163,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     );
                   },
                 )
-              : Button(
-                  width: 120,
-                  isOutlined: true,
-                  buttonText: 'Theo dõi',
-                  onPressed: () {
-                    //
+              : BlocBuilder<UserFavsBloc, UserFavsState>(
+                  builder: (context, UserFavsState state) {
+                    final followed =
+                        state.data.followingUserIds.contains(widget.userId);
+
+                    return Button(
+                      width: 120,
+                      isOutlined: !followed,
+                      buttonText: followed ? 'Bỏ theo dõi' : 'Theo dõi',
+                      onPressed: () {
+                        if (followed) {
+                          context.read<UserFavsBloc>().add(UnFollowUserEvent(
+                            userId: widget.userId,
+                          ));
+
+                          _fToast.showSuccessToast(msg: 'Đã bỏ theo dõi');
+                        } else {
+                          context.read<UserFavsBloc>().add(FollowUserEvent(
+                            userId: widget.userId,
+                          ));
+
+                          _fToast.showSuccessToast(msg: 'Đã theo dõi');
+                        }
+                      },
+                    );
                   },
                 ),
           const SizedBox(height: 16),

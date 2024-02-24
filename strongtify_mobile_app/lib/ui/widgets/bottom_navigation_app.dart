@@ -5,6 +5,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/common_blocs/auth/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
+import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_recent_playlists/bloc.dart';
 import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/ui/screens/auth/login_screen.dart';
@@ -20,6 +21,7 @@ class BottomNavigationApp extends StatefulWidget {
   const BottomNavigationApp({super.key});
 
   static String id = 'bottom_navigation_app';
+  static late BuildContext tabContext;
 
   @override
   State<BottomNavigationApp> createState() => _BottomNavigationAppState();
@@ -33,6 +35,7 @@ class _BottomNavigationAppState extends State<BottomNavigationApp> {
     fToast = FToast();
 
     getIt<UserRecentPlaylistsBloc>().add(GetUserRecentPlaylistsEvent());
+    getIt<UserFavsBloc>().add(LoadAllFavsEvent());
 
     super.initState();
   }
@@ -120,6 +123,9 @@ class _BottomNavigationAppState extends State<BottomNavigationApp> {
         curve: Curves.ease,
         duration: Duration(milliseconds: 200),
       ),
+      selectedTabScreenContext: (context) {
+        if (context != null) BottomNavigationApp.tabContext = context;
+      },
     );
   }
 
