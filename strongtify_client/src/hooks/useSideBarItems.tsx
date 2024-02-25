@@ -60,7 +60,8 @@ export default function useSideBarItems() {
                         icon: BiSolidPlaylist,
                         name: "Playlists",
                         href: "/admin/playlists",
-                        active: pathname?.startsWith("/admin/playlists") ?? false,
+                        active:
+                            pathname?.startsWith("/admin/playlists") ?? false,
                     },
                     {
                         icon: BiSolidCategory,

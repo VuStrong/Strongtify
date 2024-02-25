@@ -55,9 +55,7 @@ export default function ArtistSongsPage({
                 Bài hát
             </h2>
 
-            {isLoading && (
-                <SongSectionLoading count={20} oneColumn />
-            )}
+            {isLoading && <SongSectionLoading count={20} oneColumn />}
 
             {!isLoading && (
                 <InfiniteScroll

@@ -32,7 +32,9 @@ export default function AlbumItem({ album }: { album: Album }) {
                     {album.artist.name}
                 </Link>
             ) : (
-                <div className="text-gray-500 text-base truncate pb-4">Strongtify</div>
+                <div className="text-gray-500 text-base truncate pb-4">
+                    Strongtify
+                </div>
             )}
         </div>
     );

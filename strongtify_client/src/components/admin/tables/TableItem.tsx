@@ -163,7 +163,7 @@ const TableItem: React.FC<TableItemProps> = ({
                             ))}
                     </tbody>
                 </table>
-                
+
                 {!isLoading && items && !items[0] && (
                     <div className="text-yellow-50">Không có kết quả</div>
                 )}

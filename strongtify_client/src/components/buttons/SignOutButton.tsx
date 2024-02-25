@@ -16,11 +16,5 @@ export default function SignOutButton({
         signOut();
     };
 
-    return (
-        <Button
-            outline
-            label="Đăng xuất"
-            onClick={handleLogout}
-        />
-    );
+    return <Button outline label="Đăng xuất" onClick={handleLogout} />;
 }

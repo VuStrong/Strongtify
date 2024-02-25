@@ -36,7 +36,10 @@ export default async function SuccessRegisterPage() {
                                 accessToken={session?.accessToken ?? ""}
                             />
                         </div>
-                        <SignOutButton accessToken={session?.accessToken ?? ""} refreshToken={session?.refreshToken ?? ""} />
+                        <SignOutButton
+                            accessToken={session?.accessToken ?? ""}
+                            refreshToken={session?.refreshToken ?? ""}
+                        />
                     </div>
                 </div>
             </div>

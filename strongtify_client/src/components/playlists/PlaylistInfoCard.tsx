@@ -8,16 +8,16 @@ import { formatLength } from "@/libs/utils";
 import { PlaylistDetail } from "@/types/playlist";
 import { useSession } from "next-auth/react";
 import LikePlaylistButton from "../buttons/LikePlaylistButton";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { AiFillLock } from "react-icons/ai";
-import { useCallback, useMemo, useState } from "react";
+import { AiFillLock, AiFillPlayCircle } from "react-icons/ai";
+import { useCallback, useState } from "react";
 import Modal from "../modals/Modal";
 import Button from "../buttons/Button";
 import { deletePlaylist, updatePlaylist } from "@/services/api/playlists";
 import UpdatePlaylistForm from "./UpdatePlaylistForm";
-import PlayButton from "../buttons/PlayButton";
 import DeleteConfirmContent from "../modals/modal-contents/DeleteConfirmContent";
+import usePlayer from "@/hooks/usePlayer";
 
 export default function PlaylistInfoCard({
     playlist,
@@ -25,27 +25,28 @@ export default function PlaylistInfoCard({
     playlist: PlaylistDetail;
 }) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [isDelPlaylistModalOpen, setIsDelPlaylistModalOpen] = useState<boolean>(false);
+    const [isDelPlaylistModalOpen, setIsDelPlaylistModalOpen] =
+        useState<boolean>(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
-
-    const songIds = useMemo(() => playlist.songs?.map((song) => song.id), [playlist.songs]);
+    const player = usePlayer();
+    const pathname = usePathname();
 
     const handleDeletePlaylist = useCallback(() => {
         setIsModalOpen(false);
         setIsDelPlaylistModalOpen(false);
 
         const deleteTask = async () => {
-            await deletePlaylist(playlist.id, session?.accessToken ?? ""); 
+            await deletePlaylist(playlist.id, session?.accessToken ?? "");
             router.refresh();
             router.push("/");
-        }
+        };
 
         toast.promise(deleteTask(), {
             loading: "Đang xóa playlist",
             success: "Đã xóa playlist",
-            error: "Không thể xóa playlist, hãy thử lại"
+            error: "Không thể xóa playlist, hãy thử lại",
         });
     }, [session?.accessToken]);
 
@@ -65,12 +66,12 @@ export default function PlaylistInfoCard({
                 );
 
                 router.refresh();
-            }
+            };
 
             toast.promise(updateTask(), {
                 loading: "Đang cập nhập playlist",
                 success: "Đã cập nhập trạng thái playlist",
-                error: "Không thể cập nhập playlist, hãy thử lại"
+                error: "Không thể cập nhập playlist, hãy thử lại",
             });
         },
         [session?.accessToken, playlist],
@@ -205,9 +206,11 @@ export default function PlaylistInfoCard({
                     <div className="p-4 md:pt-0 flex flex-col justify-between leading-normal">
                         <div className="md:mb-3">
                             <p className="text-sm text-yellow-100 flex items-center">
-                                Playlist 
+                                Playlist
                                 {playlist.status === "PRIVATE" && (
-                                    <span className="text-error ml-2">(riêng tư)</span>
+                                    <span className="text-error ml-2">
+                                        (riêng tư)
+                                    </span>
                                 )}
                             </p>
                             <div className="text-yellow-50 font-bold text-3xl mb-2">
@@ -246,9 +249,15 @@ export default function PlaylistInfoCard({
                 </div>
 
                 <div className="flex gap-3 items-center mb-3">
-                    <PlayButton
-                        songIds={songIds}
-                    />
+                    <div
+                        className={`text-primary text-5xl w-fit cursor-pointer hover:scale-105`}
+                        onClick={() => {
+                            player.setPlayer(playlist.songs ?? [], 0, playlist.id);
+                            player.setPath(pathname ?? undefined);
+                        }}
+                    >
+                        <AiFillPlayCircle />
+                    </div>
 
                     {session?.user?.id !== playlist.user.id && (
                         <div>
@@ -267,7 +276,7 @@ export default function PlaylistInfoCard({
                 </div>
 
                 {playlist.description && (
-                    <div className="text-gray-500">
+                    <div className="text-gray-500 whitespace-pre-wrap">
                         <p className="text-yellow-50">Description:</p>
                         {playlist.description}
                     </div>

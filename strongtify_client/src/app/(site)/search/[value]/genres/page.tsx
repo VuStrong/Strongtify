@@ -11,12 +11,15 @@ export default async function SearchGenrePage({
     const genres = await getGenres({
         skip: 0,
         take: 100,
-        q: decodeURIComponent(params.value)
+        q: decodeURIComponent(params.value),
     });
 
     return (
         <main>
-            <SearchForm value={decodeURIComponent(params.value)} searchItem="genres" />
+            <SearchForm
+                value={decodeURIComponent(params.value)}
+                searchItem="genres"
+            />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList

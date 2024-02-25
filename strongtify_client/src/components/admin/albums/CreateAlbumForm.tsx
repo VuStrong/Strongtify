@@ -25,18 +25,18 @@ import { NO_IMAGE_URL } from "@/libs/constants";
 import { getArtists } from "@/services/api/artists";
 
 const onLoadArtists = async (inputValue: string) => {
-    const artists = await getArtists({ 
-        skip: 0, 
-        take: 100, 
+    const artists = await getArtists({
+        skip: 0,
+        take: 100,
         q: inputValue,
-        sort: "followerCount_desc"
+        sort: "followerCount_desc",
     });
 
     return artists?.results ?? [];
 };
 
 const onLoadGenres = async (inputValue: string) => {
-    const genres = await getGenres({ skip: 0, take: 100, q: inputValue});
+    const genres = await getGenres({ skip: 0, take: 100, q: inputValue });
 
     return genres?.results ?? [];
 };

@@ -25,11 +25,7 @@ export default function ArtistDetailLoading() {
                 </div>
             </div>
 
-            <Skeleton
-                highlightColor="#f58c1b"
-                baseColor="#121212"
-                count={5}
-            />
+            <Skeleton highlightColor="#f58c1b" baseColor="#121212" count={5} />
         </div>
     );
 }

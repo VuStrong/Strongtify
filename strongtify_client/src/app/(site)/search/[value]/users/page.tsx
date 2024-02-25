@@ -26,7 +26,7 @@ export default function SearchUserPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "followerCount_desc"
+                sort: "followerCount_desc",
             });
 
             setUsers(data?.results);
@@ -43,7 +43,7 @@ export default function SearchUserPage({
             skip: skip + 20,
             take: 20,
             q: decodeURIComponent(params.value),
-            sort: "followerCount_desc"
+            sort: "followerCount_desc",
         });
 
         setUsers([...(users ?? []), ...(data?.results ?? [])]);
@@ -53,7 +53,10 @@ export default function SearchUserPage({
 
     return (
         <main>
-            <SearchForm value={decodeURIComponent(params.value)} searchItem="users" />
+            <SearchForm
+                value={decodeURIComponent(params.value)}
+                searchItem="users"
+            />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList

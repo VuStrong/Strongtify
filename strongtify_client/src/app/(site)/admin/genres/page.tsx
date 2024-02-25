@@ -37,17 +37,17 @@ export default function AdminGenresPage() {
                 createPage="/admin/genres/create"
                 generateItemLink={(item) => `/admin/genres/${item.id}`}
                 itemPerPage={10}
-                onLoadItems={(page, size) => 
+                onLoadItems={(page, size) =>
                     getGenres({
                         skip: (page - 1) * size,
                         take: size,
                     })
                 }
-                onSearchItems={(value, page, size) => 
+                onSearchItems={(value, page, size) =>
                     getGenres({
                         skip: (page - 1) * size,
                         take: size,
-                        q: value
+                        q: value,
                     })
                 }
             />

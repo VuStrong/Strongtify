@@ -35,7 +35,6 @@ export default function PlaylistSongList({
     const [isSongOptionsModalOpen, setIsSongOptionsModalOpen] =
         useState<boolean>(false);
     const [selectedSongId, setSelectedSongId] = useState<string>("");
-    const songIds = useMemo(() => playlist.songs?.map(s => s.id) ?? [], [playlist.songs]);
 
     const router = useRouter();
     const player = usePlayer();
@@ -45,7 +44,7 @@ export default function PlaylistSongList({
     const DraggableList = useMemo(
         () =>
             dynamic(() => import("@/components/DraggableList"), { ssr: false }),
-        [playlist.songs],
+        [],
     );
 
     const handleRemoveSongFromPlaylist = useCallback(async () => {
@@ -59,12 +58,12 @@ export default function PlaylistSongList({
             );
 
             router.refresh();
-        }
+        };
 
         toast.promise(removeTask(), {
             loading: "Đang xóa bài hát",
             success: "Đã xóa bài hát khỏi playlist",
-            error: "Không thể xóa bài hát, hãy thử lại"
+            error: "Không thể xóa bài hát, hãy thử lại",
         });
     }, [selectedSongId, session?.accessToken]);
 
@@ -86,6 +85,7 @@ export default function PlaylistSongList({
                                     [song.id],
                                     session?.accessToken ?? "",
                                 );
+                                playlist.songs?.push(song);
                                 toast.success("Đã thêm bài hát vào playlist");
                                 router.refresh();
                             } catch (error: any) {
@@ -139,10 +139,15 @@ export default function PlaylistSongList({
                                     index={index + 1}
                                     containLink
                                     canPlay
-                                    isActive={player.ids[player.currentIndex] === item.id}
+                                    isActive={
+                                        item.id === player.playingSong?.id
+                                    }
                                     onClickPlay={() => {
-                                        player.setIds(songIds ?? []);
-                                        player.setCurrentIndex(index);
+                                        player.setPlayer(
+                                            playlist.songs ?? [],
+                                            index,
+                                            playlist.id,
+                                        );
                                         player.setPath(pathname ?? undefined);
                                     }}
                                 />
@@ -159,15 +164,17 @@ export default function PlaylistSongList({
                             </div>
                         </div>
                     )}
-                    onDrop={async (item: Song, index: number, items: Song[]) => {
-                        await moveSongInPlaylist(
+                    onDrop={async (
+                        item: Song,
+                        index: number,
+                        items: Song[],
+                    ) => {
+                        moveSongInPlaylist(
                             playlist.id,
                             item.id,
                             index,
                             session?.accessToken ?? "",
                         );
-
-                        router.refresh();
                     }}
                 />
             </section>

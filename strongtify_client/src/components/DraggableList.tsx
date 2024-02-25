@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import { BiSolidSortAlt } from "react-icons/bi";
 import {
     DragDropContext,
@@ -16,11 +15,8 @@ interface DraggableListProps {
 }
 
 const reOrderItems = (list: any[], startIndex: number, endIndex: number) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
+    const [removed] = list.splice(startIndex, 1);
+    list.splice(endIndex, 0, removed);
 };
 
 const DraggableList: React.FC<DraggableListProps> = ({
@@ -28,35 +24,28 @@ const DraggableList: React.FC<DraggableListProps> = ({
     formatItem,
     onDrop,
 }) => {
-    const [items, setItems] = useState<any[]>(initialItems);
+    const onDragEnd = async (result: DragUpdate) => {
+        if (
+            !result.destination ||
+            result.source.index === result.destination.index
+        ) {
+            return;
+        }
 
-    const onDragEnd = useCallback(
-        async (result: DragUpdate) => {
-            if (
-                !result.destination ||
-                result.source.index === result.destination.index
-            ) {
-                return;
-            }
+        reOrderItems(
+            initialItems,
+            result.source.index,
+            result.destination.index,
+        );
 
-            const newItems = reOrderItems(
-                items,
-                result.source.index,
-                result.destination.index,
-            );
-
-            setItems(newItems);
-
-            await onDrop(
-                {
-                    id: result.draggableId,
-                },
-                result.destination.index + 1,
-                newItems
-            );
-        },
-        [items, onDrop],
-    );
+        await onDrop(
+            {
+                id: result.draggableId,
+            },
+            result.destination.index + 1,
+            initialItems,
+        );
+    };
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -67,7 +56,7 @@ const DraggableList: React.FC<DraggableListProps> = ({
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                     >
-                        {items?.map((item, index) => (
+                        {initialItems?.map((item, index) => (
                             <Draggable
                                 key={item.id}
                                 draggableId={item.id}

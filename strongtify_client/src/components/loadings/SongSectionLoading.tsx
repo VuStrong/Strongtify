@@ -3,7 +3,7 @@ import Skeleton from "react-loading-skeleton";
 
 const getLoadings = (count: number) => {
     let loadings = [];
-    
+
     for (let i = 0; i < count; i++) {
         loadings.push(
             <div className="flex gap-x-3 items-center w-full p-2">
@@ -15,17 +15,14 @@ const getLoadings = (count: number) => {
                 />
 
                 <div className="flex-1 truncate">
-                    <Skeleton
-                        highlightColor="#f58c1b"
-                        baseColor="#121212"
-                    />
+                    <Skeleton highlightColor="#f58c1b" baseColor="#121212" />
                     <Skeleton
                         highlightColor="#f58c1b"
                         baseColor="#121212"
                         width={100}
                     />
                 </div>
-            </div>
+            </div>,
         );
     }
 
@@ -34,18 +31,18 @@ const getLoadings = (count: number) => {
 
 export default function SongSectionLoading({
     count = 1,
-    oneColumn
+    oneColumn,
 }: {
-    count?: number
-    oneColumn?: boolean
+    count?: number;
+    oneColumn?: boolean;
 }) {
-
     return (
-        <div className={`grid sm:gap-3 gap-1 grid-cols-1 ${
+        <div
+            className={`grid sm:gap-3 gap-1 grid-cols-1 ${
                 !oneColumn && "md:grid-cols-2 lg:grid-cols-3"
             }`}
         >
             {getLoadings(count)}
         </div>
-    )
+    );
 }

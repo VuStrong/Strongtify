@@ -64,7 +64,9 @@ export default function UserPlaylistsPage({
                 Playlist
             </h2>
 
-            {(isLoading || status === "loading") && <PlaylistSectionLoading count={20}/>}
+            {(isLoading || status === "loading") && (
+                <PlaylistSectionLoading count={20} />
+            )}
 
             {!isLoading && (
                 <InfiniteScroll

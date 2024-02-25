@@ -1,9 +1,14 @@
-'use client'
+"use client";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Controller, FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import {
+    Controller,
+    FieldValues,
+    SubmitHandler,
+    useForm,
+} from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
 import Select from "react-select";
@@ -15,7 +20,7 @@ import Modal from "@/components/modals/Modal";
 import DeleteConfirmContent from "@/components/modals/modal-contents/DeleteConfirmContent";
 import { NO_IMAGE_URL } from "@/libs/constants";
 import { cleanUpUrl, validateImageExtension } from "@/libs/utils";
-import { CreateUpdatePlaylistRequest, PlaylistDetail } from "@/types/playlist"
+import { CreateUpdatePlaylistRequest, PlaylistDetail } from "@/types/playlist";
 import { deletePlaylist, updatePlaylist } from "@/services/api/playlists";
 
 const statusOptions: {
@@ -27,9 +32,9 @@ const statusOptions: {
 ];
 
 export default function UpdatePlaylistForm({
-    playlist
+    playlist,
 }: {
-    playlist: PlaylistDetail
+    playlist: PlaylistDetail;
 }) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -52,7 +57,7 @@ export default function UpdatePlaylistForm({
         defaultValues: {
             name: playlist.name,
             description: playlist.description,
-            status: playlist.status
+            status: playlist.status,
         },
     });
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
 import { Song } from "@/types/song";
 import SongItem from "./SongItem";
 import usePlayer from "@/hooks/usePlayer";
@@ -17,8 +16,6 @@ export default function SongSection({
 }) {
     const player = usePlayer();
     const pathname = usePathname();
-
-    const songIds = useMemo(() => songs.map(s => s.id), [songs]);
 
     return (
         <section
@@ -37,10 +34,9 @@ export default function SongSection({
                     song={song}
                     containLink
                     canPlay
-                    isActive={player.ids[player.currentIndex] === song.id}
+                    isActive={song.id === player.playingSong?.id}
                     onClickPlay={() => {
-                        player.setIds(songIds);
-                        player.setCurrentIndex(index);
+                        player.setPlayer(songs, index);
                         player.setPath(pathname ?? undefined);
                     }}
                 />

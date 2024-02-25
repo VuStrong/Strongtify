@@ -39,9 +39,7 @@ const playlistColumns = [
                     src={data?.imageUrl ?? DEFAULT_AVATAR_URL}
                     alt={data.name}
                 />
-                <div
-                    className="text-gray-500 text-base truncate hover:underline"
-                >
+                <div className="text-gray-500 text-base truncate hover:underline">
                     {data.name}
                 </div>
             </div>
@@ -78,7 +76,7 @@ export default function AdminSongsPage() {
                                 take: size,
                                 sort: "updatedAt_desc",
                             },
-                            session.accessToken
+                            session.accessToken,
                         )
                     }
                     onSearchItems={(value, page, size) =>
@@ -87,9 +85,9 @@ export default function AdminSongsPage() {
                                 skip: (page - 1) * size,
                                 take: size,
                                 sort: "updatedAt_desc",
-                                q: value
+                                q: value,
                             },
-                            session.accessToken
+                            session.accessToken,
                         )
                     }
                 />

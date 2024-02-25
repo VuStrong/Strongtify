@@ -10,61 +10,42 @@ import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
 import usePlayer from "@/hooks/usePlayer";
 import { NO_IMAGE_URL } from "@/libs/constants";
 import Slider from "./Slider";
-import { SongDetail } from "@/types/song";
+import { Song } from "@/types/song";
 import { increaseListenCount } from "@/services/api/songs";
 
-export default function PlayerContent({ 
-    song, isLoading 
-}: { song?: SongDetail, isLoading: boolean }) {
+export default function PlayerContent({ song }: { song?: Song }) {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrag, setIsDrag] = useState<boolean>(false);
     const [progress, setProgress] = useState<number>(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const player = usePlayer();
 
-    useEffect(() => {
-        if (audioRef.current && audioRef.current.currentSrc) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play();
-
-            const listen = async () => {
-                if (song) await increaseListenCount(song.id);
-            };
-
-            listen();
-        }
-    }, [audioRef.current?.currentSrc]);
-
-    useEffect(() => {
-        if (isLoading && audioRef.current) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.pause();
-            setProgress(0);
-        }
-    }, [isLoading]);
-
     const onPlayNext = useCallback(() => {
-        if (!player.ids[0]) {
+        if (!player.songs[0]) {
             return;
         }
 
-        if (player.currentIndex >= player.ids.length - 1) {
-            player.setCurrentIndex(0);
-        } else {
-            player.setCurrentIndex(player.currentIndex + 1);
-        }
+        const length = player.songs.length;
+        const currentIndex = player.songs.findIndex(
+            (s) => s.id == player.playingSong?.id,
+        );
+        const nextIndex = currentIndex >= length - 1 ? 0 : currentIndex + 1;
+
+        player.setPlayingSong(player.songs[nextIndex]);
     }, [player]);
 
     const onPlayPrevious = useCallback(() => {
-        if (!player.ids[0]) {
+        if (!player.songs[0]) {
             return;
         }
 
-        if (player.currentIndex <= 0) {
-            player.setCurrentIndex(player.ids.length - 1);
-        } else {
-            player.setCurrentIndex(player.currentIndex - 1);
-        }
+        const length = player.songs.length;
+        const currentIndex = player.songs.findIndex(
+            (s) => s.id == player.playingSong?.id,
+        );
+        const prevIndex = currentIndex <= 0 ? length - 1 : currentIndex - 1;
+
+        player.setPlayingSong(player.songs[prevIndex]);
     }, [player]);
 
     const handlePlay = useCallback(() => {
@@ -73,8 +54,9 @@ export default function PlayerContent({
         } else {
             audioRef.current?.pause();
         }
-    }, [isPlaying, audioRef]);
+    }, [isPlaying, audioRef.current]);
 
+    // Call when audio update time to update slider's progress
     const onTimeUpdate = useCallback(() => {
         if (audioRef.current && !isDrag) {
             setProgress(
@@ -82,25 +64,111 @@ export default function PlayerContent({
                     100,
             );
         }
-    }, [isDrag, audioRef]);
+    }, [isDrag, audioRef.current]);
+
+    // Call when audio can start playing
+    const onCanPlay = useCallback(() => {
+        if (audioRef.current) {
+            audioRef.current.play();
+
+            const listen = async () => {
+                if (song) await increaseListenCount(song.id);
+            };
+
+            listen();
+        }
+    }, [audioRef.current, song]);
+
+    // Call when audio play
+    const onPlay = useCallback(() => {
+        setIsPlaying(true);
+
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = "playing";
+        }
+    }, []);
+
+    // Call when audio paused
+    const onPause = useCallback(() => {
+        setIsPlaying(false);
+
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = "paused";
+        }
+    }, []);
+
+    const onSliderValueChange = useCallback((value: number) => {
+        setIsDrag(true);
+        setProgress(value);
+    }, []);
+
+    const onSliderValueCommit = useCallback(
+        (value: number) => {
+            if (audioRef.current) {
+                audioRef.current.currentTime =
+                    (value / 100) * audioRef.current.duration;
+            }
+
+            setIsDrag(false);
+        },
+        [audioRef.current],
+    );
+
+    // Change MediaSession if song changed
+    useEffect(() => {
+        if (!song) return;
+
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: song.name,
+                artist: song.artists?.map((a) => a.name).join(", "),
+                artwork: song.imageUrl ? [{ src: song.imageUrl }] : undefined,
+            });
+        }
+    }, [song]);
+
+    // Declare Media Session action handlers
+    useEffect(() => {
+        if (!("mediaSession" in navigator)) return;
+
+        navigator.mediaSession.setActionHandler("play", () => {
+            audioRef.current?.play();
+        });
+
+        navigator.mediaSession.setActionHandler("pause", () => {
+            audioRef.current?.pause();
+        });
+
+        navigator.mediaSession.setActionHandler("seekbackward", () => {
+            onPlayPrevious();
+        });
+
+        navigator.mediaSession.setActionHandler("seekforward", () => {
+            onPlayNext();
+        });
+
+        navigator.mediaSession.setActionHandler("previoustrack", () => {
+            onPlayPrevious();
+        });
+
+        navigator.mediaSession.setActionHandler("nexttrack", () => {
+            onPlayNext();
+        });
+
+        navigator.mediaSession.setActionHandler("seekto", (details) => {
+            if (audioRef.current) {
+                audioRef.current.currentTime = details.seekTime ?? 0;
+            }
+        });
+    }, [player]);
 
     return (
         <>
             <div className="absolute top-0 left-0 w-full">
                 <Slider
                     value={progress}
-                    onChange={(value) => {
-                        setIsDrag(true);
-                        setProgress(value);
-                    }}
-                    onCommit={(value) => {
-                        if (audioRef.current) {
-                            audioRef.current.currentTime =
-                                (value / 100) * audioRef.current.duration;
-                        }
-
-                        setIsDrag(false);
-                    }}
+                    onChange={onSliderValueChange}
+                    onCommit={onSliderValueCommit}
                 />
             </div>
 
@@ -109,19 +177,13 @@ export default function PlayerContent({
                 ref={audioRef}
                 src={song?.songUrl ?? ""}
                 onTimeUpdate={onTimeUpdate}
-                onPlay={() => {
-                    setIsPlaying(true);
-                }}
-                onPause={() => {
-                    setIsPlaying(false);
-                }}
-                onEnded={() => {
-                    setIsPlaying(false);
-                    onPlayNext();
-                }}
+                onPlay={onPlay}
+                onPause={onPause}
+                onEnded={onPlayNext}
+                onCanPlay={onCanPlay}
             ></audio>
 
-            { song && !isLoading ? (
+            {song ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 h-full">
                     <div className="flex w-full justify-start gap-x-3">
                         <Image
@@ -182,11 +244,20 @@ export default function PlayerContent({
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 h-full">
                     <div className="flex w-full justify-start gap-x-3">
-                        <Skeleton width={50} height={50} highlightColor="#f58c1b" baseColor="#4d4c49"/>
+                        <Skeleton
+                            width={50}
+                            height={50}
+                            highlightColor="#f58c1b"
+                            baseColor="#4d4c49"
+                        />
 
                         <div className="flex-1 truncate">
                             <div>
-                                <Skeleton highlightColor="#f58c1b" count={2} baseColor="#4d4c49"/>
+                                <Skeleton
+                                    highlightColor="#f58c1b"
+                                    count={2}
+                                    baseColor="#4d4c49"
+                                />
                             </div>
                         </div>
                     </div>
@@ -197,9 +268,7 @@ export default function PlayerContent({
                             className="text-neutral-400 cursor-pointer hover:text-white transition"
                         />
 
-                        <div
-                            className="flex items-center justify-center h-10 w-10 rounded-full  bg-white p-1 cursor-pointer"
-                        >
+                        <div className="flex items-center justify-center h-10 w-10 rounded-full  bg-white p-1 cursor-pointer">
                             <BsPlayFill size={30} className="text-black" />
                         </div>
 
@@ -209,7 +278,7 @@ export default function PlayerContent({
                         />
                     </div>
                 </div>
-            ) }
+            )}
         </>
     );
 }

@@ -17,9 +17,9 @@ export const metadata: Metadata = {
         title: "Strongtify",
         description:
             "Strongtify - Nền tảng nghe nhạc trực tuyến miễn phí với hàng triệu bài hát, album chất lượng",
-        type: "music.song"
+        type: "music.song",
     },
-    metadataBase: new URL("https://strongtify.io.vn")
+    metadataBase: new URL("https://strongtify.io.vn"),
 };
 
 export default function RootLayout({

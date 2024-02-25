@@ -27,7 +27,7 @@ export default function SearchArtistPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "followerCount_desc"
+                sort: "followerCount_desc",
             });
 
             setArtists(data?.results);
@@ -44,7 +44,7 @@ export default function SearchArtistPage({
             skip: skip + 20,
             take: 20,
             q: decodeURIComponent(params.value),
-            sort: "followerCount_desc"
+            sort: "followerCount_desc",
         });
 
         setArtists([...(artists ?? []), ...(data?.results ?? [])]);
@@ -54,7 +54,10 @@ export default function SearchArtistPage({
 
     return (
         <main>
-            <SearchForm value={decodeURIComponent(params.value)} searchItem="artists" />
+            <SearchForm
+                value={decodeURIComponent(params.value)}
+                searchItem="artists"
+            />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList

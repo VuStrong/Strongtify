@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
 import {
     PiNumberCircleOneBold,
     PiNumberCircleThreeBold,
@@ -14,7 +13,6 @@ import usePlayer from "@/hooks/usePlayer";
 export default function TopSongsSection({ topSongs }: { topSongs: TopSong[] }) {
     const player = usePlayer();
     const pathname = usePathname();
-    const songIds = useMemo(() => topSongs.map(s => s.id), [topSongs]);
 
     return (
         <section className={`grid grid-cols-1 sm:gap-3 gap-1`}>
@@ -51,16 +49,15 @@ export default function TopSongsSection({ topSongs }: { topSongs: TopSong[] }) {
                     </div>
 
                     <div className="ml-12">
-                        <SongItem 
-                            key={song.id} 
-                            song={song} 
+                        <SongItem
+                            key={song.id}
+                            song={song}
                             containLink
                             canPlay
-                            isActive={player.ids[player.currentIndex] === song.id}
+                            isActive={song.id == player.playingSong?.id}
                             onClickPlay={() => {
-                                player.setIds(songIds);
-                                player.setCurrentIndex(index);
-                                player.setPath(pathname ?? undefined)
+                                player.setPlayer(topSongs, index);
+                                player.setPath(pathname ?? undefined);
                             }}
                         />
                     </div>

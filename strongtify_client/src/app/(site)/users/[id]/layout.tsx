@@ -12,12 +12,12 @@ export async function generateMetadata({
     const user = await getUserById(params.id, undefined, session?.accessToken);
 
     if (!user) notFound();
-    
+
     return {
         title: `User - ${user?.name} | Strongtify`,
         openGraph: {
             title: `User - ${user?.name} | Strongtify`,
-        }
+        },
     };
 }
 

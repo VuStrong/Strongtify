@@ -11,12 +11,13 @@ export const metadata: Metadata = {
         title: "Strongtify - Tìm kiếm",
         description:
             "Tìm kiếm bài hát, album, nghệ sĩ và vô vàn thứ khác | Strongtify",
-    }
+    },
 };
 
 export default async function SearchPage() {
     const genres = await getGenres({
-        skip: 0, take: 100
+        skip: 0,
+        take: 100,
     });
 
     return (

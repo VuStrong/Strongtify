@@ -60,7 +60,9 @@ export default async function SearchAllPage({
                             <h3 className="text-yellow-50 text-2xl font-semibold mb-4">
                                 Thể Loại
                             </h3>
-                            <GenreSection genres={data?.genres?.results ?? []} />
+                            <GenreSection
+                                genres={data?.genres?.results ?? []}
+                            />
                         </div>
 
                         <div>

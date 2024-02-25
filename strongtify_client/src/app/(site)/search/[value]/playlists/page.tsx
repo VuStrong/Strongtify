@@ -53,7 +53,10 @@ export default function SearchPlaylistPage({
 
     return (
         <main>
-            <SearchForm value={decodeURIComponent(params.value)} searchItem="playlists" />
+            <SearchForm
+                value={decodeURIComponent(params.value)}
+                searchItem="playlists"
+            />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList

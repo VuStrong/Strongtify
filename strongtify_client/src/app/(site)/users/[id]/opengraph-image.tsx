@@ -30,10 +30,14 @@ export default async function Image({ params }: { params: { id: string } }) {
                     justifyContent: "center",
                 }}
             >
-                <img src={user?.imageUrl ?? DEFAULT_AVATAR_URL} alt={user?.name} style={{
-                    width: "100%",
-                    height: "100%",
-                }}/>
+                <img
+                    src={user?.imageUrl ?? DEFAULT_AVATAR_URL}
+                    alt={user?.name}
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                    }}
+                />
             </div>
         ),
         {

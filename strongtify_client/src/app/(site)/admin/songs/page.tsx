@@ -66,7 +66,7 @@ export default function AdminSongsPage() {
                         skip: (page - 1) * size,
                         take: size,
                         sort: "updatedAt_desc",
-                        q: value
+                        q: value,
                     })
                 }
             />

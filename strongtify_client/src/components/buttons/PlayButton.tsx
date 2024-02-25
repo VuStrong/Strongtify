@@ -1,16 +1,16 @@
 "use client";
 
 import usePlayer from "@/hooks/usePlayer";
+import { Song } from "@/types/song";
 import { usePathname } from "next/navigation";
 import { AiFillPlayCircle } from "react-icons/ai";
 
-export default function PlayButton({ songIds }: { songIds?: string[] }) {
+export default function PlayButton({ songs }: { songs: Song[] }) {
     const player = usePlayer();
     const pathname = usePathname();
 
-    const handleClick = () => {
-        player.setIds(songIds ?? []);
-        player.setCurrentIndex(0);
+    const handleClick = function () {
+        player.setPlayer(songs, 0);
         player.setPath(pathname ?? undefined);
     };
 

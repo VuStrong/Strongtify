@@ -47,7 +47,9 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                         className="relative rounded-lg hover:opacity-80 transition w-full p-3 text-md font-semibold border-gray-300 border-2 text-gray-300 text-center"
                         href={song.songUrl ?? "#"}
                         target="_blank"
-                        onClick={() => { setIsModalOpen(false) }}
+                        onClick={() => {
+                            setIsModalOpen(false);
+                        }}
                     >
                         Tải về bài hát
                     </a>
@@ -79,14 +81,14 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                                 [song.id],
                                 session?.accessToken ?? "",
                             );
-                        }
+                        };
 
                         toast.promise(addTask(), {
                             loading: "Đang thêm bài hát",
                             success: "Đã thêm bài hát vào danh sách phát",
                             error: (e) => {
                                 return e.message;
-                            }
+                            },
                         });
                     }}
                 />
@@ -131,7 +133,7 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                 </div>
 
                 <div className="flex gap-3 items-center">
-                    <PlayButton songIds={[song.id]} />
+                    <PlayButton songs={[song]} />
 
                     <div>
                         <LikeSongButton songId={song.id} />

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
         title: `Strongtify - Bảng xếp hạng`,
         description:
             "Strongtify - Bảng xếp hạng các bài hát được nghe nhiều nhất trong ngày, tuần, tháng vừa qua.",
-    }
+    },
 };
 
 export default async function RankPage({
@@ -70,7 +70,7 @@ export default async function RankPage({
             </div>
 
             <div className="mb-5">
-                <PlayButton songIds={topSongs?.map((song) => song.id)} />
+                <PlayButton songs={topSongs ?? []} />
             </div>
 
             <TopSongsSection topSongs={topSongs ?? []} />

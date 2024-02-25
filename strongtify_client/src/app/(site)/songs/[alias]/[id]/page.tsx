@@ -20,7 +20,7 @@ export async function generateMetadata({
         openGraph: {
             title: `Bài hát - ${song.name} | Strongtify`,
             description: `Bài hát - ${song.name} | Strongtify`,
-        }
+        },
     };
 }
 

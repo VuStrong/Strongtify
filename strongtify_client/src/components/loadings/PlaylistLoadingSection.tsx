@@ -3,12 +3,10 @@ import Skeleton from "react-loading-skeleton";
 
 const getLoadings = (count: number) => {
     let loadings = [];
-    
+
     for (let i = 0; i < count; i++) {
         loadings.push(
-            <div
-                className="max-w-sm rounded bg-darkgray p-4"
-            >
+            <div className="max-w-sm rounded bg-darkgray p-4">
                 <div>
                     <Skeleton
                         highlightColor="#f58c1b"
@@ -28,7 +26,7 @@ const getLoadings = (count: number) => {
                     baseColor="#121212"
                     className="mb-4"
                 />
-            </div>
+            </div>,
         );
     }
 
@@ -38,12 +36,11 @@ const getLoadings = (count: number) => {
 export default function PlaylistSectionLoading({
     count = 1,
 }: {
-    count?: number
+    count?: number;
 }) {
-
     return (
         <div className="grid lg:grid-cols-5 md:grid-cols-4 grid-cols-2 gap-5">
             {getLoadings(count)}
         </div>
-    )
+    );
 }

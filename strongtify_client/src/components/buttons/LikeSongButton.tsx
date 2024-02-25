@@ -26,7 +26,7 @@ export default function LikeSongButton({ songId }: { songId: string }) {
 
     const handleClick = async () => {
         if (status === "unauthenticated") {
-            toast('Thích ư?, hãy đăng nhập trước đã', { icon: '🤨' });
+            toast("Thích ư?, hãy đăng nhập trước đã", { icon: "🤨" });
             return;
         }
 

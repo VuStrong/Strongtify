@@ -19,7 +19,7 @@ export async function generateMetadata({
         openGraph: {
             title: `Album - ${album.name} | Strongtify`,
             description: `Album - ${album.name} | Strongtify`,
-        }
+        },
     };
 }
 

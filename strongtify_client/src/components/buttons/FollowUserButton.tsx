@@ -30,7 +30,7 @@ export default function FollowUserButton({
 
     const handleClick = async () => {
         if (status === "unauthenticated") {
-            toast('Thích bạn này ư?, hãy đăng nhập trước đã', { icon: '🤨' });
+            toast("Thích bạn này ư?, hãy đăng nhập trước đã", { icon: "🤨" });
             return;
         }
 

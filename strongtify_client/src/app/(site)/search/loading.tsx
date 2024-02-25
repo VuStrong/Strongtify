@@ -3,14 +3,14 @@ import Skeleton from "react-loading-skeleton";
 
 const getLoadings = () => {
     let loadings = [];
-    
+
     for (let i = 0; i < 20; i++) {
         loadings.push(
             <Skeleton
                 highlightColor="#f58c1b"
                 baseColor="#121212"
                 height={100}
-            />
+            />,
         );
     }
 
@@ -24,5 +24,5 @@ export default function SearchPageLoading() {
                 {getLoadings()}
             </div>
         </div>
-    )
+    );
 }

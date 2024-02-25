@@ -32,7 +32,7 @@ export default function CreatePlaylistForm({
         setError,
         clearErrors,
         formState: { errors },
-        reset
+        reset,
     } = useForm<FieldValues>({
         defaultValues: {
             name: "",
@@ -59,14 +59,14 @@ export default function CreatePlaylistForm({
             reset();
 
             onCreated && onCreated();
-        
+
             setIsLoading(false);
-        }
+        };
 
         toast.promise(createTask(), {
             loading: "Đang tạo playlist...",
             success: "Đã tạo playlist mới",
-            error: "Không thể tạo playlist, hãy thử lại"
+            error: "Không thể tạo playlist, hãy thử lại",
         });
     };
 

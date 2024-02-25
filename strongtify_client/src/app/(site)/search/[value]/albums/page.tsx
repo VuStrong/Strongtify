@@ -27,7 +27,7 @@ export default function SearchAlbumPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "likeCount_desc"
+                sort: "likeCount_desc",
             });
 
             setAlbums(data?.results);
@@ -44,7 +44,7 @@ export default function SearchAlbumPage({
             skip: skip + 20,
             take: 20,
             q: decodeURIComponent(params.value),
-            sort: "likeCount_desc"
+            sort: "likeCount_desc",
         });
 
         setAlbums([...(albums ?? []), ...(data?.results ?? [])]);
@@ -54,7 +54,10 @@ export default function SearchAlbumPage({
 
     return (
         <main>
-            <SearchForm value={decodeURIComponent(params.value)} searchItem="albums" />
+            <SearchForm
+                value={decodeURIComponent(params.value)}
+                searchItem="albums"
+            />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList

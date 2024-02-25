@@ -16,5 +16,5 @@ export default function GenreDetailLoading() {
 
             <PlaylistSectionLoading count={5} />
         </div>
-    )
+    );
 }

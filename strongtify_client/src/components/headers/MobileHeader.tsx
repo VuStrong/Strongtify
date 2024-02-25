@@ -11,11 +11,13 @@ export default function MobileHeader() {
     const direction = useScrollDirection();
 
     return (
-        <header className={`
+        <header
+            className={`
             fixed lg:hidden flex justify-between items-center py-1
             bg-orange-800 left-0 right-0 z-20 transition-all
-            ${ direction === "down" ? "-top-24" : "top-0"}
-        `}>
+            ${direction === "down" ? "-top-24" : "top-0"}
+        `}
+        >
             <button
                 type="button"
                 className="p-2 rounded-lg focus:outline-none focus:ring-2"

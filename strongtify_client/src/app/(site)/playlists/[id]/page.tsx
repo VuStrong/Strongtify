@@ -2,9 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import getUserSession from "@/services/getUserSession";
 import { getPlaylistById } from "@/services/api/playlists";
-import SongSection from "@/components/songs/SongSection";
-import PlaylistSongList from "@/components/playlists/PlaylistSongList";
-import PlaylistInfoCard from "@/components/playlists/PlaylistInfoCard";
+import PlaylistDetail from "./detail";
 
 export async function generateMetadata({
     params,
@@ -18,11 +16,14 @@ export async function generateMetadata({
 
     return {
         title: `Playlist - ${playlist.name} | Strongtify`,
-        description: playlist.description ?? `Playlist - ${playlist.name} | Strongtify`,
+        description:
+            playlist.description ?? `Playlist - ${playlist.name} | Strongtify`,
         openGraph: {
             title: `Playlist - ${playlist.name} | Strongtify`,
-            description: playlist.description ?? `Playlist - ${playlist.name} | Strongtify`,
-        }
+            description:
+                playlist.description ??
+                `Playlist - ${playlist.name} | Strongtify`,
+        },
     };
 }
 
@@ -38,24 +39,7 @@ export default async function PlaylistDetailPage({
 
     return (
         <main>
-            <PlaylistInfoCard playlist={playlist} />
-
-            <div className="my-8">
-                {!session?.user || session.user.id !== playlist.user.id ? (
-                    <>
-                        <h2 className="text-yellow-50 text-2xl font-medium mb-3">
-                            Danh sách bài hát
-                        </h2>
-                        <SongSection
-                            songs={playlist.songs ?? []}
-                            oneColumn
-                            showIndex
-                        />
-                    </>
-                ) : (
-                    <PlaylistSongList playlist={playlist} />
-                )}
-            </div>
+            <PlaylistDetail playlist={playlist} />
         </main>
     );
 }

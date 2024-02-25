@@ -9,7 +9,7 @@ import { checkLikedAlbum, likeAlbum, unLikeAlbum } from "@/services/api/me";
 export default function LikeAlbumButton({ albumId }: { albumId: string }) {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isLiked, setIsLiked] = useState<boolean>(false);
-    const { data: session, status } = useSession(); 
+    const { data: session, status } = useSession();
 
     useEffect(() => {
         const checkLiked = async () => {
@@ -26,7 +26,7 @@ export default function LikeAlbumButton({ albumId }: { albumId: string }) {
 
     const handleClick = async () => {
         if (status === "unauthenticated") {
-            toast('Thích ư?, hãy đăng nhập trước đã', { icon: '🤨' });
+            toast("Thích ư?, hãy đăng nhập trước đã", { icon: "🤨" });
             return;
         }
 

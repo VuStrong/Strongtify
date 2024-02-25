@@ -14,7 +14,7 @@ export default function SongItem({
     isActive,
     containLink,
     canPlay,
-    onClickPlay
+    onClickPlay,
 }: {
     song: Song;
     index?: number;
@@ -42,11 +42,11 @@ export default function SongItem({
                 />
 
                 {canPlay && (
-                    <div 
+                    <div
                         className="absolute cursor-pointer bg-black/70 w-full h-full top-0 text-primary invisible group-hover:visible flex justify-center items-center"
                         onClick={onClickPlay}
                     >
-                        <BsFillPlayFill size={40}/>
+                        <BsFillPlayFill size={40} />
                     </div>
                 )}
             </div>

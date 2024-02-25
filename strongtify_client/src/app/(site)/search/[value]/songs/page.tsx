@@ -26,7 +26,7 @@ export default function SearchSongPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "likeCount_desc"
+                sort: "likeCount_desc",
             });
 
             setSongs(data?.results);
@@ -43,7 +43,7 @@ export default function SearchSongPage({
             skip: skip + 20,
             take: 20,
             q: decodeURIComponent(params.value),
-            sort: "likeCount_desc"
+            sort: "likeCount_desc",
         });
 
         setSongs([...(songs ?? []), ...(data?.results ?? [])]);
@@ -53,7 +53,10 @@ export default function SearchSongPage({
 
     return (
         <main>
-            <SearchForm value={decodeURIComponent(params.value)} searchItem="songs" />
+            <SearchForm
+                value={decodeURIComponent(params.value)}
+                searchItem="songs"
+            />
 
             <div className="flex flex-col gap-10">
                 <SearchItemLinkList

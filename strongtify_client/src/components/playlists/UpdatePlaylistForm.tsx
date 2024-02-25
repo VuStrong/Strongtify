@@ -61,14 +61,14 @@ export default function UpdatePlaylistForm({
             );
 
             onUpdated && onUpdated();
-        
+
             setIsLoading(false);
-        }
+        };
 
         toast.promise(updateTask(), {
             loading: "Đang câp nhập playlist...",
             success: "Đã câp nhập playlist",
-            error: "Không thể câp nhập playlist, hãy thử lại"
+            error: "Không thể câp nhập playlist, hãy thử lại",
         });
     };
 

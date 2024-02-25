@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { getAccount } from "@/services/api/me";
 import { Account } from "@/types/user";
@@ -6,13 +6,13 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function useAccount(): {
-    account: Account | undefined,
-    isLoading: boolean
+    account: Account | undefined;
+    isLoading: boolean;
 } {
     const [account, setAccount] = useState<Account>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { data: session, status } = useSession();
-    
+
     useEffect(() => {
         if (status === "authenticated") {
             const getAccountFunc = async () => {
@@ -23,10 +23,10 @@ export default function useAccount(): {
                 }
 
                 setIsLoading(false);
-            }
+            };
 
             getAccountFunc();
-        } else if(status === "unauthenticated") {
+        } else if (status === "unauthenticated") {
             setAccount(undefined);
             setIsLoading(false);
         } else {
@@ -36,6 +36,6 @@ export default function useAccount(): {
 
     return {
         account,
-        isLoading
+        isLoading,
     };
 }

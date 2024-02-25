@@ -3,12 +3,10 @@ import Skeleton from "react-loading-skeleton";
 
 const getLoadings = (count: number) => {
     let loadings = [];
-    
+
     for (let i = 0; i < count; i++) {
         loadings.push(
-            <div
-                className="max-w-sm rounded bg-darkgray p-4"
-            >
+            <div className="max-w-sm rounded bg-darkgray p-4">
                 <div>
                     <Skeleton
                         circle
@@ -29,22 +27,17 @@ const getLoadings = (count: number) => {
                     baseColor="#121212"
                     className="mb-4"
                 />
-            </div>
+            </div>,
         );
     }
 
     return loadings;
 };
 
-export default function UserSectionLoading({
-    count = 1,
-}: {
-    count?: number
-}) {
-
+export default function UserSectionLoading({ count = 1 }: { count?: number }) {
     return (
         <div className="grid lg:grid-cols-5 md:grid-cols-4 grid-cols-2 gap-5">
             {getLoadings(count)}
         </div>
-    )
+    );
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import toast from "react-hot-toast";
 
@@ -16,8 +16,6 @@ import LikeAlbumButton from "../buttons/LikeAlbumButton";
 
 export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-    const songIds = useMemo(() => album.songs?.map(s => s.id), [album.songs]);
 
     return (
         <>
@@ -95,7 +93,7 @@ export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
                 </div>
 
                 <div className="flex gap-3 items-center">
-                    <PlayButton songIds={songIds} />
+                    <PlayButton songs={album.songs ?? []} />
 
                     <div>
                         <LikeAlbumButton albumId={album.id} />
