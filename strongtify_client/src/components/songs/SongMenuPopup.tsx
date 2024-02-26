@@ -105,7 +105,7 @@ export default function SongMenuPopup({
                         onClickLike(liked);
                         close();
                     }}
-                    className="hover:bg-gray-700 p-3 flex items-center gap-3"
+                    className="hover:bg-gray-700 p-3 flex items-center gap-3 text-white"
                 >
                     {liked ? <MdFavorite /> : <MdFavoriteBorder />}
                     {liked ? 'Xóa khỏi danh sách yêu thích' : 'Thêm vào danh sách yêu thích'}
@@ -113,7 +113,7 @@ export default function SongMenuPopup({
 
                 <button
                     onClick={() => setTab('playlists')}
-                    className="hover:bg-gray-700 p-3 flex items-center gap-3"
+                    className="hover:bg-gray-700 p-3 flex items-center gap-3 text-white"
                 >
                     <FaPlusCircle />
                     Thêm vào danh sách phát
@@ -124,7 +124,7 @@ export default function SongMenuPopup({
                         onClickCopyLink();
                         close();
                     }} 
-                    className="hover:bg-gray-700 p-3 flex items-center gap-3"
+                    className="hover:bg-gray-700 p-3 flex items-center gap-3 text-white"
                 >
                     <FaCopy />
                     Copy link bài hát
@@ -134,7 +134,7 @@ export default function SongMenuPopup({
                     href={song.songUrl ?? "#"}
                     target="_blank"
                     onClick={close} 
-                    className="hover:bg-gray-700 p-3 flex items-center gap-3"
+                    className="hover:bg-gray-700 p-3 flex items-center gap-3 text-white"
                 >
                     <FaArrowAltCircleDown />
                     Tải về bài hát
@@ -221,7 +221,7 @@ function AddToPlaylistContent({
             )}
                 
             {!isSearching && recentPlaylists.length === 0 && (
-                <div className="p-5">Không có danh sách phát</div>
+                <div className="p-5 text-white">Không có danh sách phát</div>
             )}
 
             {!isSearching && (searchValue ? searchedPlaylists.map(playlist => (
@@ -230,7 +230,7 @@ function AddToPlaylistContent({
                         onAddToPlaylist(playlist.id);
                         close();
                     }} 
-                    className="hover:bg-gray-700 py-3 px-4 text-left truncate"
+                    className="hover:bg-gray-700 py-3 px-4 text-left truncate text-white"
                 >
                     {playlist.name}
                 </button>
@@ -240,7 +240,7 @@ function AddToPlaylistContent({
                         onAddToPlaylist(playlist.id);
                         close();
                     }} 
-                    className="hover:bg-gray-700 py-3 px-4 text-left truncate"
+                    className="hover:bg-gray-700 py-3 px-4 text-left truncate text-white"
                 >
                     {playlist.name}
                 </button>
