@@ -148,7 +148,7 @@ export default function PlaylistSongList({
                                                 handleRemoveSongFromPlaylist(item.id);
                                                 close();
                                             }}
-                                            className="hover:bg-gray-700 p-3 flex items-center gap-3"
+                                            className="hover:bg-gray-700 p-3 flex items-center gap-3 text-white"
                                         >
                                             <FaMinusCircle />
                                             Xóa khỏi danh sách phát này
