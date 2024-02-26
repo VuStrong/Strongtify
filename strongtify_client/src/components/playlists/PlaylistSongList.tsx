@@ -57,9 +57,9 @@ export default function PlaylistSongList({
             if (removedIndex >= 0) {
                 const removedSongs = playlist.songs?.splice(removedIndex, 1);
                 playlist.songCount -= 1;
-                if (removedSongs)
-                    playlist.totalLength -= removedSongs[0].length;
-                player.setSongs(playlist.songs ?? []);
+                playlist.totalLength -= removedSongs?.[0].length ?? 0;
+
+                player.setSongs(player.songs);
             }
         };
 
@@ -92,7 +92,7 @@ export default function PlaylistSongList({
                                 playlist.songCount += 1;
                                 playlist.totalLength += song.length;
 
-                                player.setSongs(playlist.songs ?? []);
+                                player.setSongs(player.songs);
 
                                 toast.success("Đã thêm bài hát vào playlist");
                             } catch (error: any) {
