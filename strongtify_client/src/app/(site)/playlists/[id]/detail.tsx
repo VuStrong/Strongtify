@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import PlaylistInfoCard from "@/components/playlists/PlaylistInfoCard";
 import PlaylistSongList from "@/components/playlists/PlaylistSongList";
@@ -20,7 +20,7 @@ export default function PlaylistDetail({
         if (player.playlistId == playlist.id) {
             player.songs = playlist.songs ?? [];
         }
-    }, []);
+    }, [playlist]);
 
     return (
         <>

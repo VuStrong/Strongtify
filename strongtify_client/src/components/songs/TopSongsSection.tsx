@@ -9,6 +9,7 @@ import {
 import { TopSong } from "@/types/song";
 import SongItem from "./SongItem";
 import usePlayer from "@/hooks/usePlayer";
+import SongMenuPopup from "./SongMenuPopup";
 
 export default function TopSongsSection({ topSongs }: { topSongs: TopSong[] }) {
     const player = usePlayer();
@@ -59,6 +60,7 @@ export default function TopSongsSection({ topSongs }: { topSongs: TopSong[] }) {
                                 player.setPlayer(topSongs, index);
                                 player.setPath(pathname ?? undefined);
                             }}
+                            action={<SongMenuPopup song={song} />}
                         />
                     </div>
                 </div>

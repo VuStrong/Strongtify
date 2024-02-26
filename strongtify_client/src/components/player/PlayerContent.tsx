@@ -12,6 +12,7 @@ import { NO_IMAGE_URL } from "@/libs/constants";
 import Slider from "./Slider";
 import { Song } from "@/types/song";
 import { increaseListenCount } from "@/services/api/songs";
+import LikeSongButton from "../buttons/LikeSongButton";
 
 export default function PlayerContent({ song }: { song?: Song }) {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -186,6 +187,10 @@ export default function PlayerContent({ song }: { song?: Song }) {
             {song ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 h-full">
                     <div className="flex w-full justify-start gap-x-3">
+                        <div className="hidden md:block">
+                            <LikeSongButton songId={song.id} />
+                        </div>
+
                         <Image
                             src={song.imageUrl ?? NO_IMAGE_URL}
                             width={50}

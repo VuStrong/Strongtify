@@ -3,9 +3,8 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { BiDotsVerticalRounded } from "react-icons/bi";
 
 import { Song } from "@/types/song";
 import Button from "@/components/buttons/Button";
@@ -18,6 +17,8 @@ import {
     removeSongFromPlaylist,
 } from "@/services/api/playlists";
 import usePlayer from "@/hooks/usePlayer";
+import SongMenuPopup from "../songs/SongMenuPopup";
+import { FaMinusCircle } from "react-icons/fa";
 
 const AddSongsContent = dynamic(
     () => import("@/components/modals/modal-contents/AddSongsContent"),
@@ -32,9 +33,6 @@ export default function PlaylistSongList({
     const [isModalLoaded, setIsModalLoaded] = useState<boolean>(false);
     const [isAddSongsModalOpen, setIsAddSongsModalOpen] =
         useState<boolean>(false);
-    const [isSongOptionsModalOpen, setIsSongOptionsModalOpen] =
-        useState<boolean>(false);
-    const [selectedSongId, setSelectedSongId] = useState<string>("");
 
     const player = usePlayer();
     const pathname = usePathname();
@@ -46,21 +44,21 @@ export default function PlaylistSongList({
         [],
     );
 
-    const handleRemoveSongFromPlaylist = useCallback(async () => {
-        setIsSongOptionsModalOpen(false);
-
+    const handleRemoveSongFromPlaylist = async (songId: string) => {
         const removeTask = async () => {
             await removeSongFromPlaylist(
                 playlist.id,
-                selectedSongId,
+                songId,
                 session?.accessToken ?? "",
             );
 
-            const removedIndex = playlist.songs?.findIndex(s => s.id === selectedSongId) ?? -1;
+            const removedIndex =
+                playlist.songs?.findIndex((s) => s.id === songId) ?? -1;
             if (removedIndex >= 0) {
                 const removedSongs = playlist.songs?.splice(removedIndex, 1);
                 playlist.songCount -= 1;
-                if (removedSongs) playlist.totalLength -= removedSongs[0].length;
+                if (removedSongs)
+                    playlist.totalLength -= removedSongs[0].length;
                 player.setSongs(playlist.songs ?? []);
             }
         };
@@ -70,7 +68,7 @@ export default function PlaylistSongList({
             success: "Đã xóa bài hát khỏi playlist",
             error: "Không thể xóa bài hát, hãy thử lại",
         });
-    }, [selectedSongId, session?.accessToken]);
+    };
 
     return (
         <>
@@ -105,22 +103,6 @@ export default function PlaylistSongList({
                 </Modal>
             )}
 
-            {/* Song options modal */}
-            <Modal
-                isOpen={isSongOptionsModalOpen}
-                onClickClose={() => {
-                    setIsSongOptionsModalOpen(false);
-                }}
-            >
-                <div className="text-yellow-50 p-4 flex flex-col gap-3">
-                    <Button
-                        label="Xóa bài hát khỏi playlist này"
-                        onClick={handleRemoveSongFromPlaylist}
-                        outline
-                    />
-                </div>
-            </Modal>
-
             <section>
                 <h2 className="text-yellow-50 text-2xl font-medium mb-3">
                     Danh sách bài hát
@@ -141,37 +123,40 @@ export default function PlaylistSongList({
                 <DraggableList
                     initialItems={playlist.songs ?? []}
                     formatItem={(item: Song, index: number) => (
-                        <div className="relative">
-                            <div className="mr-6">
-                                <SongItem
+                        <SongItem
+                            song={item}
+                            index={index + 1}
+                            containLink
+                            canPlay
+                            isActive={
+                                item.id === player.playingSong?.id
+                            }
+                            onClickPlay={() => {
+                                player.setPlayer(
+                                    playlist.songs ?? [],
+                                    index,
+                                    playlist.id,
+                                );
+                                player.setPath(pathname ?? undefined);
+                            }}
+                            action={
+                                <SongMenuPopup 
                                     song={item}
-                                    index={index + 1}
-                                    containLink
-                                    canPlay
-                                    isActive={
-                                        item.id === player.playingSong?.id
-                                    }
-                                    onClickPlay={() => {
-                                        player.setPlayer(
-                                            playlist.songs ?? [],
-                                            index,
-                                            playlist.id,
-                                        );
-                                        player.setPath(pathname ?? undefined);
-                                    }}
+                                    anotherOptions={(close) => [
+                                        <button
+                                            onClick={() => {
+                                                handleRemoveSongFromPlaylist(item.id);
+                                                close();
+                                            }}
+                                            className="hover:bg-gray-700 p-3 flex items-center gap-3"
+                                        >
+                                            <FaMinusCircle />
+                                            Xóa khỏi danh sách phát này
+                                        </button>
+                                    ]}
                                 />
-                            </div>
-
-                            <div
-                                className="cursor-pointer absolute right-0 top-1/2 -translate-y-1/2 text-yellow-50"
-                                onClick={() => {
-                                    setIsSongOptionsModalOpen(true);
-                                    setSelectedSongId(item.id);
-                                }}
-                            >
-                                <BiDotsVerticalRounded size={24} />
-                            </div>
-                        </div>
+                            }
+                        />
                     )}
                     onDrop={async (
                         item: Song,

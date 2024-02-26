@@ -1,28 +1,13 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { checkFollowingArtist } from "@/services/api/users";
 import { followArtist, unFollowArtist } from "@/services/api/me";
+import useFavs from "@/hooks/useFavs";
 
 export default function FollowArtistButton({ artistId }: { artistId: string }) {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isFollowed, setIsFollowed] = useState<boolean>(false);
     const { data: session, status } = useSession();
-
-    useEffect(() => {
-        const checkFollow = async () => {
-            const isFollow = session?.user?.id
-                ? await checkFollowingArtist(session.user.id, artistId)
-                : false;
-
-            setIsFollowed(isFollow);
-            setIsLoading(false);
-        };
-
-        if (status !== "loading") checkFollow();
-    }, [status]);
+    const favs = useFavs();
 
     const handleClick = async () => {
         if (status === "unauthenticated") {
@@ -32,35 +17,33 @@ export default function FollowArtistButton({ artistId }: { artistId: string }) {
             return;
         }
 
-        if (status === "loading" || isLoading) return;
+        if (status === "loading" || favs.isLoading) return;
 
-        setIsLoading(true);
+        const isFollowed = favs.followingArtistIds.has(artistId);
 
-        try {
-            setIsFollowed(!isFollowed);
+        if (isFollowed) {
+            unFollowArtist(artistId, session?.accessToken ?? "");
+            
+            favs.removeFollowingArtistId(artistId);
+            
+            toast.success("Đã bỏ theo dõi");
+        } else {
+            followArtist(artistId, session?.accessToken ?? "");
 
-            if (isFollowed) {
-                toast.success("Đã bỏ theo dõi");
-                await unFollowArtist(artistId, session?.accessToken ?? "");
-            } else {
-                toast.success("Đã theo dõi");
-                await followArtist(artistId, session?.accessToken ?? "");
-            }
-        } catch (error: any) {
-            setIsFollowed(!isFollowed);
-            toast.error(error.message);
+            favs.addFollowingArtistId(artistId);
+
+            toast.success("Đã theo dõi");
         }
-
-        setIsLoading(false);
     };
 
     if (status === "loading") {
         return null;
     }
 
+    const isFollowed = favs.followingArtistIds.has(artistId);
+
     return (
         <button
-            disabled={isLoading}
             className={`
                 rounded-full border-solid border-2 px-5 py-2 hover:scale-x-105
                 ${isFollowed ? "border-primary" : "border-gray-500"}

@@ -5,6 +5,7 @@ import getUserSession from "@/services/getUserSession";
 import Player from "@/components/player/Player";
 import Footer from "@/components/Footer";
 import { getAccount } from "@/services/api/me";
+import UserFavsHandler from "@/handlers/UserFavsHandler";
 
 export default async function SiteLayout({
     children,
@@ -29,6 +30,8 @@ export default async function SiteLayout({
                 <div className="w-full lg:w-10/12 lg:px-5 px-2 lg:ml-auto mt-10 lg:mt-0">
                     {children}
                 </div>
+
+                <UserFavsHandler />
             </div>
             <div className="bg-black w-full lg:w-10/12 lg:px-5 px-2 lg:ml-auto">
                 <Footer />

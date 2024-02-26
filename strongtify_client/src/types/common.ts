@@ -21,3 +21,11 @@ export type SearchResponse = {
     artists?: PagedResponse<Artist>;
     users?: PagedResponse<User>;
 }
+
+export type UserFavs = {
+    songIds: string[];
+    albumIds: string[];
+    playlistIds: string[];
+    artistIds: string[];
+    userIds: string[];
+}

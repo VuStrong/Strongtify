@@ -15,6 +15,7 @@ export default function SongItem({
     containLink,
     canPlay,
     onClickPlay,
+    action,
 }: {
     song: Song;
     index?: number;
@@ -22,6 +23,7 @@ export default function SongItem({
     containLink?: boolean;
     canPlay?: boolean;
     onClickPlay?: () => void;
+    action?: React.ReactNode;
 }) {
     return (
         <div
@@ -78,6 +80,7 @@ export default function SongItem({
             </div>
 
             <div className="md:block hidden">{formatLength(song.length)}</div>
+            {action}
         </div>
     );
 }

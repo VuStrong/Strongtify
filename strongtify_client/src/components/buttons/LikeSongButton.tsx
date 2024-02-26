@@ -1,28 +1,14 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
-import { checkLikedSong, likeSong, unLikeSong } from "@/services/api/me";
+import { likeSong, unLikeSong } from "@/services/api/me";
+import useFavs from "@/hooks/useFavs";
 
 export default function LikeSongButton({ songId }: { songId: string }) {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isLiked, setIsLiked] = useState<boolean>(false);
     const { data: session, status } = useSession();
-
-    useEffect(() => {
-        const checkLiked = async () => {
-            const isLike = session?.user?.id
-                ? await checkLikedSong(songId, session.accessToken)
-                : false;
-
-            setIsLiked(isLike);
-            setIsLoading(false);
-        };
-
-        if (status !== "loading") checkLiked();
-    }, [status]);
+    const favs = useFavs();
 
     const handleClick = async () => {
         if (status === "unauthenticated") {
@@ -30,26 +16,23 @@ export default function LikeSongButton({ songId }: { songId: string }) {
             return;
         }
 
-        if (status === "loading" || isLoading) return;
+        if (status === "loading" || favs.isLoading) return;
 
-        setIsLoading(true);
+        const isLiked = favs.likedSongIds.has(songId);
 
-        try {
-            setIsLiked(!isLiked);
+        if (isLiked) {
+            unLikeSong(songId, session?.accessToken ?? "");
+            
+            favs.removeLikedSongId(songId);
+            
+            toast.success("Đã xóa khỏi danh sách bài hát đã thích");
+        } else {
+            likeSong(songId, session?.accessToken ?? "");
 
-            if (isLiked) {
-                toast.success("Đã xóa khỏi danh sách bài hát đã thích");
-                await unLikeSong(songId, session?.accessToken ?? "");
-            } else {
-                toast.success("Đã thêm vào danh sách bài hát đã thích");
-                await likeSong(songId, session?.accessToken ?? "");
-            }
-        } catch (error: any) {
-            setIsLiked(!isLiked);
-            toast.error(error.message);
+            favs.addLikedSongId(songId);
+
+            toast.success("Đã thêm vào danh sách bài hát đã thích");
         }
-
-        setIsLoading(false);
     };
 
     if (status === "loading") {
@@ -61,7 +44,7 @@ export default function LikeSongButton({ songId }: { songId: string }) {
             className={`text-primary text-5xl w-fit cursor-pointer hover:scale-105`}
             onClick={handleClick}
         >
-            {isLiked ? <AiTwotoneHeart /> : <AiOutlineHeart />}
+            {favs.likedSongIds.has(songId) ? <AiTwotoneHeart /> : <AiOutlineHeart />}
         </div>
     );
 }

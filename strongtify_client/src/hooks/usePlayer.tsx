@@ -28,7 +28,7 @@ const usePlayer = create<PlayerStore>((set) => ({
         set({
             songs: songs,
             playingSong: songs[index],
-            playlistId
+            playlistId,
         }),
 }));
 

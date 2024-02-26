@@ -252,7 +252,11 @@ export default function PlaylistInfoCard({
                     <div
                         className={`text-primary text-5xl w-fit cursor-pointer hover:scale-105`}
                         onClick={() => {
-                            player.setPlayer(playlist.songs ?? [], 0, playlist.id);
+                            player.setPlayer(
+                                playlist.songs ?? [],
+                                0,
+                                playlist.id,
+                            );
                             player.setPath(pathname ?? undefined);
                         }}
                     >

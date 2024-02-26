@@ -1,32 +1,17 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { checkFollowingUser } from "@/services/api/users";
 import { followUser, unFollowUser } from "@/services/api/me";
+import useFavs from "@/hooks/useFavs";
 
 export default function FollowUserButton({
     userIdToFollow,
 }: {
     userIdToFollow: string;
 }) {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isFollowed, setIsFollowed] = useState<boolean>(false);
     const { data: session, status } = useSession();
-
-    useEffect(() => {
-        const checkFollow = async () => {
-            const isFollow = session?.user?.id
-                ? await checkFollowingUser(session.user.id, userIdToFollow)
-                : false;
-
-            setIsFollowed(isFollow);
-            setIsLoading(false);
-        };
-
-        if (status !== "loading") checkFollow();
-    }, [status]);
+    const favs = useFavs();
 
     const handleClick = async () => {
         if (status === "unauthenticated") {
@@ -34,35 +19,33 @@ export default function FollowUserButton({
             return;
         }
 
-        if (status === "loading" || isLoading) return;
+        if (status === "loading" || favs.isLoading) return;
 
-        setIsLoading(true);
+        const isFollowed = favs.followingUserIds.has(userIdToFollow);
 
-        try {
-            setIsFollowed(!isFollowed);
-
-            if (isFollowed) {
-                toast.success("Đã bỏ theo dõi");
-                await unFollowUser(userIdToFollow, session?.accessToken ?? "");
-            } else {
-                toast.success("Đã theo dõi");
-                await followUser(userIdToFollow, session?.accessToken ?? "");
-            }
-        } catch (error: any) {
-            setIsFollowed(!isFollowed);
-            toast.error(error.message);
+        if (isFollowed) {
+            unFollowUser(userIdToFollow, session?.accessToken ?? "");
+            
+            favs.removeFollowingUserId(userIdToFollow);
+            
+            toast.success("Đã bỏ theo dõi");
+        } else {
+            followUser(userIdToFollow, session?.accessToken ?? "");
+            
+            favs.addFollowingUserId(userIdToFollow);
+            
+            toast.success("Đã theo dõi");
         }
-
-        setIsLoading(false);
     };
 
     if (status === "loading") {
         return null;
     }
 
+    const isFollowed = favs.followingUserIds.has(userIdToFollow);
+
     return (
         <button
-            disabled={isLoading}
             className={`
                 rounded-full border-solid border-2 px-5 py-2 hover:scale-x-105
                 ${isFollowed ? "border-primary" : "border-gray-500"}

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Song } from "@/types/song";
 import SongItem from "./SongItem";
 import usePlayer from "@/hooks/usePlayer";
+import SongMenuPopup from "./SongMenuPopup";
 
 export default function SongSection({
     songs,
@@ -39,6 +40,7 @@ export default function SongSection({
                         player.setPlayer(songs, index);
                         player.setPath(pathname ?? undefined);
                     }}
+                    action={<SongMenuPopup song={song} />}
                 />
             ))}
         </section>

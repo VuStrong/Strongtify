@@ -1,12 +1,11 @@
 "use client";
 
+import useFavs from "@/hooks/useFavs";
 import {
-    checkLikedPlaylist,
     likePlaylist,
     unLikePlaylist,
 } from "@/services/api/me";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
 
@@ -15,49 +14,33 @@ export default function LikePlaylistButton({
 }: {
     playlistId: string;
 }) {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isLiked, setIsLiked] = useState<boolean>(false);
     const { data: session, status } = useSession();
-
-    useEffect(() => {
-        const checkLiked = async () => {
-            const isLike = session?.user?.id
-                ? await checkLikedPlaylist(playlistId, session.accessToken)
-                : false;
-
-            setIsLiked(isLike);
-            setIsLoading(false);
-        };
-
-        if (status !== "loading") checkLiked();
-    }, [status]);
-
+    const favs = useFavs();
+    
     const handleClick = async () => {
         if (status === "unauthenticated") {
             toast("Thích ư?, hãy đăng nhập trước đã", { icon: "🤨" });
             return;
         }
 
-        if (status === "loading" || isLoading) return;
+        if (status === "loading" || favs.isLoading) return;
 
-        setIsLoading(true);
 
-        try {
-            setIsLiked(!isLiked);
+        const isLiked = favs.likedPlaylistIds.has(playlistId);
 
-            if (isLiked) {
-                toast.success("Đã xóa khỏi danh sách playlist đã thích");
-                await unLikePlaylist(playlistId, session?.accessToken ?? "");
-            } else {
-                toast.success("Đã thêm vào danh sách playlist đã thích");
-                await likePlaylist(playlistId, session?.accessToken ?? "");
-            }
-        } catch (error: any) {
-            setIsLiked(!isLiked);
-            toast.error(error.message);
+        if (isLiked) {
+            unLikePlaylist(playlistId, session?.accessToken ?? "");
+            
+            favs.removeLikedPlaylistId(playlistId);
+            
+            toast.success("Đã xóa khỏi danh sách playlist đã thích");
+        } else {
+            likePlaylist(playlistId, session?.accessToken ?? "");
+            
+            favs.addLikedPlaylistId(playlistId);
+            
+            toast.success("Đã thêm vào danh sách playlist đã thích");
         }
-
-        setIsLoading(false);
     };
 
     if (status === "loading") {
@@ -69,7 +52,7 @@ export default function LikePlaylistButton({
             className={`text-primary text-5xl w-fit cursor-pointer hover:scale-105`}
             onClick={handleClick}
         >
-            {isLiked ? <AiTwotoneHeart /> : <AiOutlineHeart />}
+            {favs.likedPlaylistIds.has(playlistId) ? <AiTwotoneHeart /> : <AiOutlineHeart />}
         </div>
     );
 }

@@ -5,6 +5,7 @@ import { PagedResponse, PagingQuery } from "@/types/paging";
 import { Song } from "@/types/song";
 import { Album } from "@/types/album";
 import { Playlist } from "@/types/playlist";
+import { UserFavs } from "@/types/common";
 
 export async function getAccount(accessToken: string) {
     const response = await callAPI(`${BACKEND_API_URL}/v1/me`, {
@@ -65,63 +66,35 @@ export async function changePassword(
 }
 
 export async function followUser(idToFollow: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/following-users`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/following-users`, {
         method: "POST",
         accessToken,
         contentType: "application/json",
         body: JSON.stringify({ idToFollow })
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function unFollowUser(idToUnFollow: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/following-users/${idToUnFollow}`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/following-users/${idToUnFollow}`, {
         method: "DELETE",
         accessToken,
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function followArtist(artistId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/following-artists`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/following-artists`, {
         method: "POST",
         accessToken,
         contentType: "application/json",
         body: JSON.stringify({ artistId })
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function unFollowArtist(artistId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/following-artists/${artistId}`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/following-artists/${artistId}`, {
         method: "DELETE",
         accessToken,
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function getLikedSongs(accessToken: string, pagingQuery: PagingQuery) {
@@ -173,93 +146,51 @@ export async function getLikedPlaylists(accessToken: string, pagingQuery: Paging
 }
 
 export async function likeSong(songId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/liked-songs`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/liked-songs`, {
         method: "POST",
         accessToken,
         contentType: "application/json",
         body: JSON.stringify({ songId })
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function unLikeSong(songId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/liked-songs/${songId}`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/liked-songs/${songId}`, {
         method: "DELETE",
         accessToken,
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function likeAlbum(albumId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/liked-albums`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/liked-albums`, {
         method: "POST",
         accessToken,
         contentType: "application/json",
         body: JSON.stringify({ albumId })
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function unLikeAlbum(albumId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/liked-albums/${albumId}`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/liked-albums/${albumId}`, {
         method: "DELETE",
         accessToken,
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function likePlaylist(playlistId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/liked-playlists`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/liked-playlists`, {
         method: "POST",
         accessToken,
         contentType: "application/json",
         body: JSON.stringify({ playlistId })
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function unLikePlaylist(playlistId: string, accessToken: string) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/me/liked-playlists/${playlistId}`, {
+    await callAPI(`${BACKEND_API_URL}/v1/me/liked-playlists/${playlistId}`, {
         method: "DELETE",
         accessToken,
     });
-
-    if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message ?? "Đã xảy ra lỗi.");
-    }
-
-    return true;
 }
 
 export async function checkLikedSong(songId: string, accessToken: string) {
@@ -287,4 +218,16 @@ export async function checkLikedPlaylist(playlistId: string, accessToken: string
     });
 
     return response.ok;
+}
+
+export async function getFavs(accessToken: string) {
+    const response = await callAPI(`${BACKEND_API_URL}/v1/me/fav-ids`, {
+        accessToken
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+
+    return data as UserFavs;
 }
