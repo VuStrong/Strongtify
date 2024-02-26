@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
@@ -36,7 +36,6 @@ export default function PlaylistSongList({
         useState<boolean>(false);
     const [selectedSongId, setSelectedSongId] = useState<string>("");
 
-    const router = useRouter();
     const player = usePlayer();
     const pathname = usePathname();
     const { data: session } = useSession();
@@ -57,7 +56,13 @@ export default function PlaylistSongList({
                 session?.accessToken ?? "",
             );
 
-            router.refresh();
+            const removedIndex = playlist.songs?.findIndex(s => s.id === selectedSongId) ?? -1;
+            if (removedIndex >= 0) {
+                const removedSongs = playlist.songs?.splice(removedIndex, 1);
+                playlist.songCount -= 1;
+                if (removedSongs) playlist.totalLength -= removedSongs[0].length;
+                player.setSongs(playlist.songs ?? []);
+            }
         };
 
         toast.promise(removeTask(), {
@@ -86,8 +91,12 @@ export default function PlaylistSongList({
                                     session?.accessToken ?? "",
                                 );
                                 playlist.songs?.push(song);
+                                playlist.songCount += 1;
+                                playlist.totalLength += song.length;
+
+                                player.setSongs(playlist.songs ?? []);
+
                                 toast.success("Đã thêm bài hát vào playlist");
-                                router.refresh();
                             } catch (error: any) {
                                 toast.error(error.message);
                             }
