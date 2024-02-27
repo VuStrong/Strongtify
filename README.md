@@ -20,10 +20,12 @@ A music streaming website and application using `NestJS` for backend, `NextJS` f
     <summary>View Screenshots</summary>
     <br>
 
-  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_home-page.png" alt="Alt text" title="Optional title">
-  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_search-page.png" alt="Alt text" title="Optional title">
-  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_artist-page.png" alt="Alt text" title="Optional title">
-  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_album-page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_home_page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_search_page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_album_page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_artist_page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_profile_page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_rank_page.png" alt="Alt text" title="Optional title">
 </details>
 
 ### Mobile app
