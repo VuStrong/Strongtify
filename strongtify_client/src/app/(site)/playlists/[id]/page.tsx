@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import getUserSession from "@/services/getUserSession";
 import { getPlaylistById } from "@/services/api/playlists";
-import PlaylistDetail from "./detail";
+import PlaylistDetailClientPage from "./detail";
 
 export async function generateMetadata({
     params,
@@ -39,7 +39,7 @@ export default async function PlaylistDetailPage({
 
     return (
         <main>
-            <PlaylistDetail playlist={playlist} />
+            <PlaylistDetailClientPage playlist={playlist} session={session} />
         </main>
     );
 }

@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 import LikePlaylistButton from "../buttons/LikePlaylistButton";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { AiFillLock, AiFillPlayCircle } from "react-icons/ai";
+import { AiFillLock } from "react-icons/ai";
 import { useCallback, useState } from "react";
 import Modal from "../modals/Modal";
 import Button from "../buttons/Button";
@@ -18,6 +18,8 @@ import { deletePlaylist, updatePlaylist } from "@/services/api/playlists";
 import UpdatePlaylistForm from "./UpdatePlaylistForm";
 import DeleteConfirmContent from "../modals/modal-contents/DeleteConfirmContent";
 import usePlayer from "@/hooks/usePlayer";
+import useRecentPlaylists from "@/hooks/useRecentPlaylists";
+import PlayButton from "../buttons/PlayButton";
 
 export default function PlaylistInfoCard({
     playlist,
@@ -33,13 +35,17 @@ export default function PlaylistInfoCard({
     const player = usePlayer();
     const pathname = usePathname();
 
+    const fetchRecentPlaylists = useRecentPlaylists(state => state.fetchRecentPlaylists);
+
     const handleDeletePlaylist = useCallback(() => {
         setIsModalOpen(false);
         setIsDelPlaylistModalOpen(false);
 
         const deleteTask = async () => {
             await deletePlaylist(playlist.id, session?.accessToken ?? "");
-            router.refresh();
+
+            fetchRecentPlaylists();
+
             router.push("/");
         };
 
@@ -93,6 +99,9 @@ export default function PlaylistInfoCard({
                     }}
                     onUpdated={() => {
                         setIsEditModalOpen(false);
+
+                        fetchRecentPlaylists();
+
                         router.refresh();
                     }}
                 />
@@ -249,24 +258,10 @@ export default function PlaylistInfoCard({
                 </div>
 
                 <div className="flex gap-3 items-center mb-3">
-                    <div
-                        className={`text-primary text-5xl w-fit cursor-pointer hover:scale-105`}
-                        onClick={() => {
-                            player.setPlayer(
-                                playlist.songs ?? [],
-                                0,
-                                playlist.id,
-                            );
-                            player.setPath(pathname ?? undefined);
-                        }}
-                    >
-                        <AiFillPlayCircle />
-                    </div>
+                    <PlayButton songs={playlist.songs ?? []} playlistId={playlist.id} />
 
                     {session?.user?.id !== playlist.user.id && (
-                        <div>
-                            <LikePlaylistButton playlistId={playlist.id} />
-                        </div>
+                        <LikePlaylistButton playlistId={playlist.id} />
                     )}
 
                     <div

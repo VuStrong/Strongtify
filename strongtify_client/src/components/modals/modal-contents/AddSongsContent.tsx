@@ -66,7 +66,7 @@ export default function AddSongsContent({
 
             <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <MdSearch size={24} />
+                    <MdSearch size={24} color="#121212" />
                 </div>
                 <input
                     type="search"

@@ -95,9 +95,7 @@ export default function AlbumInfoCard({ album }: { album: AlbumDetail }) {
                 <div className="flex gap-3 items-center">
                     <PlayButton songs={album.songs ?? []} />
 
-                    <div>
-                        <LikeAlbumButton albumId={album.id} />
-                    </div>
+                    <LikeAlbumButton albumId={album.id} />
 
                     <div
                         className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"

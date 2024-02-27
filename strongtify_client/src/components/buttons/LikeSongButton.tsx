@@ -6,7 +6,13 @@ import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
 import { likeSong, unLikeSong } from "@/services/api/me";
 import useFavs from "@/hooks/useFavs";
 
-export default function LikeSongButton({ songId }: { songId: string }) {
+export default function LikeSongButton({ 
+    songId, 
+    size = 48,
+}: { 
+    songId: string, 
+    size?: number,
+}) {
     const { data: session, status } = useSession();
     const favs = useFavs();
 
@@ -40,11 +46,11 @@ export default function LikeSongButton({ songId }: { songId: string }) {
     }
 
     return (
-        <div
-            className={`text-primary text-5xl w-fit cursor-pointer hover:scale-105`}
+        <button
+            className={`text-primary hover:scale-105`}
             onClick={handleClick}
         >
-            {favs.likedSongIds.has(songId) ? <AiTwotoneHeart /> : <AiOutlineHeart />}
-        </div>
+            {favs.likedSongIds.has(songId) ? <AiTwotoneHeart size={size} /> : <AiOutlineHeart size={size} />}
+        </button>
     );
 }

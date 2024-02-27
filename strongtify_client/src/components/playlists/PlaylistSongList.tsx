@@ -3,11 +3,12 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { MdOutlineAdd } from "react-icons/md";
+import { FaMinusCircle } from "react-icons/fa";
 
 import { Song } from "@/types/song";
-import Button from "@/components/buttons/Button";
 import Modal from "@/components/modals/Modal";
 import SongItem from "@/components/songs/SongItem";
 import { PlaylistDetail } from "@/types/playlist";
@@ -18,17 +19,23 @@ import {
 } from "@/services/api/playlists";
 import usePlayer from "@/hooks/usePlayer";
 import SongMenuPopup from "../songs/SongMenuPopup";
-import { FaMinusCircle } from "react-icons/fa";
 
 const AddSongsContent = dynamic(
     () => import("@/components/modals/modal-contents/AddSongsContent"),
     { ssr: false },
 );
 
+const DraggableList = dynamic(
+    () => import("@/components/DraggableList"),
+    { ssr: false },
+);
+
 export default function PlaylistSongList({
     playlist,
+    onSongsChange
 }: {
     playlist: PlaylistDetail;
+    onSongsChange: () => void;
 }) {
     const [isModalLoaded, setIsModalLoaded] = useState<boolean>(false);
     const [isAddSongsModalOpen, setIsAddSongsModalOpen] =
@@ -37,12 +44,6 @@ export default function PlaylistSongList({
     const player = usePlayer();
     const pathname = usePathname();
     const { data: session } = useSession();
-
-    const DraggableList = useMemo(
-        () =>
-            dynamic(() => import("@/components/DraggableList"), { ssr: false }),
-        [],
-    );
 
     const handleRemoveSongFromPlaylist = async (songId: string) => {
         const removeTask = async () => {
@@ -59,7 +60,7 @@ export default function PlaylistSongList({
                 playlist.songCount -= 1;
                 playlist.totalLength -= removedSongs?.[0].length ?? 0;
 
-                player.setSongs(player.songs);
+                onSongsChange();
             }
         };
 
@@ -69,6 +70,12 @@ export default function PlaylistSongList({
             error: "Không thể xóa bài hát, hãy thử lại",
         });
     };
+
+    useEffect(() => {
+        if (player.playlistId == playlist.id) {
+            player.songs = playlist.songs ?? [];
+        }
+    }, [playlist]);
 
     return (
         <>
@@ -92,7 +99,7 @@ export default function PlaylistSongList({
                                 playlist.songCount += 1;
                                 playlist.totalLength += song.length;
 
-                                player.setSongs(player.songs);
+                                onSongsChange();
 
                                 toast.success("Đã thêm bài hát vào playlist");
                             } catch (error: any) {
@@ -108,17 +115,18 @@ export default function PlaylistSongList({
                     Danh sách bài hát
                 </h2>
 
-                <div className="w-fit mb-5">
-                    <Button
-                        type="button"
-                        bgType="success"
-                        label={"Thêm bài hát vào playlist"}
-                        onClick={() => {
-                            if (!isModalLoaded) setIsModalLoaded(true);
-                            setIsAddSongsModalOpen(true);
-                        }}
-                    />
-                </div>
+                <button 
+                    className="flex gap-x-5 items-center w-full text-gray-300 py-2 mb-3 hover:bg-darkgray"
+                    onClick={() => {
+                        if (!isModalLoaded) setIsModalLoaded(true);
+                        setIsAddSongsModalOpen(true);
+                    }}
+                >
+                    <div className="bg-darkgray w-[50px] h-[50px] flex items-center justify-center">
+                        <MdOutlineAdd size={40} />
+                    </div>
+                    <div>Thêm bài hát vào playlist này</div>
+                </button>
 
                 <DraggableList
                     initialItems={playlist.songs ?? []}

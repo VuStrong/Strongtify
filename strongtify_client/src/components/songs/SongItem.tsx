@@ -32,6 +32,7 @@ export default function SongItem({
                 ${isActive && "bg-primary/30"}
             `}
             title={song.name}
+            id={song.id}
         >
             {index && <div className="w-[30px] text-center">{index}</div>}
 

@@ -1,26 +1,20 @@
 "use client";
 
+import { Session } from "next-auth";
 import PlaylistInfoCard from "@/components/playlists/PlaylistInfoCard";
 import PlaylistSongList from "@/components/playlists/PlaylistSongList";
 import SongSection from "@/components/songs/SongSection";
-import usePlayer from "@/hooks/usePlayer";
+import useForceUpdate from "@/hooks/useForceUpdate";
 import { PlaylistDetail } from "@/types/playlist";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 
-export default function PlaylistDetail({
+export default function PlaylistDetailClientPage({
     playlist,
+    session = null,
 }: {
     playlist: PlaylistDetail;
+    session: Session | null
 }) {
-    const { data: session } = useSession();
-    const player = usePlayer();
-
-    useEffect(() => {
-        if (player.playlistId == playlist.id) {
-            player.songs = playlist.songs ?? [];
-        }
-    }, [playlist]);
+    const forceUpdate = useForceUpdate();
 
     return (
         <>
@@ -39,7 +33,7 @@ export default function PlaylistDetail({
                         />
                     </>
                 ) : (
-                    <PlaylistSongList playlist={playlist} />
+                    <PlaylistSongList playlist={playlist} onSongsChange={forceUpdate} />
                 )}
             </div>
         </>

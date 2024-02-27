@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Popup from "reactjs-popup";
 import { SlOptionsVertical } from "react-icons/sl";
@@ -28,6 +28,10 @@ export default function SongMenuPopup({
     anotherOptions?: (close: () => void) => React.ReactNode[]
 }) {
     const [tab, setTab] = useState<'root' | 'playlists'>('root');
+    const [menuPosition, setMenuPosition] = useState<'left top' | 'left bottom'>('left top');
+
+    const openerRef = useRef<HTMLDivElement | null>(null);
+
     const favs = useFavs();
     const { data: session, status } = useSession();
 
@@ -143,14 +147,29 @@ export default function SongMenuPopup({
         )
     };
 
+    const changeMenuPosition = () => {
+        const currentY = openerRef.current?.getBoundingClientRect().y ?? 0;
+
+        if (currentY < window.innerHeight / 2) {
+            setMenuPosition('left top');
+        } else {
+            setMenuPosition('left bottom');
+        }
+    }
+
     return (
         <Popup
-            trigger={<button><SlOptionsVertical /></button>}
+            trigger={
+                <button>
+                    <div ref={openerRef} onClick={changeMenuPosition}>
+                        <SlOptionsVertical />
+                    </div>
+                </button>}
             on="click"
-            position="left top"
+            position={menuPosition}
             closeOnDocumentClick
-            onOpen={ () => setTab('root') }
-            onClose={ () => setTab('root') }
+            onOpen={() => setTab('root')}
+            onClose={() => setTab('root')}
             arrow={false}
         >
             {((close: any) => 

@@ -2,34 +2,16 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { getPlaylists } from "@/services/api/playlists";
 import PlaylistSideBarItem from "./PlaylistSideBarItem";
 import useRecentPlaylists from "@/hooks/useRecentPlaylists";
 
 export default function PlaylistContainer() {
-    const { data: session, status } = useSession();
-    const { playlists, setPlaylists, isLoading, setIsLoading } = useRecentPlaylists();
+    const { status } = useSession();
+    const { playlists, isLoading, fetchRecentPlaylists } = useRecentPlaylists();
 
     useEffect(() => {
-        const get = async () => {
-            setIsLoading(true);
-
-            const data = await getPlaylists(
-                {
-                    skip: 0,
-                    take: 5,
-                    sort: "createdAt_desc",
-                    userId: session?.user.id,
-                },
-                session?.accessToken,
-            );
-
-            setPlaylists(data?.results ?? []);
-            setIsLoading(false);
-        };
-
-        if (status === "authenticated") get();
-    }, [status]);
+        fetchRecentPlaylists();
+    }, []);
 
     if (status !== "authenticated") {
         return null;

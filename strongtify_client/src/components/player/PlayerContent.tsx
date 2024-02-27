@@ -186,9 +186,9 @@ export default function PlayerContent({ song }: { song?: Song }) {
 
             {song ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 h-full">
-                    <div className="flex w-full justify-start gap-x-3">
-                        <div className="hidden md:block">
-                            <LikeSongButton songId={song.id} />
+                    <div className="flex w-full justify-start items-center gap-x-3">
+                        <div className="hidden md:flex items-center">
+                            <LikeSongButton songId={song.id} size={40} />
                         </div>
 
                         <Image
@@ -200,7 +200,7 @@ export default function PlayerContent({ song }: { song?: Song }) {
 
                         <div className="flex-1 truncate">
                             <Link
-                                href={player.path ?? "#"}
+                                href={player.path ? `${player.path}#${player.playingSong?.id}` : "#"}
                                 className="hover:underline text-yellow-50"
                             >
                                 {song.name}

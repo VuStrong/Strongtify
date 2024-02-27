@@ -11,8 +11,10 @@ import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
 
 export default function LikePlaylistButton({
     playlistId,
+    size = 48,
 }: {
     playlistId: string;
+    size?: number;
 }) {
     const { data: session, status } = useSession();
     const favs = useFavs();
@@ -48,11 +50,14 @@ export default function LikePlaylistButton({
     }
 
     return (
-        <div
-            className={`text-primary text-5xl w-fit cursor-pointer hover:scale-105`}
+        <button
+            className={`text-primary hover:scale-105`}
             onClick={handleClick}
         >
-            {favs.likedPlaylistIds.has(playlistId) ? <AiTwotoneHeart /> : <AiOutlineHeart />}
-        </div>
+            {favs.likedPlaylistIds.has(playlistId) ? 
+                <AiTwotoneHeart size={size} /> : 
+                <AiOutlineHeart size={size} />
+            }
+        </button>
     );
 }

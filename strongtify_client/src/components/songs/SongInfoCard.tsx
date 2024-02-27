@@ -135,9 +135,7 @@ export default function SongInfoCard({ song }: { song: SongDetail }) {
                 <div className="flex gap-3 items-center">
                     <PlayButton songs={[song]} />
 
-                    <div>
-                        <LikeSongButton songId={song.id} />
-                    </div>
+                    <LikeSongButton songId={song.id} />
 
                     <div
                         className="w-fit text-3xl text-gray-300 cursor-pointer hover:text-white"
