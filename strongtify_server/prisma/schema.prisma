@@ -135,8 +135,7 @@ model Playlist {
 
   @@index([userId])
 
-  @@fulltext([name])
-  @@fulltext([description])
+  @@fulltext([name, description])
   
   @@map("playlists")
 }

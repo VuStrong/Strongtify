@@ -52,19 +52,19 @@ export class GetAlbumServiceImpl implements GetAlbumService {
             take,
             allowCount,
             sort: order,
-            keyword,
             artistId,
             genreId,
         } = params;
+        const keyword = params.keyword?.trim();
 
         const filter: Prisma.AlbumWhereInput = {
             AND: {
                 OR: keyword ? [
                     { 
-                        name: { search: keyword.trim() } 
+                        name: { search: keyword } 
                     },
                     {
-                        artist: { name: { search: keyword.trim() } }
+                        artist: { name: { search: keyword } }
                     }
                 ] : undefined,
                 artistId: artistId === "null" ? null : artistId,
@@ -74,14 +74,16 @@ export class GetAlbumServiceImpl implements GetAlbumService {
 
         const albumFindInputs: Prisma.AlbumFindManyArgs = {
             where: filter,
-            orderBy: keyword && !order ? {
-                _relevance: {
-                    fields: ['name'],
-                    search: keyword,
-                    sort: 'desc',
-                },
-            } : [
-                this.prisma.toPrismaOrderByObject(order),
+            orderBy: [
+                keyword && !order ? 
+                    {
+                        _relevance: {
+                            fields: ['name'],
+                            search: keyword,
+                            sort: 'desc',
+                        }
+                    } : 
+                    this.prisma.toPrismaOrderByObject(order),
                 { name: "asc" },
             ],
             skip,

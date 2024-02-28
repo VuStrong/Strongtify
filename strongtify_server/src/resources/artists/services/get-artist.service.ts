@@ -82,10 +82,11 @@ export class GetArtistServiceImpl implements GetArtistService {
     async get(
         artistParams: QueryParamDto,
     ): Promise<PagedResponseDto<ArtistResponseDto>> {
-        const { skip, take, allowCount, sort: order, keyword } = artistParams;
+        const { skip, take, allowCount, sort: order } = artistParams;
+        const keyword = artistParams.keyword?.trim();
 
         const filter: Prisma.ArtistWhereInput = {
-            name: keyword ? { search: keyword.trim() } : undefined,
+            name: keyword ? { search: keyword } : undefined,
         };
 
         const artistFindInputs: Prisma.ArtistFindManyArgs = {

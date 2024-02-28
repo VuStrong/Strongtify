@@ -41,22 +41,23 @@ export class GetSongServiceImpl implements GetSongService {
             skip,
             take,
             allowCount,
-            keyword,
             sort: order,
             artistId,
             genreId,
             language,
         } = params;
 
+        const keyword = params.keyword?.trim();
+
         const filter: Prisma.SongWhereInput = {
             AND: {
                 OR: keyword ? [
                     { 
-                        name: { search: keyword.trim() } 
+                        name: { search: keyword } 
                     },
                     {
                         artists: {
-                            some: { name: { search: keyword.trim() } }
+                            some: { name: { search: keyword } }
                         }
                     }
                 ] : undefined,
@@ -68,14 +69,16 @@ export class GetSongServiceImpl implements GetSongService {
 
         const songFindInputs: Prisma.SongFindManyArgs = {
             where: filter,
-            orderBy: keyword && !order ? {
-                _relevance: {
-                    fields: ['name'],
-                    search: keyword,
-                    sort: 'desc',
-                },
-            } : [
-                this.prisma.toPrismaOrderByObject(order),
+            orderBy: [
+                keyword && !order ? 
+                    {
+                        _relevance: {
+                            fields: ['name'],
+                            search: keyword,
+                            sort: 'desc',
+                        }
+                    } : 
+                    this.prisma.toPrismaOrderByObject(order),
                 { name: "asc" },
             ],
             skip,
