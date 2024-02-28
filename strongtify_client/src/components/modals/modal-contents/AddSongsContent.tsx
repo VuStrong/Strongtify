@@ -33,7 +33,6 @@ export default function AddSongsContent({
                 skip: 0,
                 take: 10,
                 q: searchValue,
-                sort: "likeCount_desc",
             });
 
             setSongs(data?.results);
@@ -50,7 +49,6 @@ export default function AddSongsContent({
             skip: skip + 10,
             take: 10,
             q: searchValue,
-            sort: "likeCount_desc",
         });
 
         setSongs([...(songs ?? []), ...(data?.results ?? [])]);
