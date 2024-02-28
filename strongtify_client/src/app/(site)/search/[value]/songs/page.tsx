@@ -26,7 +26,6 @@ export default function SearchSongPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "likeCount_desc",
             });
 
             setSongs(data?.results);

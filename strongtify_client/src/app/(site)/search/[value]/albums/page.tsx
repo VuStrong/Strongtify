@@ -27,7 +27,6 @@ export default function SearchAlbumPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "likeCount_desc",
             });
 
             setAlbums(data?.results);

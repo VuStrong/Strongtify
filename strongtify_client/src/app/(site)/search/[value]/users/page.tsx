@@ -26,7 +26,6 @@ export default function SearchUserPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "followerCount_desc",
             });
 
             setUsers(data?.results);

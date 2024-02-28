@@ -27,7 +27,6 @@ export default function SearchArtistPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "followerCount_desc",
             });
 
             setArtists(data?.results);

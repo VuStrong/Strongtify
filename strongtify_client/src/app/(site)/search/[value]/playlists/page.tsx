@@ -26,7 +26,6 @@ export default function SearchPlaylistPage({
                 skip: 0,
                 take: 20,
                 q: decodeURIComponent(params.value),
-                sort: "likeCount_desc",
             });
 
             setPlaylists(data?.results);
