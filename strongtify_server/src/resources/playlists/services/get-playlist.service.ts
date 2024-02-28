@@ -58,7 +58,7 @@ export class GetPlaylistServiceImpl implements GetPlaylistService {
         }
 
         const filter: Prisma.PlaylistWhereInput = {
-            name: keyword ? { contains: keyword.trim() } : undefined,
+            name: keyword ? { search: keyword.trim() } : undefined,
             userId,
             status,
             NOT: restrictOptions.restrict ? {
@@ -71,7 +71,13 @@ export class GetPlaylistServiceImpl implements GetPlaylistService {
 
         const playlistFindInputs: Prisma.PlaylistFindManyArgs = {
             where: filter,
-            orderBy: [
+            orderBy: keyword && !order ? {
+                _relevance: {
+                    fields: ['name'],
+                    search: keyword,
+                    sort: 'desc',
+                },
+            } : [
                 this.prisma.toPrismaOrderByObject(order),
                 { name: "asc" },
             ],

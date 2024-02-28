@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -38,7 +39,7 @@ model User {
   likedAlbums           UserAlbum[]
   tokens                Token[]
 
-  @@index([name])
+  @@fulltext([name])
   @@map("users")
 }
 
@@ -72,7 +73,7 @@ model Artist {
   followers      UserArtist[]
   albums         Album[]
 
-  @@index([name])
+  @@fulltext([name])
   @@map("artists")
 }
 
@@ -98,7 +99,8 @@ model Song {
   albums       AlbumSong[]
   listens      Listen[]
 
-  @@index([name])
+  @@fulltext([name])
+  @@index([language])
   @@map("songs")
 }
 
@@ -132,7 +134,10 @@ model Playlist {
   songs        PlaylistSong[]
 
   @@index([userId])
-  @@index([name])
+
+  @@fulltext([name])
+  @@fulltext([description])
+  
   @@map("playlists")
 }
 
@@ -168,7 +173,8 @@ model Album {
 
   @@map("albums")
   @@index([artistId])
-  @@index([name])
+
+  @@fulltext([name])
 }
 
 model AlbumSong {

@@ -137,13 +137,19 @@ export class GetUserServiceImpl implements GetUserService {
         const filter: Prisma.UserWhereInput = {
             AND: {
                 ...rest,
-                name: keyword ? { contains: keyword.trim() } : undefined,
+                name: keyword ? { search: keyword.trim() } : undefined,
             },
         };
 
         const userFindInputs: Prisma.UserFindManyArgs = {
             where: filter,
-            orderBy: [
+            orderBy: keyword && !order ? {
+                _relevance: {
+                    fields: ['name'],
+                    search: keyword,
+                    sort: 'desc',
+                },
+            } : [
                 this.prisma.toPrismaOrderByObject(order),
                 { name: "asc" },
             ],

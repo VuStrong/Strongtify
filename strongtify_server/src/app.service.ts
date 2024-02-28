@@ -118,21 +118,18 @@ export class AppService {
                     take,
                     allowCount,
                     keyword,
-                    sort: "likeCount_desc",
                 }),
                 this.getAlbumService.get({
                     skip,
                     take,
                     allowCount,
                     keyword,
-                    sort: "likeCount_desc",
                 }),
                 this.getPlaylistService.get({
                     skip,
                     take,
                     allowCount,
                     keyword,
-                    sort: "likeCount_desc",
                 }),
                 this.getGenreService.get({
                     skip,
@@ -145,14 +142,12 @@ export class AppService {
                     take,
                     allowCount,
                     keyword,
-                    sort: "followerCount_desc",
                 }),
                 this.getUserService.get({
                     skip,
                     take,
                     allowCount,
                     keyword,
-                    sort: "followerCount_desc",
                 }),
             ]);
 

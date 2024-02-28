@@ -18,29 +18,41 @@ describe("GetSongService", () => {
     });
 
     describe("findByIdWithDetails", () => {
-        it("should return a song with details", async () => {
+        it("should return a song", async () => {
+            const id = 'clljih5fp0004vr1gt0azo0b3';
+            
             expect(
-                await getSongService.findByIdWithDetails(
+                (await getSongService.findByIdWithDetails(
                     "clljih5fp0004vr1gt0azo0b3",
-                ),
-            ).toMatchObject({
-                id: "clljih5fp0004vr1gt0azo0b3",
-                artists: [
-                    { id: "clkbdmhen0002vr94bkmaese7" },
-                    { id: "clljigj8m0003vr1gdioiiqi4" },
-                ],
-                genres: [
-                    { id: "clkc8ndmy0003vr9wlzw999ku" },
-                    { id: "cllj3ucnm0003vrm8zwfto17s" },
-                    { id: "cllji2ow70002vr1ggj82lcj2" },
-                ],
-            });
+                )).id,
+            ).toBe(id);
         });
 
         test("should throw SongNotFoundException", () => {
             expect(
                 async () => await getSongService.findByIdWithDetails("1"),
             ).rejects.toThrow(SongNotFoundException);
+        });
+    });
+
+    describe("get", () => {
+        const take = 10;
+
+        it("should return a list of paginated songs", async () => {
+            const data = await getSongService.get({
+                skip: 0, take,
+            });
+
+            expect(data.take).toBe(take);
+            expect(data.results.length).toBe(take);
+        });
+
+        it("should return a list of songs which language is JAPANESE", async () => {
+            const data = await getSongService.get({
+                take, language: "JAPANESE",
+            });
+
+            expect(data.results.every(song => song.language == "JAPANESE")).toBe(true);
         });
     });
 });

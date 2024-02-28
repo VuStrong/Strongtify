@@ -52,11 +52,11 @@ export class GetSongServiceImpl implements GetSongService {
             AND: {
                 OR: keyword ? [
                     { 
-                        name: { contains: keyword.trim() } 
+                        name: { search: keyword.trim() } 
                     },
                     {
                         artists: {
-                            some: { name: { contains: keyword.trim() } }
+                            some: { name: { search: keyword.trim() } }
                         }
                     }
                 ] : undefined,
@@ -68,7 +68,13 @@ export class GetSongServiceImpl implements GetSongService {
 
         const songFindInputs: Prisma.SongFindManyArgs = {
             where: filter,
-            orderBy: [
+            orderBy: keyword && !order ? {
+                _relevance: {
+                    fields: ['name'],
+                    search: keyword,
+                    sort: 'desc',
+                },
+            } : [
                 this.prisma.toPrismaOrderByObject(order),
                 { name: "asc" },
             ],
