@@ -58,7 +58,6 @@ class SearchService extends ApiService {
         'take': take,
         'q': value,
         'skip': skip,
-        'sort': 'likeCount_desc',
       });
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
@@ -86,7 +85,6 @@ class SearchService extends ApiService {
         'take': take,
         'q': value,
         'skip': skip,
-        'sort': 'likeCount_desc',
       });
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
@@ -114,7 +112,6 @@ class SearchService extends ApiService {
         'take': take,
         'q': value,
         'skip': skip,
-        'sort': 'likeCount_desc',
       });
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
@@ -142,7 +139,6 @@ class SearchService extends ApiService {
         'take': take,
         'q': value,
         'skip': skip,
-        'sort': 'followerCount_desc',
       });
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
@@ -170,7 +166,6 @@ class SearchService extends ApiService {
         'take': take,
         'q': value,
         'skip': skip,
-        'sort': 'followerCount_desc',
       });
 
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
