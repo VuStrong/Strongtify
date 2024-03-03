@@ -7,6 +7,7 @@ import 'package:strongtify_mobile_app/models/song/song.dart';
 import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/artist/small_artist_item.dart';
 import 'package:strongtify_mobile_app/ui/widgets/bottom_navigation_app.dart';
+import 'package:strongtify_mobile_app/ui/widgets/marquee.dart';
 import 'package:strongtify_mobile_app/utils/bottom_sheet/song_menu_bottom_sheet.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
@@ -93,14 +94,15 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
-                song.name,
+              Marquee(
+                text: song.name,
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
+              const SizedBox(height: 5),
               Text(
                 song.artists?.map((a) => a.name).join(', ') ?? '',
                 style: const TextStyle(

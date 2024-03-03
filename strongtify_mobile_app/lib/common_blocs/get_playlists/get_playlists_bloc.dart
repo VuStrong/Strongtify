@@ -38,6 +38,7 @@ class GetPlaylistsBloc extends Bloc<GetPlaylistsEvent, GetPlaylistsState> {
         userId: userId,
         sort: 'createdAt_desc',
         take: event.take,
+        keyword: event.keyword,
       );
 
       emit(GetPlaylistsState(
@@ -50,6 +51,7 @@ class GetPlaylistsBloc extends Bloc<GetPlaylistsEvent, GetPlaylistsState> {
             userId: userId,
             sort: 'createdAt_desc',
             take: event.take,
+            keyword: event.keyword,
             skip: skip,
           );
         },

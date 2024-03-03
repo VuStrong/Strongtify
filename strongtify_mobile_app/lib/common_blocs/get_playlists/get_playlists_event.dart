@@ -12,9 +12,11 @@ class GetPlaylistsByParamsEvent extends GetPlaylistsEvent {
 
 class GetCurrentUserPlaylistsEvent extends GetPlaylistsEvent {
   final int take;
+  final String? keyword;
 
   GetCurrentUserPlaylistsEvent({
     this.take = 5,
+    this.keyword,
   });
 }
 

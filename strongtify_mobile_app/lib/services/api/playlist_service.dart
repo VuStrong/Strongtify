@@ -16,6 +16,7 @@ class PlaylistService extends ApiService {
 
   Future<PagedResponse<Playlist>> getPlaylists({
     String? userId,
+    String? keyword,
     int skip = 0,
     int take = 5,
     String? sort,
@@ -25,6 +26,7 @@ class PlaylistService extends ApiService {
         '/v1/playlists',
         queryParameters: {
           if (userId != null) 'userId': userId,
+          if (keyword != null) 'q': keyword,
           if (sort != null) 'sort': sort,
           'skip': skip,
           'take': take,

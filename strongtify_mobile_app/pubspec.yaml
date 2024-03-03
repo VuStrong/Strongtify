@@ -51,6 +51,7 @@ dependencies:
   just_audio: ^0.9.36
   webview_flutter: ^4.5.0
   audio_service: ^0.18.12
+  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:
