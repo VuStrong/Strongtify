@@ -101,6 +101,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
+                height: 30,
               ),
               const SizedBox(height: 5),
               Text(

@@ -86,39 +86,44 @@ class _MiniPlayerState extends State<MiniPlayer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildSong(state.playingSong),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        context.read<PlayerBloc>().add(SkipToPreviousEvent());
-                      },
-                      icon: const Icon(Icons.skip_previous),
-                      color: Colors.white,
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        if (state.status == PlayerStatus.playing) {
-                          context.read<PlayerBloc>().add(PausePlayerEvent());
-                        } else if (state.status == PlayerStatus.paused) {
-                          context.read<PlayerBloc>().add(PlayPlayerEvent());
-                        }
-                      },
-                      icon: state.status == PlayerStatus.playing
-                          ? const Icon(Icons.pause)
-                          : const Icon(Icons.play_arrow),
-                      color: Colors.white,
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        context.read<PlayerBloc>().add(SkipToNextEvent());
-                      },
-                      icon: const Icon(Icons.skip_next),
-                      color: Colors.white,
-                    ),
-                  ],
-                )
+                Expanded(
+                  child: _buildSong(state.playingSong),
+                ),
+                SizedBox(
+                  width: 144,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          context.read<PlayerBloc>().add(SkipToPreviousEvent());
+                        },
+                        icon: const Icon(Icons.skip_previous),
+                        color: Colors.white,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (state.status == PlayerStatus.playing) {
+                            context.read<PlayerBloc>().add(PausePlayerEvent());
+                          } else if (state.status == PlayerStatus.paused) {
+                            context.read<PlayerBloc>().add(PlayPlayerEvent());
+                          }
+                        },
+                        icon: state.status == PlayerStatus.playing
+                            ? const Icon(Icons.pause)
+                            : const Icon(Icons.play_arrow),
+                        color: Colors.white,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          context.read<PlayerBloc>().add(SkipToNextEvent());
+                        },
+                        icon: const Icon(Icons.skip_next),
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -133,7 +138,6 @@ class _MiniPlayerState extends State<MiniPlayer> {
       decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
-      width: 220,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -152,36 +156,37 @@ class _MiniPlayerState extends State<MiniPlayer> {
             ),
           ),
           const SizedBox(width: 12),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 160,
-                child: Text(
-                  song?.name ?? 'NULL',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 14,
-                    decoration: TextDecoration.none,
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  child: Text(
+                    song?.name ?? 'NULL',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 14,
+                      decoration: TextDecoration.none,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 5),
-              SizedBox(
-                width: 160,
-                child: Text(
-                  song?.artists?.map((artist) => artist.name).join(', ') ?? '',
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 12,
-                    decoration: TextDecoration.none,
+                const SizedBox(height: 5),
+                SizedBox(
+                  child: Text(
+                    song?.artists?.map((artist) => artist.name).join(', ') ??
+                        '',
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 12,
+                      decoration: TextDecoration.none,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

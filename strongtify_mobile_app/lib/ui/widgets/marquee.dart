@@ -5,6 +5,7 @@ class Marquee extends StatefulWidget {
   const Marquee({
     super.key,
     required this.text,
+    required this.height,
     this.onlyMoveIfTruncated = true,
     this.style,
     this.velocity = 100.0,
@@ -16,6 +17,7 @@ class Marquee extends StatefulWidget {
   final TextStyle? style;
   final double velocity;
   final double blankSpace;
+  final double height;
 
   @override
   State<Marquee> createState() => _MarqueeState();
@@ -32,10 +34,7 @@ class _MarqueeState extends State<Marquee> {
           textDirection: TextDirection.ltr,
           text: TextSpan(
             text: widget.text,
-            style: TextStyle(
-              fontWeight: widget.style?.fontWeight,
-              fontSize: widget.style?.fontSize,
-            ),
+            style: widget.style,
           ),
         );
 
@@ -44,14 +43,17 @@ class _MarqueeState extends State<Marquee> {
         final exceeded = tp.didExceedMaxLines;
 
         if (!exceeded && widget.onlyMoveIfTruncated) {
-          return Text(
-            widget.text,
-            style: widget.style,
+          return SizedBox(
+            height: widget.height,
+            child: Text(
+              widget.text,
+              style: widget.style,
+            ),
           );
         }
 
         return SizedBox(
-          height: tp.height,
+          height: widget.height,
           child: marquee_package.Marquee(
             text: widget.text,
             style: widget.style,
