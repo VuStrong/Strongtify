@@ -7,11 +7,7 @@ class LocalStorageImpl implements LocalStorage {
   late final FlutterSecureStorage _storage;
 
   LocalStorageImpl() {
-    _storage = const FlutterSecureStorage(
-      aOptions: AndroidOptions(
-        encryptedSharedPreferences: true,
-      ),
-    );
+    _storage = const FlutterSecureStorage();
   }
 
   @override

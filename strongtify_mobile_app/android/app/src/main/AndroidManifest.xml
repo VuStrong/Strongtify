@@ -6,7 +6,9 @@
     <application
         android:label="Strongtify"
         android:name="${applicationName}"
-        android:icon="@drawable/launch_image">
+        android:icon="@drawable/launch_image"
+        android:allowBackup="false"
+        android:fullBackupContent="false">
         <activity
             android:name="com.ryanheise.audioservice.AudioServiceActivity"
             android:exported="true"
