@@ -47,7 +47,8 @@ export class GetSongServiceImpl implements GetSongService {
             language,
         } = params;
 
-        const keyword = params.keyword?.trim();
+        let keyword = params.keyword?.trim();
+        if (keyword) keyword = keyword + '*';
 
         const filter: Prisma.SongWhereInput = {
             AND: {

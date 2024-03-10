@@ -133,7 +133,8 @@ export class GetUserServiceImpl implements GetUserService {
             keyword: oldKeyword,
             ...rest
         } = userParams;
-        const keyword = oldKeyword?.trim();
+        let keyword = oldKeyword?.trim();
+        if (keyword) keyword = keyword + '*';
 
         const filter: Prisma.UserWhereInput = {
             AND: {

@@ -50,7 +50,8 @@ export class GetPlaylistServiceImpl implements GetPlaylistService {
             userId,
             status,
         } = params;
-        const keyword = params.keyword?.trim();
+        let keyword = params.keyword?.trim();
+        if (keyword) keyword = keyword + '*';
 
         // auto restrict playlist if not set
         const restrictOptions = params.restrictOptions || {
