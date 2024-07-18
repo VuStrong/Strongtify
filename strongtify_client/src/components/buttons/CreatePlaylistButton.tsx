@@ -4,12 +4,18 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "../modals/Modal";
 import CreatePlaylistForm from "../playlists/CreatePlaylistForm";
-import Button from "./Button";
 import useRecentPlaylists from "@/hooks/useRecentPlaylists";
+import { MdAddCircleOutline } from "react-icons/md";
 
-export default function CreatePlaylistButton() {
+export default function CreatePlaylistButton({ 
+    size = 30,
+}: { 
+    size?: number,
+}) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-    const fetchRecentPlaylists = useRecentPlaylists(state => state.fetchRecentPlaylists);
+    const fetchRecentPlaylists = useRecentPlaylists(
+        (state) => state.fetchRecentPlaylists,
+    );
     const router = useRouter();
 
     return (
@@ -34,12 +40,16 @@ export default function CreatePlaylistButton() {
                 />
             </Modal>
 
-            <Button
-                label="Tạo playlist mới"
+            <button
+                title="Tạo playlist mới"
+                type="button"
+                className="text-white hover:text-primary"
                 onClick={() => {
                     setIsCreateModalOpen(true);
                 }}
-            />
+            >
+                <MdAddCircleOutline size={size} />
+            </button>
         </>
     );
 }

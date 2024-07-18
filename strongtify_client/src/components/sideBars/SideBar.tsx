@@ -1,16 +1,21 @@
 "use client";
 
 import Image from "next/image";
+import { FaHistory, FaRegHeart } from "react-icons/fa";
 import useSideBarItems from "@/hooks/useSideBarItems";
 import SideBarItem from "./SideBarItem";
 import useSideBar from "@/hooks/useSideBar";
 import UserMenu from "./UserMenu";
 import Link from "next/link";
 import PlaylistContainer from "./PlaylistContainer";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function SideBar() {
     const sideBar = useSideBar();
     const sideBarItems = useSideBarItems();
+    const pathname = usePathname();
+    const { status } = useSession();
 
     return (
         <aside
@@ -29,7 +34,7 @@ export default function SideBar() {
         >
             <div
                 id="sidebar-content"
-                className="flex flex-col gap-4 h-full px-5 py-4 overflow-y-auto overflow-x-hidden bg-darkgray w-[250px] lg:w-full"
+                className="flex flex-col pb-20 gap-4 h-full px-5 py-4 overflow-y-auto overflow-x-hidden bg-darkgray w-[250px] lg:w-full"
                 onClick={(e) => {
                     e.stopPropagation();
                 }}
@@ -69,6 +74,35 @@ export default function SideBar() {
                         />
                     ))}
                 </ul>
+
+                {status === "authenticated" && (
+                    <>
+                        <hr className="border-gray-500" />
+                        <ul className="space-y-3 font-medium text-yellow-50">
+                            <SideBarItem
+                                key="history"
+                                name="Nghe gần đây"
+                                href="/collection/history"
+                                icon={FaHistory}
+                                active={pathname?.startsWith("/collection/history") ?? false}
+                                onClick={() => {
+                                    sideBar.onClose();
+                                }}
+                            />
+                            <SideBarItem
+                                key="liked"
+                                name="Bài hát đã thích"
+                                href="/collection/liked-songs"
+                                icon={FaRegHeart}
+                                active={pathname?.startsWith("/collection/liked-songs") ?? false}
+                                onClick={() => {
+                                    sideBar.onClose();
+                                }}
+                            />
+                        </ul>
+                        <hr className="border-gray-500" />
+                    </>
+                )}
 
                 <PlaylistContainer />
             </div>

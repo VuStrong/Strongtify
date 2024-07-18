@@ -13,6 +13,7 @@ import Slider from "./Slider";
 import { Song } from "@/types/song";
 import { increaseListenCount } from "@/services/api/songs";
 import LikeSongButton from "../buttons/LikeSongButton";
+import { useSession } from "next-auth/react";
 
 export default function PlayerContent({ song }: { song?: Song }) {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -20,6 +21,8 @@ export default function PlayerContent({ song }: { song?: Song }) {
     const [progress, setProgress] = useState<number>(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const player = usePlayer();
+
+    const { data: session } = useSession();
 
     const onPlayNext = useCallback(() => {
         if (!player.songs[0]) {
@@ -73,12 +76,12 @@ export default function PlayerContent({ song }: { song?: Song }) {
             audioRef.current.play();
 
             const listen = async () => {
-                if (song) await increaseListenCount(song.id);
+                if (song) await increaseListenCount(song.id, session?.accessToken);
             };
 
             listen();
         }
-    }, [audioRef.current, song]);
+    }, [audioRef.current, song, session?.accessToken]);
 
     // Call when audio play
     const onPlay = useCallback(() => {

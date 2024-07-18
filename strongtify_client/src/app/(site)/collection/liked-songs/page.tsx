@@ -18,10 +18,6 @@ export default function LikedSongsPage() {
 
     const { data: session, status } = useSession();
 
-    if (status === "loading") {
-        return <HomeLoading />;
-    }
-
     useEffect(() => {
         const get = async () => {
             const data = await getLikedSongs(session?.accessToken ?? "", {
@@ -35,8 +31,8 @@ export default function LikedSongsPage() {
             setIsLoading(false);
         };
 
-        get();
-    }, []);
+        if (status !== "loading") get();
+    }, [status]);
 
     const fetchMoreSongs = async () => {
         const data = await getLikedSongs(session?.accessToken ?? "", {
@@ -48,6 +44,10 @@ export default function LikedSongsPage() {
         setSkip(skip + 20);
         setEnd(data?.end ?? true);
     };
+
+    if (status === "loading") {
+        return <HomeLoading />;
+    }
 
     return (
         <main className="py-5">

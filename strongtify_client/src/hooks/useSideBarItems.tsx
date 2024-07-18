@@ -111,7 +111,7 @@ export default function useSideBarItems() {
                         icon: HiOutlineCollection,
                         name: "Bộ sưu tập",
                         href: "/collection",
-                        active: pathname?.startsWith("/collection") ?? false,
+                        active: (pathname === "/collection"),
                     },
                 ];
                 break;

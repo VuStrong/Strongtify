@@ -231,3 +231,26 @@ export async function getFavs(accessToken: string) {
 
     return data as UserFavs;
 }
+
+export async function getListenHistory(accessToken: string, pagingQuery: PagingQuery) {
+    const params = new URLSearchParams({
+        ...pagingQuery as any
+    });
+
+    const response = await callAPI(`${BACKEND_API_URL}/v1/me/history?${params}`, {
+        accessToken
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+
+    return data as PagedResponse<Song>;
+}
+
+export async function removeListenHistory(songId: string, accessToken: string) {
+    await callAPI(`${BACKEND_API_URL}/v1/me/history/${songId}`, {
+        method: "DELETE",
+        accessToken,
+    });
+}
