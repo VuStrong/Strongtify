@@ -38,65 +38,28 @@ export class AppService {
         @Inject(CACHE_SERVICE) private readonly cacheService: CacheService,
     ) {}
 
-    async getSections(options: {
-        userRequestId: string;
-    }): Promise<Section<any>[]> {
-        const { userRequestId } = options;
-        let sections: Section<any>[] = [];
-
-        const userRecommendCached = userRequestId
-            ? await this.cacheService.get(`${userRequestId}`)
-            : undefined;
+    async getSections(): Promise<Section<any>[]> {
         const cachedSections = await this.cacheService.get("cached-sections");
 
-        // sectionTasks is array contain tasks get section
-        let sectionTasks: any[] = [];
-
-        if (userRequestId && !userRecommendCached) {
-            sectionTasks.push(
-                this.sectionsService.getUserRecommendation(userRequestId),
-            );
-        }
-
-        if (!cachedSections) {
-            sectionTasks = sectionTasks.concat([
-                this.sectionsService.getNewReleasedSongs(),
-                this.sectionsService.getGenreSections(),
-                this.sectionsService.getHotAlbumsSection(),
-                this.sectionsService.getRandomAlbumsSection(),
-                this.sectionsService.getPlaylistSection(),
-                this.sectionsService.getTopArtistsSection(),
-            ]);
-        }
-
-        if (sectionTasks.length > 0)
-            sections = sections.concat(...(await Promise.all(sectionTasks)));
-
-        // if userRecommendCached is already cached, then push it into position 0 of sections array.
-        // if not, it will be at position 0 of sections array, then cached it
-        if (userRequestId && userRecommendCached) {
-            sections.unshift(userRecommendCached);
-        } else if (userRequestId && !userRecommendCached) {
-            await this.cacheService.set(
-                `${userRequestId}`,
-                JSON.stringify(sections[0]),
-            );
-        }
-
         if (cachedSections) {
-            sections.push(...cachedSections);
-        } else {
-            if (userRequestId)
-                await this.cacheService.set(
-                    "cached-sections",
-                    JSON.stringify(sections.slice(1)),
-                );
-            else
-                await this.cacheService.set(
-                    "cached-sections",
-                    JSON.stringify(sections),
-                );
+            return cachedSections;
         }
+
+        const sectionTasks: any[] = [
+            this.sectionsService.getNewReleasedSongs(),
+            this.sectionsService.getGenreSections(),
+            this.sectionsService.getHotAlbumsSection(),
+            this.sectionsService.getRandomAlbumsSection(),
+            this.sectionsService.getPlaylistSection(),
+            this.sectionsService.getTopArtistsSection(),
+        ];
+
+        const sections: Section<any>[] = [].concat(...(await Promise.all(sectionTasks)));
+
+        await this.cacheService.set(
+            "cached-sections",
+            JSON.stringify(sections),
+        );
 
         return sections;
     }

@@ -51,7 +51,7 @@ import { LikePlaylistService } from "../interfaces/like-and-follow/like-playlist
 import { PasswordService } from "../interfaces/password-service.interface";
 import { FollowArtistService } from "../interfaces/like-and-follow/follow-artist-service.interface";
 import { FollowUserService } from "../interfaces/like-and-follow/follow-user-service.interface";
-import { RecommendService } from "../interfaces/recommend-service.interface";
+import { UserListenService } from "../interfaces/user-listen-service.interface";
 
 @ApiTags("me")
 @ApiBearerAuth(ACCESS_TOKEN)
@@ -78,8 +78,8 @@ export class MeController {
         private readonly followUserService: FollowUserService,
         @Inject(USER_SERVICES.PasswordService)
         private readonly passwordService: PasswordService,
-        @Inject(USER_SERVICES.RecommendService)
-        private readonly recommendService: RecommendService,
+        @Inject(USER_SERVICES.UserListenService)
+        private readonly userListenService: UserListenService,
     ) {}
 
     @ApiOperation({ summary: "Get current user's information" })
@@ -89,6 +89,28 @@ export class MeController {
     @UseInterceptors(new TransformDataInterceptor(AccountResponseDto))
     async getAccount(@User("sub") id: string) {
         return this.getUserService.findById(id);
+    }
+
+    @ApiPaging(SongResponseDto, QueryParamDto)
+    @ApiOperation({ summary: "Get current user's listen history" })
+    @Get("history")
+    @UseInterceptors(new TransformDataInterceptor(SongResponseDto))
+    async getListenHistory(
+        @User("sub") id: string,
+        @PagingQuery(QueryParamDto) params: QueryParamDto,
+    ) {
+        return this.userListenService.getListenHistory(id, params);
+    }
+
+    @ApiOperation({ summary: "Remove a song from listen history" })
+    @Delete("history/:songId")
+    async removeListenHistory(
+        @User("sub") userId: string,
+        @Param("songId") songId: string,
+    ) {
+        await this.userListenService.removeFromListen(userId, songId);
+
+        return { success: true };
     }
 
     @ApiPaging(SongResponseDto, QueryParamDto)
@@ -167,18 +189,6 @@ export class MeController {
         );
 
         if (!isLiked) throw new NotFoundException();
-    }
-
-    @ApiOperation({ summary: "Get current user's recommended albums (max 15)" })
-    @Get("recommended-albums")
-    @UseInterceptors(new TransformDataInterceptor(AlbumResponseDto))
-    async getRecommendedAlbums(@User("sub") id: string) {
-        const albums = await this.recommendService.getUserRecommendedAlbums(
-            id,
-            15,
-        );
-
-        return albums;
     }
 
     @ApiOperation({ summary: "Update user's profile" })

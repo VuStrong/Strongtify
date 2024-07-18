@@ -46,8 +46,9 @@ import { SONG_SERVICES } from "./interfaces/constants";
 import { GetSongService } from "./interfaces/get-song-service.interface";
 import { CudSongService } from "./interfaces/cud-song-service.interface";
 import { SongListenService } from "./interfaces/song-listen-service.interface";
-import { TopSongsService } from "./interfaces/top-songs-service.interface";
+import { StatisticSongService } from "./interfaces/statistic-song-service.interface";
 import { CudSongResponseDto } from "./dtos/cud/cud-song-response.dto";
+import { User } from "../users/decorators/user.decorator";
 
 @ApiTags("songs")
 @Controller({
@@ -62,8 +63,8 @@ export class SongsController {
         private readonly cudSongService: CudSongService,
         @Inject(SONG_SERVICES.SongListenService)
         private readonly songListenService: SongListenService,
-        @Inject(SONG_SERVICES.TopSongsService)
-        private readonly topSongsService: TopSongsService,
+        @Inject(SONG_SERVICES.StatisticSongService)
+        private readonly statisticSongService: StatisticSongService,
     ) {}
 
     @ApiOperation({ summary: "Get songs" })
@@ -81,7 +82,7 @@ export class SongsController {
     @Get("/top-songs")
     @UseInterceptors(new TransformDataInterceptor(TopSongResponseDto))
     async getTopSongs(@Query() params: TopSongsParamDto) {
-        return this.topSongsService.getTopSongs(params);
+        return this.statisticSongService.getTopSongs(params);
     }
 
     @ApiOperation({ summary: "Get random songs" })
@@ -114,11 +115,15 @@ export class SongsController {
     }
 
     @ApiOperation({ summary: "Increase listen count of a song" })
+    @ApiBearerAuth(ACCESS_TOKEN)
     @ApiOkResponse()
     @ApiNotFoundResponse({ description: "Song not found" })
     @Patch(":id/listen")
-    async increaseListenCount(@Param("id") id: string) {
-        await this.songListenService.increaseListenCount(id);
+    async increaseListenCount(
+        @Param("id") id: string,
+        @User("sub") userId: string,
+    ) {
+        await this.songListenService.increaseListenCount(id, userId);
 
         return { success: true };
     }

@@ -14,6 +14,7 @@ import { PLAYLIST_SERVICES } from "./interfaces/constants";
 import { GetPlaylistServiceImpl } from "./services/get-playlist.service";
 import { CudPlaylistServiceImpl } from "./services/cud-playlist.service";
 import { ManagePlaylistSongsServiceImpl } from "./services/manage-playlist-songs.service";
+import { StatisticPlaylistServiceImpl } from "./services/statistic-playlist.service";
 
 const getPlaylistService = {
     provide: PLAYLIST_SERVICES.GetPlaylistService,
@@ -30,6 +31,11 @@ const managePlaylistSongsService = {
     useClass: ManagePlaylistSongsServiceImpl,
 };
 
+const statisticPlaylistService = {
+    provide: PLAYLIST_SERVICES.StatisticPlaylistService,
+    useClass: StatisticPlaylistServiceImpl,
+};
+
 @Module({
     imports: [DatabaseModule, UploadModule, CaslModule],
     controllers: [PlaylistsController],
@@ -38,8 +44,10 @@ const managePlaylistSongsService = {
         getPlaylistService,
         cudPlaylistService,
         managePlaylistSongsService,
+        statisticPlaylistService,
+
     ],
-    exports: [getPlaylistService],
+    exports: [getPlaylistService, statisticPlaylistService],
 })
 export class PlaylistsModule implements NestModule {
     public configure(consumer: MiddlewareConsumer): void {

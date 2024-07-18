@@ -16,6 +16,7 @@ import { SectionsModule } from "./section/sections.module";
 import { CacheModule } from "./cache/cache.module";
 import { FFApiController } from "./ffapi.controller";
 import { JwtService } from "@nestjs/jwt";
+import { DashboardModule } from "./dashboard/dashboard.module";
 
 @Module({
     imports: [
@@ -29,6 +30,7 @@ import { JwtService } from "@nestjs/jwt";
         GenresModule,
         UsersModule,
         AuthModule,
+        DashboardModule,
     ],
     controllers: [AppController, FFApiController],
     providers: [AppService, JwtService],

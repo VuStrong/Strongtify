@@ -9,5 +9,6 @@ export const USER_SERVICES = {
     LikePlaylistService: "LikePlaylistService",
     FollowArtistService: "FollowArtistService",
     FollowUserService: "FollowUserService",
-    RecommendService: "RecommendService",
+    UserListenService: "UserListenService",
+    StatisticUserService: "StatisticUserService",
 };

@@ -10,7 +10,7 @@ import { SONG_SERVICES } from "./interfaces/constants";
 import { GetSongServiceImpl } from "./services/get-song.service";
 import { CudSongServiceImpl } from "./services/cud-song.service";
 import { SongListenServiceImpl } from "./services/song-listen.service";
-import { TopSongsServiceImpl } from "./services/top-songs.service";
+import { StatisticSongServiceImpl } from "./services/statistic-song.service";
 
 const getSongService = {
     provide: SONG_SERVICES.GetSongService,
@@ -27,9 +27,9 @@ const songListenService = {
     useClass: SongListenServiceImpl,
 };
 
-const topSongsService = {
-    provide: SONG_SERVICES.TopSongsService,
-    useClass: TopSongsServiceImpl,
+const statisticSongService = {
+    provide: SONG_SERVICES.StatisticSongService,
+    useClass: StatisticSongServiceImpl,
 };
 
 @Module({
@@ -41,7 +41,7 @@ const topSongsService = {
         getSongService,
         cudSongService,
         songListenService,
-        topSongsService,
+        statisticSongService,
     ],
     exports: [getSongService],
 })

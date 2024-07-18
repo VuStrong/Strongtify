@@ -26,6 +26,7 @@ export type AppAbility = PureAbility<
                   Artist: Artist;
                   Genre: Genre;
                   Song: Song;
+                  Dashboard: any;
               }>
             | "all"
         ),
@@ -42,6 +43,7 @@ export class CaslAbilityFactory {
 
         if (user?.role === Role.ADMIN) {
             can(Action.Manage, "all");
+            can(Action.Read, "Dashboard");
 
             cannot(Action.Update, "Account", { role: Role.ADMIN });
             cannot(Action.Delete, "Account", { role: Role.ADMIN });

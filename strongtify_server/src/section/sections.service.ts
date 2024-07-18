@@ -15,8 +15,6 @@ import { AlbumResponseDto } from "src/resources/albums/dtos/get/album-response.d
 import { PlaylistResponseDto } from "src/resources/playlists/dtos/get/playlist-response.dto";
 import { SONG_SERVICES } from "src/resources/songs/interfaces/constants";
 import { GetSongService } from "src/resources/songs/interfaces/get-song-service.interface";
-import { USER_SERVICES } from "src/resources/users/interfaces/constants";
-import { RecommendService } from "src/resources/users/interfaces/recommend-service.interface";
 
 const ALBUMS_PER_SECTION = 5;
 const PLAYLISTS_PER_SECTION = 5;
@@ -26,8 +24,6 @@ const SONGS_PER_SECTION = 10;
 @Injectable()
 export class SectionsService {
     constructor(
-        @Inject(USER_SERVICES.RecommendService)
-        private readonly recommendService: RecommendService,
         @Inject(PLAYLIST_SERVICES.GetPlaylistService)
         private readonly getPlaylistService: GetPlaylistService,
         @Inject(SONG_SERVICES.GetSongService)
@@ -111,19 +107,6 @@ export class SectionsService {
             title: "Nghệ Sĩ Thịnh Hành",
             type: "artists",
             items: ArtistResponseDto.toArtistResponseDto(topArtists.results),
-        };
-    }
-
-    public async getUserRecommendation(userId: string): Promise<Section<any>> {
-        const albums = await this.recommendService.getUserRecommendedAlbums(
-            userId,
-            ALBUMS_PER_SECTION,
-        );
-
-        return {
-            title: `Dành cho bạn`,
-            type: "albums",
-            items: AlbumResponseDto.toAlbumResponseDto(albums),
         };
     }
 

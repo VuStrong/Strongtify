@@ -24,7 +24,8 @@ import { LikeSongServiceImpl } from "./services/like-and-follow/like-song.servic
 import { LikePlaylistServiceImpl } from "./services/like-and-follow/like-playlist.service";
 import { FollowArtistServiceImpl } from "./services/like-and-follow/follow-artist.service";
 import { FollowUserServiceImpl } from "./services/like-and-follow/follow-user.service";
-import { RecommendServiceImpl } from "./services/recommend.service";
+import { UserListenServiceImpl } from "./services/user-listen.service";
+import { StatisticUserServiceImpl } from "./services/statistic-user.service";
 
 const cudUserService = {
     provide: USER_SERVICES.CudUserService,
@@ -76,9 +77,14 @@ const followUserService = {
     useClass: FollowUserServiceImpl,
 };
 
-const recommendService = {
-    provide: USER_SERVICES.RecommendService,
-    useClass: RecommendServiceImpl,
+const userListenService = {
+    provide: USER_SERVICES.UserListenService,
+    useClass: UserListenServiceImpl,
+};
+
+const statisticUserService = {
+    provide: USER_SERVICES.StatisticUserService,
+    useClass: StatisticUserServiceImpl,
 };
 
 @Module({
@@ -96,15 +102,16 @@ const recommendService = {
         likeSongService,
         followArtistService,
         followUserService,
-        recommendService,
+        userListenService,
+        statisticUserService,
     ],
     exports: [
         getUserService,
         cudUserService,
         tokenService,
-        recommendService,
         userEmailService,
         passwordService,
+        statisticUserService,
     ],
 })
 export class UsersModule implements NestModule {

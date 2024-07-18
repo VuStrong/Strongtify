@@ -8,7 +8,7 @@ import { PrismaError } from "src/database/enums/prisma-error.enum";
 export class SongListenServiceImpl implements SongListenService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async increaseListenCount(id: string): Promise<boolean> {
+    async increaseListenCount(id: string, userId?: string): Promise<boolean> {
         const today = new Date();
         // set time of today to zero, so prisma don't throw error
         const todayStr = today.toISOString().split("T")[0] + "T00:00:00.000Z";
@@ -44,6 +44,24 @@ export class SongListenServiceImpl implements SongListenService {
                     throw new InternalServerErrorException();
                 }
             });
+
+        if (userId) {
+            await this.prisma.userListen.upsert({
+                where: {
+                    userId_songId: {
+                        userId,
+                        songId: id,
+                    },
+                },
+                update: {
+                    count: { increment: 1 },
+                },
+                create: {
+                    userId,
+                    songId: id,
+                },
+            });
+        }
 
         return true;
     }

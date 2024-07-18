@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { TopSongsService } from "../interfaces/top-songs-service.interface";
+import { StatisticSongService } from "../interfaces/statistic-song-service.interface";
 import { PrismaService } from "src/database/prisma.service";
 import {
     CACHE_SERVICE,
@@ -12,7 +12,7 @@ import {
 import { TopSongResponseDto } from "../dtos/get/top-song-response.dto";
 
 @Injectable()
-export class TopSongsServiceImpl implements TopSongsService {
+export class StatisticSongServiceImpl implements StatisticSongService {
     private readonly TOP_SONGS_COUNT = 10;
 
     constructor(

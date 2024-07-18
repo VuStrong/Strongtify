@@ -9,6 +9,7 @@ import { DeletePlaylistPolicyProvider } from "./providers/playlists/delete-playl
 import { ReadAccountPolicyProvider } from "./providers/users/read-account-policy.provider";
 import { UpdateAccountPolicyProvider } from "./providers/users/update-account-policy.provider";
 import { DeleteAccountPolicyProvider } from "./providers/users/delete-account-policy.provider";
+import { ReadAdminDashboardPolicyProvider } from "./providers/read-admin-dashboard-policy.provider";
 
 @Module({
     providers: [
@@ -22,6 +23,7 @@ import { DeleteAccountPolicyProvider } from "./providers/users/delete-account-po
         ReadAccountPolicyProvider,
         UpdateAccountPolicyProvider,
         DeleteAccountPolicyProvider,
+        ReadAdminDashboardPolicyProvider,
     ],
     exports: [CaslAbilityFactory],
 })

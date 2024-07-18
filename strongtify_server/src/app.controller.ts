@@ -18,7 +18,6 @@ import {
 import { TransformDataInterceptor } from "./common/interceptors/transform-data.interceptor";
 import { SearchResponseDto } from "./common/dtos/search-response.dto";
 import { ACCESS_TOKEN } from "./auth/constants";
-import { User } from "./resources/users/decorators/user.decorator";
 import { Section } from "./section/section.dto";
 
 @ApiTags("")
@@ -33,8 +32,8 @@ export class AppController {
     @ApiBearerAuth(ACCESS_TOKEN)
     @ApiOkResponse({ type: Section, isArray: true })
     @Get("/sections")
-    async getSections(@User("sub") userRequestId: string) {
-        return this.appService.getSections({ userRequestId });
+    async getSections() {
+        return this.appService.getSections();
     }
 
     @ApiOperation({ summary: "Search resources" })
