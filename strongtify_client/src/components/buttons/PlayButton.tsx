@@ -1,6 +1,6 @@
 "use client";
 
-import usePlayer from "@/hooks/usePlayer";
+import usePlayer from "@/hooks/store/usePlayer";
 import { Song } from "@/types/song";
 import { usePathname } from "next/navigation";
 import { AiFillPlayCircle } from "react-icons/ai";

@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { followArtist, unFollowArtist } from "@/services/api/me";
-import useFavs from "@/hooks/useFavs";
+import useFavs from "@/hooks/store/useFavs";
 
 export default function FollowArtistButton({ artistId }: { artistId: string }) {
     const { data: session, status } = useSession();

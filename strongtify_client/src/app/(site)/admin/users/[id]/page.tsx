@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getAccountById } from "@/services/api/accounts";
 import getUserSession from "@/services/getUserSession";
-import Account from "@/components/admin/accounts/Account";
+import Account from "./account";
 
 export async function generateMetadata({
     params,

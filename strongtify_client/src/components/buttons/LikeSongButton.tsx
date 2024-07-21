@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
 import { likeSong, unLikeSong } from "@/services/api/me";
-import useFavs from "@/hooks/useFavs";
+import useFavs from "@/hooks/store/useFavs";
 
 export default function LikeSongButton({ 
     songId, 

@@ -1,10 +1,9 @@
-import "react-loading-skeleton/dist/skeleton.css";
-import Skeleton from "react-loading-skeleton";
+import { ClipLoader } from "react-spinners";
 
-export default function AdminLoading() {
+export default function SiteLoading() {
     return (
-        <div className="w-full h-full">
-            <Skeleton highlightColor="#f58c1b" baseColor="#121212" />
+        <div className="w-full h-screen flex justify-center items-center">
+            <ClipLoader color="#f58c1b" />
         </div>
     );
 }

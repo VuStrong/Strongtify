@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BiMenuAltLeft } from "react-icons/bi";
-import useSideBar from "@/hooks/useSideBar";
+import useSideBar from "@/hooks/store/useSideBar";
 import useScrollDirection from "@/hooks/useScrollDirection";
 
 export default function MobileHeader() {

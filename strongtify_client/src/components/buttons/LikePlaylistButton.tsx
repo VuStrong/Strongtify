@@ -1,6 +1,6 @@
 "use client";
 
-import useFavs from "@/hooks/useFavs";
+import useFavs from "@/hooks/store/useFavs";
 import {
     likePlaylist,
     unLikePlaylist,

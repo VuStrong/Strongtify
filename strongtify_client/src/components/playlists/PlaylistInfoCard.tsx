@@ -8,23 +8,24 @@ import { formatLength } from "@/libs/utils";
 import { PlaylistDetail } from "@/types/playlist";
 import { useSession } from "next-auth/react";
 import LikePlaylistButton from "../buttons/LikePlaylistButton";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AiFillLock } from "react-icons/ai";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import Modal from "../modals/Modal";
 import Button from "../buttons/Button";
-import { deletePlaylist, updatePlaylist } from "@/services/api/playlists";
-import UpdatePlaylistForm from "./UpdatePlaylistForm";
+import { deletePlaylist } from "@/services/api/playlists";
 import DeleteConfirmContent from "../modals/modal-contents/DeleteConfirmContent";
-import usePlayer from "@/hooks/usePlayer";
-import useRecentPlaylists from "@/hooks/useRecentPlaylists";
+import useRecentPlaylists from "@/hooks/store/useRecentPlaylists";
 import PlayButton from "../buttons/PlayButton";
+import UpdatePlaylistModal from "../modals/UpdatePlaylistModal";
 
 export default function PlaylistInfoCard({
     playlist,
+    onPlaylistInfoUpdated,
 }: {
     playlist: PlaylistDetail;
+    onPlaylistInfoUpdated?: (playlist: PlaylistDetail) => void,
 }) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [isDelPlaylistModalOpen, setIsDelPlaylistModalOpen] =
@@ -32,12 +33,12 @@ export default function PlaylistInfoCard({
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const router = useRouter();
     const { data: session } = useSession();
-    const player = usePlayer();
-    const pathname = usePathname();
 
-    const fetchRecentPlaylists = useRecentPlaylists(state => state.fetchRecentPlaylists);
+    const fetchRecentPlaylists = useRecentPlaylists(
+        (state) => state.fetchRecentPlaylists,
+    );
 
-    const handleDeletePlaylist = useCallback(() => {
+    const handleDeletePlaylist = () => {
         setIsModalOpen(false);
         setIsDelPlaylistModalOpen(false);
 
@@ -54,58 +55,25 @@ export default function PlaylistInfoCard({
             success: "Đã xóa playlist",
             error: "Không thể xóa playlist, hãy thử lại",
         });
-    }, [session?.accessToken]);
-
-    const handleChangePlaylistStatus = useCallback(
-        (status: "PUBLIC" | "PRIVATE") => {
-            setIsModalOpen(false);
-
-            const updateTask = async () => {
-                await updatePlaylist(
-                    playlist.id,
-                    {
-                        name: playlist.name,
-                        status,
-                        description: playlist.description,
-                    },
-                    session?.accessToken ?? "",
-                );
-
-                router.refresh();
-            };
-
-            toast.promise(updateTask(), {
-                loading: "Đang cập nhập playlist",
-                success: "Đã cập nhập trạng thái playlist",
-                error: "Không thể cập nhập playlist, hãy thử lại",
-            });
-        },
-        [session?.accessToken, playlist],
-    );
+    };
 
     return (
         <>
             {/* Edit playlist modal */}
-            <Modal
+            <UpdatePlaylistModal 
                 isOpen={isEditModalOpen}
-                onClickClose={() => {
+                playlist={playlist}
+                onClose={() => setIsEditModalOpen(false)}
+                onUpdating={() => {
                     setIsEditModalOpen(false);
                 }}
-            >
-                <UpdatePlaylistForm
-                    playlist={playlist}
-                    onUpdating={() => {
-                        setIsEditModalOpen(false);
-                    }}
-                    onUpdated={() => {
-                        setIsEditModalOpen(false);
+                onUpdated={(updatedPlaylist) => {
+                    setIsEditModalOpen(false);
+                    fetchRecentPlaylists();
 
-                        fetchRecentPlaylists();
-
-                        router.refresh();
-                    }}
-                />
-            </Modal>
+                    onPlaylistInfoUpdated?.(updatedPlaylist);
+                }}
+            />
 
             {/* Playlist options modal */}
             <Modal
@@ -126,28 +94,6 @@ export default function PlaylistInfoCard({
                                     }}
                                     outline
                                 />
-
-                                {playlist.status === "PUBLIC" ? (
-                                    <Button
-                                        label="Đặt thành riêng tư"
-                                        onClick={() => {
-                                            handleChangePlaylistStatus(
-                                                "PRIVATE",
-                                            );
-                                        }}
-                                        outline
-                                    />
-                                ) : (
-                                    <Button
-                                        label="Đặt thành công khai"
-                                        onClick={() => {
-                                            handleChangePlaylistStatus(
-                                                "PUBLIC",
-                                            );
-                                        }}
-                                        outline
-                                    />
-                                )}
 
                                 <Button
                                     label="Xóa playlist này"
@@ -258,7 +204,10 @@ export default function PlaylistInfoCard({
                 </div>
 
                 <div className="flex gap-3 items-center mb-3">
-                    <PlayButton songs={playlist.songs ?? []} playlistId={playlist.id} />
+                    <PlayButton
+                        songs={playlist.songs ?? []}
+                        playlistId={playlist.id}
+                    />
 
                     {session?.user?.id !== playlist.user.id && (
                         <LikePlaylistButton playlistId={playlist.id} />

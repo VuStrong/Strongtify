@@ -39,7 +39,7 @@ export default function LoginForm() {
         const res = await signIn("credentials", { ...data, redirect: false });
 
         if (res?.ok) {
-            router.push(searchParams?.get("return") ?? "/");
+            router.push(searchParams?.get("callbackUrl") ?? "/");
             router.refresh();
         } else if (res?.error) {
             toast.error(res.error);
@@ -72,7 +72,7 @@ export default function LoginForm() {
             window.removeEventListener("message", onMessage);
 
             if (res?.ok) {
-                router.push(searchParams?.get("return") ?? "/");
+                router.push(searchParams?.get("callbackUrl") ?? "/");
                 router.refresh();
             } else if (res?.error) {
                 toast.error(res.error);

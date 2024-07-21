@@ -19,7 +19,9 @@ export default function SearchForm({
 
         if (!searchText) return;
 
-        router.push(`/search/${searchText}/${searchItem ?? ""}`);
+        const searchQuery = encodeURIComponent(searchText);
+
+        router.push(`/search/${searchQuery}/${searchItem ?? ""}`);
     };
 
     return (

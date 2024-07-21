@@ -11,10 +11,10 @@ import {
 } from "react-icons/fa";
 import { MdFavoriteBorder, MdFavorite, MdSearch } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import useRecentPlaylists from "@/hooks/useRecentPlaylists";
+import useRecentPlaylists from "@/hooks/store/useRecentPlaylists";
 import { addSongsToPlaylist, getPlaylists } from "@/services/api/playlists";
 import { Song } from "@/types/song";
-import useFavs from "@/hooks/useFavs";
+import useFavs from "@/hooks/store/useFavs";
 import { likeSong, unLikeSong } from "@/services/api/me";
 import useDebounce from "@/hooks/useDebounce";
 import { Playlist } from "@/types/playlist";

@@ -9,9 +9,11 @@ import {
 } from "react-beautiful-dnd";
 
 interface DraggableListProps {
+    id: string;
+    autoPos?: boolean;
     initialItems: any[];
     formatItem: (item: any, index: number) => React.ReactNode;
-    onDrop: (item: any, index: number, items: any[]) => Promise<void>;
+    onDrop?: (item: any, from: number, to: number) => Promise<void>;
 }
 
 const reOrderItems = (list: any[], startIndex: number, endIndex: number) => {
@@ -19,11 +21,13 @@ const reOrderItems = (list: any[], startIndex: number, endIndex: number) => {
     list.splice(endIndex, 0, removed);
 };
 
-const DraggableList: React.FC<DraggableListProps> = ({
+export default function DraggableList({
+    id,
+    autoPos,
     initialItems,
     formatItem,
     onDrop,
-}) => {
+}: DraggableListProps) {
     const onDragEnd = async (result: DragUpdate) => {
         if (
             !result.destination ||
@@ -32,24 +36,26 @@ const DraggableList: React.FC<DraggableListProps> = ({
             return;
         }
 
+        const item = initialItems.find(i => i.id === result.draggableId);
+
+        if (!item) return;
+
         reOrderItems(
             initialItems,
             result.source.index,
             result.destination.index,
         );
 
-        await onDrop(
-            {
-                id: result.draggableId,
-            },
-            result.destination.index + 1,
-            initialItems,
+        onDrop && await onDrop(
+            item,
+            result.source.index,
+            result.destination.index,
         );
     };
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
+            <Droppable droppableId={id}>
                 {(provided, snapshot) => (
                     <div
                         className="w-full"
@@ -64,7 +70,7 @@ const DraggableList: React.FC<DraggableListProps> = ({
                             >
                                 {(provided, snapshot) => (
                                     <div
-                                        className="w-full relative"
+                                        className={`w-full relative ${autoPos && "!left-auto !top-auto"}`}
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}
                                     >
@@ -90,5 +96,3 @@ const DraggableList: React.FC<DraggableListProps> = ({
         </DragDropContext>
     );
 };
-
-export default DraggableList;

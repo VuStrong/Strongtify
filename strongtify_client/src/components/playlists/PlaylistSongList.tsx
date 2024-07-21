@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdOutlineAdd } from "react-icons/md";
 import { FaMinusCircle } from "react-icons/fa";
@@ -17,7 +17,7 @@ import {
     moveSongInPlaylist,
     removeSongFromPlaylist,
 } from "@/services/api/playlists";
-import usePlayer from "@/hooks/usePlayer";
+import usePlayer from "@/hooks/store/usePlayer";
 import SongMenuPopup from "../songs/SongMenuPopup";
 
 const AddSongsContent = dynamic(
@@ -25,17 +25,18 @@ const AddSongsContent = dynamic(
     { ssr: false },
 );
 
-const DraggableList = dynamic(
-    () => import("@/components/DraggableList"),
-    { ssr: false },
-);
+const DraggableList = dynamic(() => import("@/components/DraggableList"), {
+    ssr: false,
+});
 
 export default function PlaylistSongList({
     playlist,
-    onSongsChange
+    onSongAdded,
+    onSongRemoved,
 }: {
     playlist: PlaylistDetail;
-    onSongsChange: () => void;
+    onSongAdded?: (song: Song) => void;
+    onSongRemoved?: (songId: string) => void;
 }) {
     const [isModalLoaded, setIsModalLoaded] = useState<boolean>(false);
     const [isAddSongsModalOpen, setIsAddSongsModalOpen] =
@@ -45,6 +46,26 @@ export default function PlaylistSongList({
     const pathname = usePathname();
     const { data: session } = useSession();
 
+    const handleAddSongToPlaylist = async (song: Song) => {
+        try {
+            await addSongsToPlaylist(
+                playlist.id,
+                [song.id],
+                session?.accessToken ?? "",
+            );
+
+            onSongAdded?.(song);
+
+            if (player.playlistId === playlist.id) {
+                player.addSong(song);
+            }
+
+            toast.success("Đã thêm bài hát vào playlist");
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
+
     const handleRemoveSongFromPlaylist = async (songId: string) => {
         const removeTask = async () => {
             await removeSongFromPlaylist(
@@ -53,14 +74,10 @@ export default function PlaylistSongList({
                 session?.accessToken ?? "",
             );
 
-            const removedIndex =
-                playlist.songs?.findIndex((s) => s.id === songId) ?? -1;
-            if (removedIndex >= 0) {
-                const removedSongs = playlist.songs?.splice(removedIndex, 1);
-                playlist.songCount -= 1;
-                playlist.totalLength -= removedSongs?.[0].length ?? 0;
+            onSongRemoved?.(songId);
 
-                onSongsChange();
+            if (player.playlistId === playlist.id) {
+                player.removeSong(songId);
             }
         };
 
@@ -70,12 +87,6 @@ export default function PlaylistSongList({
             error: "Không thể xóa bài hát, hãy thử lại",
         });
     };
-
-    useEffect(() => {
-        if (player.playlistId == playlist.id) {
-            player.songs = playlist.songs ?? [];
-        }
-    }, [playlist]);
 
     return (
         <>
@@ -87,26 +98,7 @@ export default function PlaylistSongList({
                         setIsAddSongsModalOpen(false);
                     }}
                 >
-                    <AddSongsContent
-                        onAdd={async (song: Song) => {
-                            try {
-                                await addSongsToPlaylist(
-                                    playlist.id,
-                                    [song.id],
-                                    session?.accessToken ?? "",
-                                );
-                                playlist.songs?.push(song);
-                                playlist.songCount += 1;
-                                playlist.totalLength += song.length;
-
-                                onSongsChange();
-
-                                toast.success("Đã thêm bài hát vào playlist");
-                            } catch (error: any) {
-                                toast.error(error.message);
-                            }
-                        }}
-                    />
+                    <AddSongsContent onAdd={handleAddSongToPlaylist} />
                 </Modal>
             )}
 
@@ -115,7 +107,7 @@ export default function PlaylistSongList({
                     Danh sách bài hát
                 </h2>
 
-                <button 
+                <button
                     className="flex gap-x-5 items-center w-full text-gray-300 py-2 mb-3 hover:bg-darkgray"
                     onClick={() => {
                         if (!isModalLoaded) setIsModalLoaded(true);
@@ -129,6 +121,7 @@ export default function PlaylistSongList({
                 </button>
 
                 <DraggableList
+                    id="PlaylistSongs"
                     initialItems={playlist.songs ?? []}
                     formatItem={(item: Song, index: number) => (
                         <SongItem
@@ -136,9 +129,7 @@ export default function PlaylistSongList({
                             index={index + 1}
                             containLink
                             canPlay
-                            isActive={
-                                item.id === player.playingSong?.id
-                            }
+                            isActive={item.id === player.playingSong?.id}
                             onClickPlay={() => {
                                 player.setPlayer(
                                     playlist.songs ?? [],
@@ -148,35 +139,37 @@ export default function PlaylistSongList({
                                 player.setPath(pathname ?? undefined);
                             }}
                             action={
-                                <SongMenuPopup 
+                                <SongMenuPopup
                                     song={item}
                                     anotherOptions={(close) => [
                                         <button
                                             onClick={() => {
-                                                handleRemoveSongFromPlaylist(item.id);
+                                                handleRemoveSongFromPlaylist(
+                                                    item.id,
+                                                );
                                                 close();
                                             }}
                                             className="hover:bg-gray-700 p-3 flex items-center gap-3 text-white"
                                         >
                                             <FaMinusCircle />
                                             Xóa khỏi danh sách phát này
-                                        </button>
+                                        </button>,
                                     ]}
                                 />
                             }
                         />
                     )}
-                    onDrop={async (
-                        item: Song,
-                        index: number,
-                        items: Song[],
-                    ) => {
+                    onDrop={async (item: Song, from: number, to: number) => {
                         moveSongInPlaylist(
                             playlist.id,
                             item.id,
-                            index,
+                            to + 1,
                             session?.accessToken ?? "",
                         );
+
+                        if (player.playlistId === playlist.id) {
+                            player.move(from, to);
+                        }
                     }}
                 />
             </section>

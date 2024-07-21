@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Song } from "@/types/song";
 import SongItem from "./SongItem";
-import usePlayer from "@/hooks/usePlayer";
+import usePlayer from "@/hooks/store/usePlayer";
 import SongMenuPopup from "./SongMenuPopup";
 
 export default function SongSection({

@@ -2,121 +2,122 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import "react-loading-skeleton/dist/skeleton.css";
 import Skeleton from "react-loading-skeleton";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsPauseFill, BsPlayFill } from "react-icons/bs";
 import { AiFillStepBackward, AiFillStepForward } from "react-icons/ai";
-import usePlayer from "@/hooks/usePlayer";
+import { MdQueueMusic } from "react-icons/md";
+import usePlayer from "@/hooks/store/usePlayer";
 import { NO_IMAGE_URL } from "@/libs/constants";
-import Slider from "./Slider";
+import PlayerProgressBar from "./PlayerProgressBar";
 import { Song } from "@/types/song";
 import { increaseListenCount } from "@/services/api/songs";
 import LikeSongButton from "../buttons/LikeSongButton";
-import { useSession } from "next-auth/react";
+import PlayerVolume from "./PlayerVolume";
+import useModal from "@/hooks/store/useModal";
 
 export default function PlayerContent({ song }: { song?: Song }) {
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [isDrag, setIsDrag] = useState<boolean>(false);
-    const [progress, setProgress] = useState<number>(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [isDraggingProgressBar, setIsDraggingProgressBar] =
+        useState<boolean>(false);
+    const [progress, setProgress] = useState<number>(0);
+    const [volume, setVolume] = useState<number>(1);
+
     const player = usePlayer();
+    const songQueueModal = useModal(state => state.songQueueModal);
 
     const { data: session } = useSession();
 
-    const onPlayNext = useCallback(() => {
-        if (!player.songs[0]) {
-            return;
-        }
+    const onPlayNext = player.next;
 
-        const length = player.songs.length;
-        const currentIndex = player.songs.findIndex(
-            (s) => s.id == player.playingSong?.id,
-        );
-        const nextIndex = currentIndex >= length - 1 ? 0 : currentIndex + 1;
+    const onPlayPrevious = player.prev;
 
-        player.setPlayingSong(player.songs[nextIndex]);
-    }, [player]);
-
-    const onPlayPrevious = useCallback(() => {
-        if (!player.songs[0]) {
-            return;
-        }
-
-        const length = player.songs.length;
-        const currentIndex = player.songs.findIndex(
-            (s) => s.id == player.playingSong?.id,
-        );
-        const prevIndex = currentIndex <= 0 ? length - 1 : currentIndex - 1;
-
-        player.setPlayingSong(player.songs[prevIndex]);
-    }, [player]);
-
-    const handlePlay = useCallback(() => {
+    const onClickPlay = () => {
         if (!isPlaying) {
             audioRef.current?.play();
         } else {
             audioRef.current?.pause();
         }
-    }, [isPlaying, audioRef.current]);
+    };
+
+    // Call when volume bar changed
+    const onVolumeBarChange = (volume: number) => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume;
+        }
+    };
+
+    const onMute = () => {
+        if (audioRef.current) {
+            audioRef.current.volume = 0;
+        }
+    };
+
+    const onUnmute = () => {
+        if (audioRef.current) {
+            audioRef.current.volume = 1;
+        }
+    };
+
+    const onProgressBarValueChange = (value: number) => {
+        setIsDraggingProgressBar(true);
+        setProgress(value);
+    };
+
+    const onProgressBarValueCommit = (value: number) => {
+        if (audioRef.current) {
+            audioRef.current.currentTime =
+                (value / 100) * audioRef.current.duration;
+        }
+
+        setIsDraggingProgressBar(false);
+    };
 
     // Call when audio update time to update slider's progress
-    const onTimeUpdate = useCallback(() => {
-        if (audioRef.current && !isDrag) {
+    const onAudioTimeUpdate = () => {
+        if (audioRef.current && !isDraggingProgressBar) {
             setProgress(
                 (audioRef.current.currentTime / audioRef.current.duration) *
                     100,
             );
         }
-    }, [isDrag, audioRef.current]);
+    };
 
     // Call when audio can start playing
-    const onCanPlay = useCallback(() => {
+    const onAudioCanPlay = () => {
         if (audioRef.current) {
             audioRef.current.play();
 
-            const listen = async () => {
-                if (song) await increaseListenCount(song.id, session?.accessToken);
-            };
-
-            listen();
+            if (song) increaseListenCount(song.id, session?.accessToken);
         }
-    }, [audioRef.current, song, session?.accessToken]);
+    };
 
     // Call when audio play
-    const onPlay = useCallback(() => {
+    const onAudioPlay = () => {
         setIsPlaying(true);
 
         if ("mediaSession" in navigator) {
             navigator.mediaSession.playbackState = "playing";
         }
-    }, []);
+    };
 
     // Call when audio paused
-    const onPause = useCallback(() => {
+    const onAudioPause = () => {
         setIsPlaying(false);
 
         if ("mediaSession" in navigator) {
             navigator.mediaSession.playbackState = "paused";
         }
-    }, []);
+    };
 
-    const onSliderValueChange = useCallback((value: number) => {
-        setIsDrag(true);
-        setProgress(value);
-    }, []);
-
-    const onSliderValueCommit = useCallback(
-        (value: number) => {
-            if (audioRef.current) {
-                audioRef.current.currentTime =
-                    (value / 100) * audioRef.current.duration;
-            }
-
-            setIsDrag(false);
-        },
-        [audioRef.current],
-    );
+    const onAudioVolumeChange = () => {
+        if (audioRef.current) {
+            setVolume(audioRef.current.volume);
+        }
+    };
 
     // Change MediaSession if song changed
     useEffect(() => {
@@ -144,11 +145,15 @@ export default function PlayerContent({ song }: { song?: Song }) {
         });
 
         navigator.mediaSession.setActionHandler("seekbackward", () => {
-            onPlayPrevious();
+            if (audioRef.current) {
+                audioRef.current.currentTime -= 10;
+            }
         });
 
         navigator.mediaSession.setActionHandler("seekforward", () => {
-            onPlayNext();
+            if (audioRef.current) {
+                audioRef.current.currentTime += 10;
+            }
         });
 
         navigator.mediaSession.setActionHandler("previoustrack", () => {
@@ -167,12 +172,12 @@ export default function PlayerContent({ song }: { song?: Song }) {
     }, [player]);
 
     return (
-        <>
+        <div className="bg-orange-800 px-4 py-3">
             <div className="absolute top-0 left-0 w-full">
-                <Slider
+                <PlayerProgressBar
                     value={progress}
-                    onChange={onSliderValueChange}
-                    onCommit={onSliderValueCommit}
+                    onChange={onProgressBarValueChange}
+                    onCommit={onProgressBarValueCommit}
                 />
             </div>
 
@@ -180,16 +185,17 @@ export default function PlayerContent({ song }: { song?: Song }) {
                 id="audio"
                 ref={audioRef}
                 src={song?.songUrl ?? ""}
-                onTimeUpdate={onTimeUpdate}
-                onPlay={onPlay}
-                onPause={onPause}
+                onTimeUpdate={onAudioTimeUpdate}
+                onPlay={onAudioPlay}
+                onPause={onAudioPause}
                 onEnded={onPlayNext}
-                onCanPlay={onCanPlay}
+                onCanPlay={onAudioCanPlay}
+                onVolumeChange={onAudioVolumeChange}
             ></audio>
 
             {song ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 h-full">
-                    <div className="flex w-full justify-start items-center gap-x-3">
+                <div className="flex items-center justify-between h-full">
+                    <div className="flex justify-start items-center w-[60%] md:w-[30%] gap-x-3">
                         <div className="hidden md:flex items-center">
                             <LikeSongButton songId={song.id} size={40} />
                         </div>
@@ -203,7 +209,11 @@ export default function PlayerContent({ song }: { song?: Song }) {
 
                         <div className="flex-1 truncate">
                             <Link
-                                href={player.path ? `${player.path}#${player.playingSong?.id}` : "#"}
+                                href={
+                                    player.path
+                                        ? `${player.path}#${player.playingSong?.id}`
+                                        : "#"
+                                }
                                 className="hover:underline text-yellow-50"
                             >
                                 {song.name}
@@ -224,7 +234,7 @@ export default function PlayerContent({ song }: { song?: Song }) {
                         </div>
                     </div>
 
-                    <div className="h-full flex justify-center items-center w-full max-w-[722px] gap-x-6">
+                    <div className="h-full flex justify-center items-center w-[40%] max-w-[722px] gap-x-6">
                         <AiFillStepBackward
                             onClick={onPlayPrevious}
                             size={30}
@@ -232,8 +242,8 @@ export default function PlayerContent({ song }: { song?: Song }) {
                         />
 
                         <div
-                            onClick={handlePlay}
-                            className="flex items-center justify-center h-10 w-10 rounded-full  bg-white p-1 cursor-pointer"
+                            onClick={onClickPlay}
+                            className="flex items-center justify-center h-10 w-10 rounded-full bg-white p-1 cursor-pointer"
                         >
                             {isPlaying ? (
                                 <BsPauseFill size={30} className="text-black" />
@@ -245,7 +255,23 @@ export default function PlayerContent({ song }: { song?: Song }) {
                         <AiFillStepForward
                             onClick={onPlayNext}
                             size={30}
-                            className="text-neutral-400 cursor-pointer  hover:text-white transition"
+                            className="text-neutral-400 cursor-pointer hover:text-white transition"
+                        />
+                    </div>
+
+                    <div className="hidden md:flex justify-end items-center w-[30%] gap-x-3">
+                        <MdQueueMusic
+                            title="Danh sách chờ"
+                            size={25}
+                            className="text-neutral-400 cursor-pointer hover:text-white transition"
+                            onClick={songQueueModal.open}
+                        />
+
+                        <PlayerVolume
+                            volume={volume}
+                            onVolumeChange={onVolumeBarChange}
+                            onMute={onMute}
+                            onUnmute={onUnmute}
                         />
                     </div>
                 </div>
@@ -287,6 +313,6 @@ export default function PlayerContent({ song }: { song?: Song }) {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }

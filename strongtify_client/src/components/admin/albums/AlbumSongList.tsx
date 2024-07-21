@@ -127,6 +127,7 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
                 </div>
 
                 <DraggableList
+                    id="AlbumSongs"
                     initialItems={album.songs ?? []}
                     formatItem={(item: Song, index: number) => (
                         <div className="relative">
@@ -145,11 +146,11 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
                             </div>
                         </div>
                     )}
-                    onDrop={async (item: Song, index: number) => {
+                    onDrop={async (item: Song, from: number, to: number) => {
                         await moveSongInAlbum(
                             album.id,
                             item.id,
-                            index,
+                            to + 1,
                             session?.accessToken ?? "",
                         );
                     }}

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
-import useSideBar from "@/hooks/useSideBar";
+import useSideBar from "@/hooks/store/useSideBar";
 import { logout } from "@/services/api/auth";
 import { DEFAULT_AVATAR_URL } from "@/libs/constants";
 import { useState } from "react";
@@ -102,7 +102,7 @@ export default function UserMenu() {
                 Đăng nhập để tạo cho riêng mình những playlist độc đáo nhé!
             </div>
             <a
-                href={`/login?return=${pathname}`}
+                href={`/login?callbackUrl=${pathname}`}
                 className="bg-primary p-2 text-center font-bold mt-3 w-full block rounded-lg text-black"
             >
                 Đăng nhập

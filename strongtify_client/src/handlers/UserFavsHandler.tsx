@@ -1,6 +1,6 @@
 "use client";
 
-import useFavs from "@/hooks/useFavs";
+import useFavs from "@/hooks/store/useFavs";
 import { getFavs } from "@/services/api/me";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
