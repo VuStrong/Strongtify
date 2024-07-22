@@ -34,11 +34,9 @@ export type AdminDashboard = {
     newUserTodayCount: number;
     newPlaylistTodayCount: number;
     recentListens: {
-        userId: string,
-        songId: string;
-        updatedAt: Date;
-        count: number;
-        user: User;
-        song: Song;
+        song: Song,
+        at: Date,
+        userId?: string,
+        ip?: string,
     }[]
 }

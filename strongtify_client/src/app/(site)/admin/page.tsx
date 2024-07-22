@@ -86,14 +86,17 @@ export default async function AdminPage() {
                                     Time
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    User
+                                    User ID
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    IP
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {dashboardData.recentListens.map((l) => (
+                            {dashboardData.recentListens.map((listen, index) => (
                                 <tr
-                                    key={`${l.songId}:${l.userId}`}
+                                    key={`${index}`}
                                     className="bg-darkgray border-b  dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                                 >
                                     <th
@@ -101,7 +104,7 @@ export default async function AdminPage() {
                                         className="p-2 font-medium whitespace-nowrap"
                                     >
                                         <Image
-                                            src={l.song.imageUrl ?? NO_IMAGE_URL}
+                                            src={listen.song.imageUrl ?? NO_IMAGE_URL}
                                             style={{
                                                 width: "50px",
                                                 height: "auto",
@@ -111,36 +114,15 @@ export default async function AdminPage() {
                                             alt="song"
                                         />
                                     </th>
-                                    <td className="px-6 py-4 whitespace-nowrap">{l.song.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{listen.song.name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
                                             <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                                            {l.updatedAt.toString()}
+                                            {listen.at.toString()}
                                         </div>
                                     </td>
-                                    <td
-                                        scope="row"
-                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                                    >
-                                        <Image
-                                            src={l.user.imageUrl ?? NO_IMAGE_URL}
-                                            style={{
-                                                width: "50px",
-                                                height: "auto",
-                                            }}
-                                            width={50}
-                                            height={50}
-                                            alt={l.user.name}
-                                        />
-                                        <div className="ps-3 overflow-hidden">
-                                            <div className="text-base font-semibold">
-                                                {l.user.name}
-                                            </div>
-                                            <div className="font-normal text-gray-500">
-                                                {l.user.id}
-                                            </div>
-                                        </div>
-                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{listen.userId}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{listen.ip}</td>
                                 </tr>
                             ))}
                         </tbody>
