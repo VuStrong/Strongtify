@@ -1,19 +1,30 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { SongListenService } from "../interfaces/song-listen-service.interface";
 import { PrismaService } from "src/database/prisma.service";
 import { SongNotFoundException } from "../exceptions/song-not-found.exception";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
+import { CACHE_SERVICE, CacheService } from "src/cache/interfaces/cache.interface";
+import { Song } from "@prisma/client";
 
 @Injectable()
 export class SongListenServiceImpl implements SongListenService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        @Inject(CACHE_SERVICE) private readonly cacheService: CacheService,
+    ) {}
 
-    async increaseListenCount(id: string, userId?: string): Promise<boolean> {
+    async increaseListenCount(
+        id: string,
+        metadata?: {
+            userId?: string;
+            ip?: string;
+        },
+    ): Promise<boolean> {
         const today = new Date();
         // set time of today to zero, so prisma don't throw error
         const todayStr = today.toISOString().split("T")[0] + "T00:00:00.000Z";
 
-        await this.prisma
+        const [song] = await this.prisma
             .$transaction([
                 this.prisma.song.update({
                     where: { id },
@@ -45,11 +56,11 @@ export class SongListenServiceImpl implements SongListenService {
                 }
             });
 
-        if (userId) {
+        if (metadata?.userId) {
             await this.prisma.userListen.upsert({
                 where: {
                     userId_songId: {
-                        userId,
+                        userId: metadata.userId,
                         songId: id,
                     },
                 },
@@ -57,12 +68,31 @@ export class SongListenServiceImpl implements SongListenService {
                     count: { increment: 1 },
                 },
                 create: {
-                    userId,
+                    userId: metadata.userId,
                     songId: id,
                 },
             });
         }
 
+        this.saveListenToRedis(song, metadata.userId, metadata.ip);
+
         return true;
+    }
+
+    private async saveListenToRedis(song: Song, userId?: string, ip?: string) {
+        const listens: any[] = (await this.cacheService.get("recent-listens")) ?? [];
+
+        if (listens.length >= 50) {
+            listens.splice(49);
+        }
+
+        listens.unshift({
+            song,
+            at: new Date(),
+            userId: userId || "NONE",
+            ip: ip || "NONE",
+        });
+
+        await this.cacheService.set("recent-listens", JSON.stringify(listens), 604800);
     }
 }

@@ -11,6 +11,7 @@ import {
     Post,
     Put,
     Query,
+    Req,
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -24,6 +25,7 @@ import {
     ApiConsumes,
     ApiOperation,
 } from "@nestjs/swagger";
+import { Request } from "express";
 
 import { AuthGuard } from "src/auth/guards/auth.guard";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -122,8 +124,15 @@ export class SongsController {
     async increaseListenCount(
         @Param("id") id: string,
         @User("sub") userId: string,
+        @Req() req: Request,
     ) {
-        await this.songListenService.increaseListenCount(id, userId);
+        await this.songListenService.increaseListenCount(id, {
+            userId,
+            ip:
+                req.header("cf-connecting-ip") ||
+                req.header("X-Real-IP") ||
+                req.headers["x-forwarded-for"]?.[0],
+        });
 
         return { success: true };
     }

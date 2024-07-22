@@ -1,6 +1,27 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { UserListenResponseDto } from "./user-listen-response.dto";
+import { Song } from "@prisma/client";
 import { Exclude, Expose, plainToInstance, Transform } from "class-transformer";
+import { SongResponseDto } from "src/resources/songs/dtos/get/song-response.dto";
+
+@Exclude()
+export class ListenDto {
+    @ApiProperty({ type: SongResponseDto })
+    @Expose()
+    @Transform(({ value }) => SongResponseDto.toSongResponseDto(value))
+    song: Song;
+
+    @ApiProperty()
+    @Expose()
+    at: Date;
+
+    @ApiProperty()
+    @Expose()
+    userId?: string;
+
+    @ApiProperty()
+    @Expose()
+    ip?: string;
+}
 
 @Exclude()
 export class AdminWebStatDto {
@@ -12,8 +33,8 @@ export class AdminWebStatDto {
     @Expose()
     newPlaylistTodayCount: number;
 
-    @ApiProperty({ type: UserListenResponseDto, isArray: true })
+    @ApiProperty({ type: ListenDto, isArray: true })
     @Expose()
-    @Transform(({ value }) => plainToInstance(UserListenResponseDto, value))
-    recentListens: UserListenResponseDto[];
+    @Transform(({ value }) => plainToInstance(ListenDto, value))
+    recentListens: ListenDto[];
 }

@@ -4,23 +4,22 @@ import { USER_SERVICES } from "src/resources/users/interfaces/constants";
 import { PLAYLIST_SERVICES } from "src/resources/playlists/interfaces/constants";
 import { StatisticPlaylistService } from "src/resources/playlists/interfaces/statistic-playlist-service.interface";
 import { StatisticUserService } from "src/resources/users/interfaces/statistic-user-service.interface";
-import { PrismaService } from "src/database/prisma.service";
-import { UserListenResponseDto } from "./dtos/user-listen-response.dto";
+import { CACHE_SERVICE, CacheService } from "src/cache/interfaces/cache.interface";
 
 @Injectable()
 export class DashboardService {
     constructor(
-        private readonly prisma: PrismaService,
         @Inject(USER_SERVICES.StatisticUserService)
         private readonly statisticUserService: StatisticUserService,
         @Inject(PLAYLIST_SERVICES.StatisticPlaylistService)
         private readonly statisticPlaylistService: StatisticPlaylistService,
+        @Inject(CACHE_SERVICE) private readonly cacheService: CacheService,
     ) {}
 
     async getAdminWebStat(): Promise<AdminWebStatDto> {
         const newPlaylistTodayCountTask = this.statisticPlaylistService.countPlaylistsToday();
         const newUserTodayCountTask = this.statisticUserService.countNewUsersToday();
-        const recentListenTask = this.getRecentListen(20);
+        const recentListenTask = this.cacheService.get("recent-listens");
 
         const result = await Promise.all([
             newPlaylistTodayCountTask,
@@ -33,24 +32,5 @@ export class DashboardService {
             newUserTodayCount: result[1],
             recentListens: result[2],
         };
-    }
-
-    private async getRecentListen(count: number): Promise<UserListenResponseDto[]> {
-        const listens = await this.prisma.userListen.findMany({
-            include: {
-                song: {
-                    include: {
-                        artists: true,
-                    }
-                },
-                user: true,
-            },
-            orderBy: {
-                updatedAt: "desc",
-            },
-            take: count,
-        });
-
-        return listens;
     }
 }
