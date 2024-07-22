@@ -1,11 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/playlist_songs/bloc.dart';
 import 'package:strongtify_mobile_app/exceptions/base_exception.dart';
+import 'package:strongtify_mobile_app/injection.dart';
 import 'package:strongtify_mobile_app/services/api/playlist_service.dart';
 
 @injectable
 class PlaylistSongsBloc extends Bloc<PlaylistSongsEvent, PlaylistSongsState> {
+  final PlayerBloc playerBloc = getIt<PlayerBloc>();
+
   PlaylistSongsBloc(
     this._playlistService,
   ) : super(PlaylistSongsState()) {
@@ -26,6 +30,10 @@ class PlaylistSongsBloc extends Bloc<PlaylistSongsEvent, PlaylistSongsState> {
 
     try {
       await _playlistService.addSongToPlaylist(event.playlistId, event.song.id);
+
+      if (playerBloc.state.playlistId == event.playlistId) {
+        playerBloc.add(AddSongToQueueEvent(song: event.song));
+      }
 
       emit(PlaylistSongsState(
         status: PlaylistSongsStatus.added,
@@ -57,6 +65,10 @@ class PlaylistSongsBloc extends Bloc<PlaylistSongsEvent, PlaylistSongsState> {
         event.playlistId,
         event.songId,
       );
+
+      if (playerBloc.state.playlistId == event.playlistId) {
+        playerBloc.add(RemoveSongFromQueueEvent(songId: event.songId));
+      }
 
       emit(PlaylistSongsState(
         status: PlaylistSongsStatus.removed,

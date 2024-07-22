@@ -14,4 +14,14 @@ class GetSongsByParamsEvent extends GetSongsEvent {
 
 class GetCurrentUserLikedSongsEvent extends GetSongsEvent {}
 
+class GetCurrentUserListenHistoryEvent extends GetSongsEvent {}
+
+class RemoveSongFromListenHistoryEvent extends GetSongsEvent {
+  final String songId;
+
+  RemoveSongFromListenHistoryEvent({
+    required this.songId,
+  });
+}
+
 class GetMoreSongsEvent extends GetSongsEvent {}

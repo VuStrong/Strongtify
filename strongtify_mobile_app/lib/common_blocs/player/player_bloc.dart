@@ -40,6 +40,10 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<PausePlayerEvent>(_onPause);
 
     on<SeekToEvent>(_onSeekTo);
+
+    on<MoveSongInQueueEvent>(_onMoveSong);
+    on<AddSongToQueueEvent>(_onAddSong);
+    on<RemoveSongFromQueueEvent>(_onRemoveSong);
   }
 
   Future<void> _onCreatePlayer(
@@ -51,7 +55,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     final songToPlay = event.songs[event.index];
 
     emit(PlayerState(
-      songs: event.songs,
+      songs: [...event.songs],
       playingSong: songToPlay,
       status: PlayerStatus.paused,
       playlistId: event.playlistId,
@@ -142,5 +146,46 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     Emitter<PlayerState> emit,
   ) async {
     player.seek(event.duration);
+  }
+
+  Future<void> _onMoveSong(
+    MoveSongInQueueEvent event,
+    Emitter<PlayerState> emit,
+  ) async {
+    if (state.songs == null || state.songs!.isEmpty) return;
+
+    int length = state.songs!.length;
+
+    if (event.from < 0 ||
+        event.from >= length ||
+        event.to < 0 ||
+        event.to >= length ||
+        event.from == event.to) return;
+
+    final song = state.songs!.removeAt(event.from);
+    state.songs!.insert(event.to, song);
+
+    emit(state.copyWith());
+  }
+
+  Future<void> _onAddSong(
+    AddSongToQueueEvent event,
+    Emitter<PlayerState> emit,
+  ) async {
+    state.songs?.add(event.song);
+
+    emit(state.copyWith());
+  }
+
+  Future<void> _onRemoveSong(
+    RemoveSongFromQueueEvent event,
+    Emitter<PlayerState> emit,
+  ) async {
+    if (state.songs == null || state.songs!.isEmpty) return;
+
+    final idx = state.songs!.indexWhere((song) => song.id == event.songId);
+    state.songs!.removeAt(idx);
+
+    emit(state.copyWith());
   }
 }

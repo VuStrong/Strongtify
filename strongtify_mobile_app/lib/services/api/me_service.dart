@@ -285,7 +285,8 @@ class MeService extends ApiService {
     final userId = await _storage.getString('user_id');
 
     try {
-      await dioClient.dio.head('/v1/users/$userId/following-users/$userIdToCheck');
+      await dioClient.dio
+          .head('/v1/users/$userId/following-users/$userIdToCheck');
 
       return true;
     } on DioException {
@@ -312,14 +313,54 @@ class MeService extends ApiService {
       Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
 
       return UserFavs(
-        likedSongIds: (data['songIds'] as List).map((e) => e.toString()).toSet(),
-        likedAlbumIds: (data['albumIds'] as List).map((e) => e.toString()).toSet(),
-        likedPlaylistIds: (data['playlistIds'] as List).map((e) => e.toString()).toSet(),
-        followingArtistIds: (data['artistIds'] as List).map((e) => e.toString()).toSet(),
-        followingUserIds: (data['userIds'] as List).map((e) => e.toString()).toSet(),
+        likedSongIds:
+            (data['songIds'] as List).map((e) => e.toString()).toSet(),
+        likedAlbumIds:
+            (data['albumIds'] as List).map((e) => e.toString()).toSet(),
+        likedPlaylistIds:
+            (data['playlistIds'] as List).map((e) => e.toString()).toSet(),
+        followingArtistIds:
+            (data['artistIds'] as List).map((e) => e.toString()).toSet(),
+        followingUserIds:
+            (data['userIds'] as List).map((e) => e.toString()).toSet(),
       );
     } on DioException {
       throw Exception();
+    }
+  }
+
+  Future<PagedResponse<Song>> getListenHistory({
+    int skip = 0,
+    int take = 10,
+  }) async {
+    try {
+      Response response = await dioClient.dio.get(
+        '/v1/me/history',
+        queryParameters: {
+          'skip': skip,
+          'take': take,
+        },
+      );
+
+      Map<String, dynamic> data = Map<String, dynamic>.from(response.data);
+
+      return PagedResponse<Song>(
+        items: (data['results'] as List).map((e) => Song.fromMap(e)).toList(),
+        total: data['total'],
+        skip: data['skip'],
+        take: data['take'],
+        end: data['end'],
+      );
+    } on DioException {
+      throw Exception();
+    }
+  }
+
+  Future<void> removeListenHistory(String songId) async {
+    try {
+      await dioClient.dio.delete('/v1/me/history/$songId');
+    } on DioException {
+      //
     }
   }
 }

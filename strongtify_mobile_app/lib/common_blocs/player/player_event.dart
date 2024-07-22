@@ -35,3 +35,29 @@ class SeekToEvent extends PlayerEvent {
 
   SeekToEvent({this.duration = Duration.zero});
 }
+
+class MoveSongInQueueEvent extends PlayerEvent {
+  final int from;
+  final int to;
+
+  MoveSongInQueueEvent({
+    required this.from,
+    required this.to,
+  });
+}
+
+class AddSongToQueueEvent extends PlayerEvent {
+  final Song song;
+
+  AddSongToQueueEvent({
+    required this.song,
+  });
+}
+
+class RemoveSongFromQueueEvent extends PlayerEvent {
+  final String songId;
+
+  RemoveSongFromQueueEvent({
+    required this.songId,
+  });
+}

@@ -12,6 +12,7 @@ import 'package:strongtify_mobile_app/ui/screens/artist_list/artist_list_screen.
 import 'package:strongtify_mobile_app/ui/screens/create_playlist/create_playlist_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/playlist_list/playlist_list_screen.dart';
 import 'package:strongtify_mobile_app/ui/screens/song_list/song_list_screen.dart';
+import 'package:strongtify_mobile_app/ui/screens/song_list/song_listen_history_screen.dart';
 import 'package:strongtify_mobile_app/ui/widgets/app_drawer.dart';
 import 'package:strongtify_mobile_app/ui/widgets/appbar_account.dart';
 import 'package:strongtify_mobile_app/ui/widgets/playlist/playlist_grid.dart';
@@ -51,6 +52,16 @@ class _CollectionScreenState extends State<CollectionScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            ListTile(
+              textColor: Colors.white70,
+              iconColor: Colors.white70,
+              leading: const Icon(Icons.history_outlined),
+              title: const Text('Nghe gần đây'),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                pushNewScreen(context, screen: const SongListenHistoryScreen());
+              },
+            ),
             ListTile(
               textColor: Colors.white70,
               iconColor: Colors.white70,

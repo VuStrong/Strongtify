@@ -9,6 +9,9 @@ import 'package:strongtify_mobile_app/ui/screens/playlist_detail/bloc/bloc.dart'
 @injectable
 class PlaylistDetailBloc
     extends Bloc<PlaylistDetailEvent, PlaylistDetailState> {
+
+  final PlayerBloc playerBloc = getIt<PlayerBloc>();
+
   PlaylistDetailBloc(this._playlistService) : super(PlaylistDetailState()) {
     on<GetPlaylistByIdEvent>(_onGetPlaylistById);
 
@@ -37,11 +40,6 @@ class PlaylistDetailBloc
       playlist: playlist,
       status: PlaylistDetailStatus.loaded,
     ));
-
-    final playerBloc = getIt<PlayerBloc>();
-    if (playlist != null && playerBloc.state.playlistId == playlist.id) {
-      playerBloc.state.songs = playlist.songs;
-    }
   }
 
   Future<void> _onAddSongToPlaylistState(
@@ -155,6 +153,10 @@ class PlaylistDetailBloc
 
     final song = state.playlist!.songs!.removeAt(event.from - 1);
     state.playlist!.songs!.insert(event.to - 1, song);
+
+    if (playerBloc.state.playlistId == state.playlist?.id) {
+      playerBloc.add(MoveSongInQueueEvent(from: event.from - 1, to: event.to - 1));
+    }
 
     emit(state.copyWith());
   }

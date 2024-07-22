@@ -1,16 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/user_favs/bloc.dart';
 import 'package:strongtify_mobile_app/models/song/song.dart';
-import 'package:strongtify_mobile_app/ui/screens/artist_detail/artist_detail_screen.dart';
-import 'package:strongtify_mobile_app/ui/widgets/artist/small_artist_item.dart';
-import 'package:strongtify_mobile_app/ui/widgets/bottom_navigation_app.dart';
 import 'package:strongtify_mobile_app/ui/widgets/marquee.dart';
+import 'package:strongtify_mobile_app/ui/widgets/song/song_item.dart';
 import 'package:strongtify_mobile_app/utils/bottom_sheet/song_menu_bottom_sheet.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
+import 'dart:developer' as developer;
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -130,22 +130,16 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 color: Colors.white30,
               ),
               const SizedBox(height: 20),
-              ...song.artists
-                      ?.map(
-                        (artist) => SmallArtistItem(
-                          artist: artist,
-                          onTap: () {
-                            Navigator.pop(context);
-
-                            pushNewScreen(
-                              BottomNavigationApp.tabContext,
-                              screen: ArtistDetailScreen(artistId: artist.id),
-                            );
-                          },
-                        ),
-                      )
-                      .toList() ??
-                  [],
+              const Text(
+                "Danh sách chờ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildSongQueue(context, state),
             ],
           ),
         );
@@ -262,6 +256,71 @@ class _PlayerScreenState extends State<PlayerScreen> {
           iconSize: 50,
         ),
       ],
+    );
+  }
+
+  Widget _buildSongQueue(BuildContext context, PlayerState state) {
+    if (state.songs == null) {
+      return const SizedBox();
+    }
+
+    int index = -1;
+
+    return ReorderableListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: state.songs!.map((song) {
+        index++;
+        int currentIndex = index;
+
+        return SongItem(
+          key: Key(song.id),
+          song: song,
+          isPlaying: song.id == state.playingSong?.id,
+          action: IconButton(
+            icon: const Icon(
+              Icons.more_vert_outlined,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              showSongMenuBottomSheet(
+                context,
+                song: song,
+                anotherOptions: (sheetContext) => [
+                  ListTile(
+                    leading: const Icon(Icons.remove_circle_outline),
+                    textColor: Colors.white70,
+                    iconColor: Colors.white70,
+                    title: const Text('Xóa khỏi danh sách chờ'),
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+
+                      context
+                          .read<PlayerBloc>()
+                          .add(RemoveSongFromQueueEvent(songId: song.id));
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+          onPressed: () {
+            context.read<PlayerBloc>().add(CreatePlayerEvent(
+                  songs: state.songs!,
+                  index: currentIndex,
+                ));
+          },
+        );
+      }).toList(),
+      onReorder: (int oldIndex, int newIndex) {
+        if (oldIndex < newIndex) {
+          newIndex--;
+        }
+
+        context
+            .read<PlayerBloc>()
+            .add(MoveSongInQueueEvent(from: oldIndex, to: newIndex));
+      },
     );
   }
 }

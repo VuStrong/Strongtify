@@ -14,7 +14,9 @@ class GetSongsBloc extends Bloc<GetSongsEvent, GetSongsState> {
   ) : super(GetSongsState()) {
     on<GetSongsByParamsEvent>(_onGetSongsByParams);
     on<GetCurrentUserLikedSongsEvent>(_onGetCurrentUserLikedSongs);
+    on<GetCurrentUserListenHistoryEvent>(_onGetCurrentUserListenHistory);
     on<GetMoreSongsEvent>(_onGetMoreSongs);
+    on<RemoveSongFromListenHistoryEvent>(_onRemoveSongFromListenHistory);
   }
 
   final SongService _songService;
@@ -76,6 +78,50 @@ class GetSongsBloc extends Bloc<GetSongsEvent, GetSongsState> {
       ));
     } on Exception {
       emit(GetSongsState(status: LoadSongsStatus.loaded));
+    }
+  }
+
+  Future<void> _onGetCurrentUserListenHistory(
+    GetCurrentUserListenHistoryEvent event,
+    Emitter<GetSongsState> emit,
+  ) async {
+    emit(GetSongsState(status: LoadSongsStatus.loading));
+
+    try {
+      final result = await _meService.getListenHistory(take: _songsPerLoad);
+
+      emit(GetSongsState(
+        status: LoadSongsStatus.loaded,
+        songs: result.items,
+        end: result.end,
+        loadBySkip: (int skip) async {
+          return await _meService.getListenHistory(
+            skip: skip,
+            take: _songsPerLoad,
+          );
+        },
+      ));
+    } on Exception {
+      emit(GetSongsState(status: LoadSongsStatus.loaded));
+    }
+  }
+
+  Future<void> _onRemoveSongFromListenHistory(
+    RemoveSongFromListenHistoryEvent event,
+    Emitter<GetSongsState> emit,
+  ) async {
+    if (state.songs == null) {
+      return;
+    }
+
+    final idx = state.songs!.indexWhere((song) => song.id == event.songId);
+    state.songs!.removeAt(idx);
+    emit(state.copyWith());
+
+    try {
+      await _meService.removeListenHistory(event.songId);
+    } on Exception {
+      //
     }
   }
 
