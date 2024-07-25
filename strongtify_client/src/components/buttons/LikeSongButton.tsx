@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { likeSong, unLikeSong } from "@/services/api/me";
 import useFavs from "@/hooks/store/useFavs";
 
@@ -50,7 +50,7 @@ export default function LikeSongButton({
             className={`text-primary hover:scale-105`}
             onClick={handleClick}
         >
-            {favs.likedSongIds.has(songId) ? <AiTwotoneHeart size={size} /> : <AiOutlineHeart size={size} />}
+            {favs.likedSongIds.has(songId) ? <AiFillHeart size={size} /> : <AiOutlineHeart size={size} />}
         </button>
     );
 }

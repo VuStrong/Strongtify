@@ -7,7 +7,7 @@ import {
 } from "@/services/api/me";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import { AiOutlineHeart, AiTwotoneHeart } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
 export default function LikePlaylistButton({
     playlistId,
@@ -55,7 +55,7 @@ export default function LikePlaylistButton({
             onClick={handleClick}
         >
             {favs.likedPlaylistIds.has(playlistId) ? 
-                <AiTwotoneHeart size={size} /> : 
+                <AiFillHeart size={size} /> : 
                 <AiOutlineHeart size={size} />
             }
         </button>
