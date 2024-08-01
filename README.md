@@ -25,6 +25,8 @@ A music streaming website and application using `NestJS` for backend, `NextJS` f
   <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_album_page.png" alt="Alt text" title="Optional title">
   <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_artist_page.png" alt="Alt text" title="Optional title">
   <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_profile_page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_playlist_page.png" alt="Alt text" title="Optional title">
+  <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_collection_page.png" alt="Alt text" title="Optional title">
   <img src="https://github.com/VuManh1/Strongtify/blob/main/Screenshots/web_rank_page.png" alt="Alt text" title="Optional title">
 </details>
 
