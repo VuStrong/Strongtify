@@ -8,7 +8,7 @@ A music streaming website and application using `NestJS` for backend, `NextJS` f
 
 ## Features
 
-- Backend using NestJS, PlanetScale MySQL as main database and Redis for caching.
+- Backend using NestJS, MySQL as main database and Redis for caching.
 - Web client using NextJS, NextAuth for storing token.
 - Mobile App using Flutter and BLoC pattern for state management.
 
