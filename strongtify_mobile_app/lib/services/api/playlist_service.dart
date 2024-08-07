@@ -139,16 +139,14 @@ class PlaylistService extends ApiService {
     }
   }
 
-  Future<void> moveSong(
-    String playlistId, {
-    required String songId,
-    required int to,
-  }) async {
-    final body = jsonEncode({'to': to});
+  Future<void> changeSongsOrder(
+    String playlistId, List<String> songIds,
+  ) async {
+    final body = jsonEncode({'songIds': songIds});
 
     try {
       await dioClient.dio.put(
-        '/v1/playlists/$playlistId/songs/$songId',
+        '/v1/playlists/$playlistId/songs/order',
         data: body,
       );
     } on DioException {

@@ -9,8 +9,6 @@ class Playlist {
     required this.user,
     this.imageUrl,
     this.likeCount = 0,
-    this.songCount = 0,
-    this.totalLength = 0,
     this.status = PlaylistStatus.public,
   });
 
@@ -19,8 +17,6 @@ class Playlist {
   final String alias;
   final String? imageUrl;
   final int likeCount;
-  int songCount;
-  int totalLength;
   final PlaylistStatus status;
   final User user;
 
@@ -32,8 +28,6 @@ class Playlist {
       imageUrl: data['imageUrl'],
       user: User.fromMap(data['user']),
       likeCount: data['likeCount'] ?? 0,
-      songCount: data['songCount'] ?? 0,
-      totalLength: data['totalLength'] ?? 0,
       status: data['status'] == 'PUBLIC'
           ? PlaylistStatus.public
           : PlaylistStatus.private,

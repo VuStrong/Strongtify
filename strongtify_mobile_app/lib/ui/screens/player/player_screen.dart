@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:strongtify_mobile_app/common_blocs/player/bloc.dart';
@@ -10,7 +8,6 @@ import 'package:strongtify_mobile_app/ui/widgets/song/song_item.dart';
 import 'package:strongtify_mobile_app/utils/bottom_sheet/song_menu_bottom_sheet.dart';
 import 'package:strongtify_mobile_app/utils/constants/color_constants.dart';
 import 'package:strongtify_mobile_app/utils/extensions.dart';
-import 'dart:developer' as developer;
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -286,6 +283,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
               showSongMenuBottomSheet(
                 context,
                 song: song,
+                onTapArtist: () {
+                  Navigator.pop(context);
+                },
                 anotherOptions: (sheetContext) => [
                   ListTile(
                     leading: const Icon(Icons.remove_circle_outline),

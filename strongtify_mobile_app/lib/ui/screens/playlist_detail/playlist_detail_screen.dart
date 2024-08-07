@@ -474,7 +474,7 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
 
             context
                 .read<PlaylistDetailBloc>()
-                .add(MoveSongInPlaylistEvent(from: oldIndex + 1, to: newIndex));
+                .add(ChangeSongsOrderInPlaylistEvent(from: oldIndex + 1, to: newIndex));
           },
         );
       },

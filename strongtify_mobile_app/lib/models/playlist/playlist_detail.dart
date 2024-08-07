@@ -11,14 +11,16 @@ class PlaylistDetail extends Playlist {
     required super.user,
     super.imageUrl,
     super.likeCount = 0,
-    super.songCount = 0,
-    super.totalLength = 0,
+    this.songCount = 0,
+    this.totalLength = 0,
     super.status = PlaylistStatus.public,
     required this.createdAt,
     this.description,
     this.songs,
   });
 
+  int songCount;
+  int totalLength;
   final DateTime createdAt;
   final String? description;
   final List<Song>? songs;

@@ -23,7 +23,7 @@ class PlaylistDetailBloc
 
     on<DeletePlaylistEvent>(_onDeletePlaylist);
 
-    on<MoveSongInPlaylistEvent>(_onMoveSong);
+    on<ChangeSongsOrderInPlaylistEvent>(_onChangeSongsOrder);
   }
 
   final PlaylistService _playlistService;
@@ -127,8 +127,8 @@ class PlaylistDetailBloc
     }
   }
 
-  Future<void> _onMoveSong(
-    MoveSongInPlaylistEvent event,
+  Future<void> _onChangeSongsOrder(
+    ChangeSongsOrderInPlaylistEvent event,
     Emitter<PlaylistDetailState> emit,
   ) async {
     if (state.playlist == null ||
@@ -145,18 +145,17 @@ class PlaylistDetailBloc
 
     final songToMove = state.playlist!.songs![event.from - 1];
 
-    _playlistService.moveSong(
-      state.playlist!.id,
-      songId: songToMove.id,
-      to: event.to,
-    );
-
     final song = state.playlist!.songs!.removeAt(event.from - 1);
     state.playlist!.songs!.insert(event.to - 1, song);
 
     if (playerBloc.state.playlistId == state.playlist?.id) {
       playerBloc.add(MoveSongInQueueEvent(from: event.from - 1, to: event.to - 1));
     }
+
+    _playlistService.changeSongsOrder(
+      state.playlist!.id,
+      state.playlist!.songs!.map((song) => song.id).toList()
+    );
 
     emit(state.copyWith());
   }

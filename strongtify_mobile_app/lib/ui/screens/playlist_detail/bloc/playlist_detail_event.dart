@@ -51,11 +51,11 @@ class RemoveSongFromPlaylistStateEvent extends PlaylistDetailEvent {
   });
 }
 
-class MoveSongInPlaylistEvent extends PlaylistDetailEvent {
+class ChangeSongsOrderInPlaylistEvent extends PlaylistDetailEvent {
   final int from;
   final int to;
 
-  MoveSongInPlaylistEvent({
+  ChangeSongsOrderInPlaylistEvent({
     required this.from,
     required this.to,
   });

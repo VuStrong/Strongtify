@@ -7,8 +7,6 @@ class Album {
     required this.alias,
     this.imageUrl,
     this.likeCount = 0,
-    this.songCount = 0,
-    this.totalLength = 0,
     this.artist,
   });
 
@@ -17,8 +15,6 @@ class Album {
   final String alias;
   final String? imageUrl;
   final int likeCount;
-  final int songCount;
-  final int totalLength;
   final Artist? artist;
 
   factory Album.fromMap(Map<String, dynamic> data) {
@@ -28,8 +24,6 @@ class Album {
       alias: data['alias'],
       imageUrl: data['imageUrl'],
       likeCount: data['likeCount'] ?? 0,
-      songCount: data['songCount'] ?? 0,
-      totalLength: data['totalLength'] ?? 0,
       artist: data['artist'] != null ? Artist.fromMap(data['artist']) : null,
     );
   }

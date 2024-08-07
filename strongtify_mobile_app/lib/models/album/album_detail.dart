@@ -7,15 +7,17 @@ class AlbumDetail extends Album {
     required super.id,
     required super.name,
     required super.alias,
+    this.songCount = 0,
+    this.totalLength = 0,
     super.imageUrl,
     super.likeCount = 0,
-    super.songCount = 0,
-    super.totalLength = 0,
     super.artist,
     required this.createdAt,
     this.songs,
   });
 
+  final int songCount;
+  final int totalLength;
   final DateTime createdAt;
   final List<Song>? songs;
 
