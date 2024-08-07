@@ -99,17 +99,16 @@ export async function deletePlaylist(playlistId: string, accessToken: string) {
     return data as CudPlaylistResponse;
 }
 
-export async function moveSongInPlaylist(
+export async function changeSongsOrderInPlaylist(
     playlistId: string, 
-    songId: string, 
-    to: number,
+    songIds: string[], 
     accessToken: string
 ) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/playlists/${playlistId}/songs/${songId}`, {
+    const response = await callAPI(`${BACKEND_API_URL}/v1/playlists/${playlistId}/songs/order`, {
         method: "PUT",
         accessToken,
         contentType: "application/json",
-        body: JSON.stringify({ to })
+        body: JSON.stringify({ songIds })
     });
 
     return response.ok;

@@ -98,17 +98,16 @@ export async function deleteAlbum(albumId: string, accessToken: string) {
     return data as CudAlbumResponse;
 }
 
-export async function moveSongInAlbum(
+export async function changeSongsOrderInAlbum(
     albumId: string, 
-    songId: string, 
-    to: number,
+    songIds: string[], 
     accessToken: string
 ) {
-    const response = await callAPI(`${BACKEND_API_URL}/v1/albums/${albumId}/songs/${songId}`, {
+    const response = await callAPI(`${BACKEND_API_URL}/v1/albums/${albumId}/songs/order`, {
         method: "PUT",
         accessToken,
         contentType: "application/json",
-        body: JSON.stringify({ to })
+        body: JSON.stringify({ songIds })
     });
 
     return response.ok;

@@ -14,7 +14,7 @@ import SongItem from "@/components/songs/SongItem";
 import { PlaylistDetail } from "@/types/playlist";
 import {
     addSongsToPlaylist,
-    moveSongInPlaylist,
+    changeSongsOrderInPlaylist,
     removeSongFromPlaylist,
 } from "@/services/api/playlists";
 import usePlayer from "@/hooks/store/usePlayer";
@@ -160,10 +160,9 @@ export default function PlaylistSongList({
                         />
                     )}
                     onDrop={async (item: Song, from: number, to: number) => {
-                        moveSongInPlaylist(
+                        changeSongsOrderInPlaylist(
                             playlist.id,
-                            item.id,
-                            to + 1,
+                            playlist.songs?.map(s => s.id) ?? [],
                             session?.accessToken ?? "",
                         );
 

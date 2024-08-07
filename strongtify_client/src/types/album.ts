@@ -9,8 +9,6 @@ export type Album = {
     alias: string;
     imageUrl?: string;
     likeCount: number;
-    songCount: number;
-    totalLength: number;
     artist?: Artist;
 }
 

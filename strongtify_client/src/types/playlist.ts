@@ -8,8 +8,6 @@ export type Playlist = {
     alias: string;
     imageUrl?: string;
     likeCount: number;
-    songCount: number;
-    totalLength: number;
     user: User;
     status: "PUBLIC" | "PRIVATE";
 }

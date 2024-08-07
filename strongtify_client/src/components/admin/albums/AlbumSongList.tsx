@@ -11,7 +11,7 @@ import { AlbumDetail } from "@/types/album";
 import { Song } from "@/types/song";
 import {
     addSongsToAlbum,
-    moveSongInAlbum,
+    changeSongsOrderInAlbum,
     removeSongFromAlbum,
 } from "@/services/api/albums";
 import Button from "@/components/buttons/Button";
@@ -147,10 +147,9 @@ export default function AlbumSongList({ album }: { album: AlbumDetail }) {
                         </div>
                     )}
                     onDrop={async (item: Song, from: number, to: number) => {
-                        await moveSongInAlbum(
+                        await changeSongsOrderInAlbum(
                             album.id,
-                            item.id,
-                            to + 1,
+                            album.songs?.map(s => s.id) ?? [],
                             session?.accessToken ?? "",
                         );
                     }}
