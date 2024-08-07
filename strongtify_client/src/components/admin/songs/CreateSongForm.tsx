@@ -164,28 +164,23 @@ export default function CreateSongForm() {
                 )}
             />
 
-            <div>
-                <small className="text-gray-400">
-                    Note: This field can not update later
-                </small>
-                <Input
-                    id="length"
-                    label="Length"
-                    type="number"
-                    disabled={isLoading}
-                    register={register("length", {
-                        min: {
-                            value: 0,
-                            message: "Độ dài không được nhỏ hơn 0",
-                        },
-                        pattern: {
-                            value: /^\d+$/,
-                            message: "Độ dài phải là số nguyên",
-                        },
-                    })}
-                    errors={errors}
-                />
-            </div>
+            <Input
+                id="length"
+                label="Length"
+                type="number"
+                disabled={isLoading}
+                register={register("length", {
+                    min: {
+                        value: 0,
+                        message: "Độ dài không được nhỏ hơn 0",
+                    },
+                    pattern: {
+                        value: /^\d+$/,
+                        message: "Độ dài phải là số nguyên",
+                    },
+                })}
+                errors={errors}
+            />
 
             <Input
                 id="releasedAt"
@@ -197,7 +192,7 @@ export default function CreateSongForm() {
 
             <div>
                 <small className="text-gray-400">
-                    Link: https://docs.google.com/uc?export=open&id=
+                    Link: https://r2.strongtify.io.vn/songs/
                 </small>
                 <Input
                     id="songUrl"

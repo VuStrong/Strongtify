@@ -64,6 +64,7 @@ export default function UpdateSongForm({ song }: { song: SongDetail }) {
     } = useForm<FieldValues>({
         defaultValues: {
             name: song.name,
+            length: song.length.toString(),
             language: song.language ?? "NONE",
             releasedAt: song.releasedAt?.split("T")[0],
             songUrl: song.songUrl,
@@ -219,11 +220,21 @@ export default function UpdateSongForm({ song }: { song: SongDetail }) {
                 />
 
                 <Input
-                    id=""
+                    id="length"
                     label="Length"
                     type="number"
-                    disabled={true}
-                    value={song.length.toString()}
+                    disabled={isLoading}
+                    register={register("length", {
+                        min: {
+                            value: 0,
+                            message: "Độ dài không được nhỏ hơn 0",
+                        },
+                        pattern: {
+                            value: /^\d+$/,
+                            message: "Độ dài phải là số nguyên",
+                        },
+                    })}
+                    errors={errors}
                 />
 
                 <Input
@@ -236,7 +247,7 @@ export default function UpdateSongForm({ song }: { song: SongDetail }) {
 
                 <div>
                     <small className="text-gray-400">
-                        Link: https://docs.google.com/uc?export=open&id=:id
+                        Link: https://r2.strongtify.io.vn/songs/
                     </small>
                     <Input
                         id="songUrl"

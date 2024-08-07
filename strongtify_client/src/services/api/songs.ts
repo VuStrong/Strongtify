@@ -79,6 +79,7 @@ export async function updateSong(
 
     formData.append("name", request.name);
     formData.append("language", request.language.toString());
+    if (request.length) formData.append("length", request.length.toString());
     if (request.releasedAt) formData.append("releasedAt", request.releasedAt);
     if (request.songUrl) formData.append("songUrl", request.songUrl);
     if (request.image) formData.append("image", request.image);
