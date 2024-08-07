@@ -1,9 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { UserListenService } from "../interfaces/user-listen-service.interface";
 import { PrismaService } from "src/database/prisma.service";
 import { PagedResponseDto } from "src/common/dtos/paged-response.dto";
 import { SongResponseDto } from "src/resources/songs/dtos/get/song-response.dto";
 import { QueryParamDto } from "src/common/dtos/query-param.dto";
+import { UserNotFoundException } from "../exceptions/user-not-found.exception";
+import { PrismaError } from "src/database/enums/prisma-error.enum";
 
 @Injectable()
 export class UserListenServiceImpl implements UserListenService {
@@ -24,6 +26,12 @@ export class UserListenServiceImpl implements UserListenService {
                 userId,
                 songId,
             },
+        }).catch(error => {
+            if (error.code === PrismaError.FOREIGN_KEY_CONSTRAINT_FAILED) {
+                throw new NotFoundException();
+            }
+
+            throw new InternalServerErrorException();
         });
 
         return true;
@@ -66,6 +74,8 @@ export class UserListenServiceImpl implements UserListenService {
                 },
             },
         });
+        
+        if (!user) throw new UserNotFoundException();
 
         return new PagedResponseDto<SongResponseDto>(
             user.userListens.map((ls) => ls.song),

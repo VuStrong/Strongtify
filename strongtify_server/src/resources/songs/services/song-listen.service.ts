@@ -5,12 +5,16 @@ import { SongNotFoundException } from "../exceptions/song-not-found.exception";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
 import { CACHE_SERVICE, CacheService } from "src/cache/interfaces/cache.interface";
 import { Song } from "@prisma/client";
+import { USER_SERVICES } from "src/resources/users/interfaces/constants";
+import { UserListenService } from "src/resources/users/interfaces/user-listen-service.interface";
 
 @Injectable()
 export class SongListenServiceImpl implements SongListenService {
     constructor(
         private readonly prisma: PrismaService,
         @Inject(CACHE_SERVICE) private readonly cacheService: CacheService,
+        @Inject(USER_SERVICES.UserListenService) 
+        private readonly userListenService: UserListenService,
     ) {}
 
     async increaseListenCount(
@@ -19,7 +23,7 @@ export class SongListenServiceImpl implements SongListenService {
             userId?: string;
             ip?: string;
         },
-    ): Promise<boolean> {
+    ): Promise<void> {
         const today = new Date();
         // set time of today to zero, so prisma don't throw error
         const todayStr = today.toISOString().split("T")[0] + "T00:00:00.000Z";
@@ -57,26 +61,10 @@ export class SongListenServiceImpl implements SongListenService {
             });
 
         if (metadata?.userId) {
-            await this.prisma.userListen.upsert({
-                where: {
-                    userId_songId: {
-                        userId: metadata.userId,
-                        songId: id,
-                    },
-                },
-                update: {
-                    count: { increment: 1 },
-                },
-                create: {
-                    userId: metadata.userId,
-                    songId: id,
-                },
-            });
+            await this.userListenService.addToListen(metadata.userId, id);
         }
 
         this.saveListenToRedis(song, metadata.userId, metadata.ip);
-
-        return true;
     }
 
     private async saveListenToRedis(song: Song, userId?: string, ip?: string) {

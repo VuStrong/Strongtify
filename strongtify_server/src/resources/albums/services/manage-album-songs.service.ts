@@ -8,6 +8,7 @@ import { Prisma } from "@prisma/client";
 import { PrismaError } from "src/database/enums/prisma-error.enum";
 import { PrismaService } from "src/database/prisma.service";
 import { ManageAlbumSongsService } from "../interfaces/manage-album-songs-service.interface";
+import { AlbumNotFoundException } from "../exceptions/album-not-found.exception";
 
 @Injectable()
 export class ManageAlbumSongsServiceImpl implements ManageAlbumSongsService {
@@ -16,183 +17,76 @@ export class ManageAlbumSongsServiceImpl implements ManageAlbumSongsService {
     async addSongsToAlbum(
         albumId: string,
         songIds: string[],
-    ): Promise<boolean> {
+    ): Promise<void> {
         if (!songIds || songIds.length === 0) return;
 
-        await this.prisma
-            .$transaction(async (tx) => {
-                const album = await tx.album.findUniqueOrThrow({
-                    where: { id: albumId },
-                    select: { songCount: true, totalLength: true },
-                });
-                const albumSongsToAdd: Prisma.Enumerable<Prisma.AlbumSongCreateManyInput> =
-                    [];
+        await this.prisma.albumSong.createMany({
+            data: songIds.map(songId => ({
+                albumId,
+                songId,
+                order: 0
+            }))
+        }).catch((error) => {
+            if (error?.code === PrismaError.FOREIGN_KEY_CONSTRAINT_FAILED)
+                throw new NotFoundException("Song or album not found");
+            else if (error?.code === PrismaError.UNIQUE_CONSTRAINT_FAILED)
+                throw new BadRequestException(
+                    "Song already added to album.",
+                );
 
-                for (const songId of songIds) {
-                    const song = await tx.song.findUniqueOrThrow({
-                        where: { id: songId },
-                        select: { length: true },
-                    });
+            throw new InternalServerErrorException();
+        });
 
-                    album.songCount += 1;
-                    album.totalLength += song.length;
-
-                    albumSongsToAdd.push({
-                        albumId,
-                        songId,
-                        order: album.songCount,
-                    });
+        //Get songIds of album, append new ids and change order
+        const songIdsInDb = (await this.prisma.albumSong.findMany({
+            where: {
+                albumId,
+                songId: {
+                    notIn: songIds
                 }
+            },
+            orderBy: { order: "asc" },
+            select: { songId: true }
+        })).map(s => s.songId);
 
-                await tx.albumSong.createMany({
-                    data: albumSongsToAdd,
-                });
+        const newOrderedIds = songIdsInDb.concat(songIds);
 
-                await tx.album.update({
-                    where: { id: albumId },
-                    data: {
-                        songCount: album.songCount,
-                        totalLength: album.totalLength,
-                    },
-                });
-            })
-            .catch((error) => {
-                if (error?.code === PrismaError.ENTITY_NOT_FOUND)
-                    throw new NotFoundException("Song or album not found");
-                else if (error?.code === PrismaError.UNIQUE_CONSTRAINT_FAILED)
-                    throw new BadRequestException(
-                        "Song already added to album.",
-                    );
-
-                throw new InternalServerErrorException();
-            });
-
-        return true;
+        await this.changeSongsOrder(albumId, newOrderedIds);
     }
 
     async removeSongFromAlbum(
         albumId: string,
         songId: string,
-    ): Promise<boolean> {
-        const songInAlbum = await this.prisma.albumSong
-            .findUniqueOrThrow({
-                where: {
-                    albumId_songId: { albumId, songId },
-                },
-                include: {
-                    song: {
-                        select: { length: true },
-                    },
-                },
-            })
-            .catch((error) => {
-                if (error?.code === PrismaError.ENTITY_NOT_FOUND) {
-                    throw new NotFoundException("Song was not found in album.");
-                } else {
-                    throw new InternalServerErrorException();
-                }
-            });
-
-        const { song, order } = songInAlbum;
-
-        await this.prisma.$transaction([
-            this.prisma.albumSong.delete({
-                where: {
-                    albumId_songId: { albumId, songId },
-                },
-            }),
-            this.prisma.albumSong.updateMany({
-                where: {
-                    AND: {
-                        albumId,
-                        order: { gt: order },
-                    },
-                },
-                data: {
-                    order: { decrement: 1 },
-                },
-            }),
-            this.prisma.album.update({
-                where: { id: albumId },
-                data: {
-                    songCount: { decrement: 1 },
-                    totalLength: { decrement: song.length },
-                },
-            }),
-        ]);
-
-        return true;
+    ): Promise<void> {
+        await this.prisma.albumSong.delete({
+            where: {
+                albumId_songId: { albumId, songId },
+            },
+        }).catch((error) => {
+            if (error?.code === PrismaError.ENTITY_NOT_FOUND) {
+                throw new NotFoundException("Song was not found in album.");
+            } else {
+                throw new InternalServerErrorException();
+            }
+        });
     }
 
-    /**
-     * move a song in album to another position
-     */
-    async moveSong(
+    async changeSongsOrder(
         albumId: string,
-        songId: string,
-        to: number,
-    ): Promise<boolean> {
-        if (!to || to < 1)
-            throw new BadRequestException("Position is not valid.");
+        songIds: string[],
+    ): Promise<void> {
+        if (!songIds[0]) return;
 
-        const albumSong = await this.prisma.albumSong
-            .findUniqueOrThrow({
-                where: {
-                    albumId_songId: { albumId, songId },
-                },
-                include: {
-                    album: {
-                        select: { songCount: true },
-                    },
-                },
-            })
-            .catch((error) => {
-                if (error?.code === PrismaError.ENTITY_NOT_FOUND) {
-                    throw new NotFoundException("Song was not found in album.");
-                } else {
-                    throw new InternalServerErrorException();
-                }
-            });
+        const album = await this.prisma.album.findUnique({
+            where: { id: albumId },
+            select: { id: true }
+        });
 
-        const { album, order: currentPos } = albumSong;
-        if (to === currentPos) return;
+        if (!album) throw new AlbumNotFoundException();
 
-        if (to > album.songCount)
-            throw new BadRequestException("Position is not valid.");
-
-        const whereQuery: Prisma.AlbumSongWhereInput =
-            currentPos > to
-                ? {
-                      AND: {
-                          albumId,
-                          order: { gte: to, lt: currentPos },
-                      },
-                  }
-                : {
-                      AND: {
-                          albumId,
-                          order: { gt: currentPos, lte: to },
-                      },
-                  };
-
-        const updateQuery: Prisma.AlbumSongUpdateInput =
-            currentPos > to
-                ? { order: { increment: 1 } }
-                : { order: { decrement: 1 } };
-
-        await this.prisma.$transaction([
-            this.prisma.albumSong.updateMany({
-                where: whereQuery,
-                data: updateQuery,
-            }),
-            this.prisma.albumSong.update({
-                where: {
-                    albumId_songId: { albumId, songId },
-                },
-                data: { order: to },
-            }),
-        ]);
-
-        return true;
+        await this.prisma.$executeRaw`
+            UPDATE _AlbumToSong SET _AlbumToSong.order = field(songId, ${Prisma.join(songIds)}) 
+            WHERE albumId = ${albumId} AND songId IN (${Prisma.join(songIds)});
+        `;
     }
 }

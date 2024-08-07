@@ -8,5 +8,5 @@ export interface SongListenService {
             userId?: string;
             ip?: string;
         },
-    ): Promise<boolean>;
+    ): Promise<void>;
 }

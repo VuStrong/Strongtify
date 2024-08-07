@@ -112,6 +112,7 @@ const statisticUserService = {
         userEmailService,
         passwordService,
         statisticUserService,
+        userListenService,
     ],
 })
 export class UsersModule implements NestModule {

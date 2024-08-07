@@ -5,6 +5,7 @@ import {
     IsArray,
     IsDate,
     IsEnum,
+    IsInt,
     IsNotEmpty,
     IsOptional,
     IsString,
@@ -16,6 +17,12 @@ export class UpdateSongDto {
     @IsNotEmpty()
     @IsString()
     name: string;
+
+    @ApiProperty({ required: false })
+    @Type(() => Number)
+    @IsInt()
+    @IsOptional()
+    length?: number = 0;
 
     @ApiProperty({ required: false })
     @Type(() => Date)

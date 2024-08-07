@@ -36,7 +36,18 @@ export class GetPlaylistServiceImpl implements GetPlaylistService {
 
         if (!playlist) throw new PlaylistNotFoundException();
 
-        return playlist;
+        let songCount = 0, totalLength = 0;
+
+        playlist.songs.forEach((song) => {
+            songCount++;
+            totalLength += song.song.length;
+        });
+
+        return {
+            ...playlist,
+            songCount,
+            totalLength,
+        };
     }
 
     async get(

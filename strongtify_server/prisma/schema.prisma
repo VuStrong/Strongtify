@@ -9,7 +9,6 @@ generator client {
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
-  relationMode = "prisma"
 }
 
 model User {
@@ -54,7 +53,6 @@ model Token {
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
-  @@index([userId])
   @@unique([token, userId])
 }
 
@@ -127,7 +125,6 @@ model UserListen {
   song        Song       @relation(fields: [songId], references: [id], onDelete: Cascade)
 
   @@unique([userId, songId])
-  @@index([songId])
   @@map("userListens")
 }
 
@@ -142,15 +139,11 @@ model Playlist {
   userId       String
   status       PlaylistStatus  @default(PUBLIC)
   likeCount    Int             @default(0)
-  songCount    Int             @default(0)
-  totalLength  Int             @default(0)
   alias        String?
 
   user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   likedUsers   UserPlaylist[]
   songs        PlaylistSong[]
-
-  @@index([userId])
 
   @@fulltext([name, description])
   
@@ -165,7 +158,6 @@ model PlaylistSong {
   order       Int       @db.SmallInt
 
   @@unique([playlistId, songId])
-  @@index([songId])
   @@map("_PlaylistToSong")
 }
 
@@ -177,8 +169,6 @@ model Album {
   imageUrl     String?    @db.Text
   imageId      String?
   likeCount    Int        @default(0)
-  songCount    Int        @default(0)
-  totalLength  Int        @default(0)
   alias        String?
   artistId     String?
 
@@ -188,7 +178,6 @@ model Album {
   songs        AlbumSong[]
 
   @@map("albums")
-  @@index([artistId])
 
   @@fulltext([name])
 }
@@ -201,7 +190,6 @@ model AlbumSong {
   order    Int      @db.SmallInt
 
   @@unique([albumId, songId])
-  @@index([songId]) 
   @@map("_AlbumToSong")
 }
 
@@ -229,7 +217,6 @@ model UserAlbum {
   likedAt  DateTime  @default(now())
 
   @@unique([userId, albumId])
-  @@index([albumId])
   @@map("_UserToLikedAlbum")
 }
 
@@ -241,7 +228,6 @@ model UserSong {
   likedAt  DateTime  @default(now())
 
   @@unique([userId, songId])
-  @@index([songId])
   @@map("_UserToLikedSong")
 }
 
@@ -253,7 +239,6 @@ model UserPlaylist {
   likedAt     DateTime  @default(now())
 
   @@unique([userId, playlistId])
-  @@index([playlistId])
   @@map("_UserToLikedPlaylist")
 }
 
@@ -265,7 +250,6 @@ model UserArtist {
   followAt  DateTime  @default(now())
 
   @@unique([userId, artistId])
-  @@index([artistId])
   @@map("_UserToArtist")
 }
 

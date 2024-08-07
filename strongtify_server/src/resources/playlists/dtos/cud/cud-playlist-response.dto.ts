@@ -35,14 +35,6 @@ export class CudPlaylistResponseDto implements Playlist {
 
     @ApiProperty()
     @Expose()
-    songCount: number;
-
-    @ApiProperty()
-    @Expose()
-    totalLength: number;
-
-    @ApiProperty()
-    @Expose()
     userId: string;
 
     @ApiProperty()

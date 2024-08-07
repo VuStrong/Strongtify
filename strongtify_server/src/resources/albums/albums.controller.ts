@@ -27,7 +27,6 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { PagingQuery } from "src/common/decorators/paging-query.decorator";
 import { ApiPaging } from "src/common/decorators/api/api-paging.decorator";
-import { ApiBodyMoveSong } from "src/common/decorators/api/api-body-move-song.decorator";
 import { TransformDataInterceptor } from "src/common/interceptors/transform-data.interceptor";
 import { AuthGuard } from "src/auth/guards/auth.guard";
 import { ACCESS_TOKEN } from "src/auth/constants";
@@ -46,6 +45,7 @@ import { AlbumResponseDto } from "./dtos/get/album-response.dto";
 import { AlbumDetailResponseDto } from "./dtos/get/album-detail-response.dto";
 import { AddSongsDto } from "src/resources/albums/dtos/add-songs.dto";
 import { CudAlbumResponseDto } from "./dtos/cud/cud-album-response.dto";
+import { ChangeSongsOrderDto } from "./dtos/change-songs-order.dto";
 
 @ApiTags("albums")
 @Controller({
@@ -131,23 +131,18 @@ export class AlbumsController {
         });
     }
 
-    @ApiOperation({
-        summary: "Move a song in album to another position (ADMIN REQUIRED)",
-    })
-    @ApiBodyMoveSong()
+    @ApiOperation({ summary: "Change order of songs in album" })
     @ApiOkResponse()
-    @ApiNotFoundResponse({ description: "Album or song not found" })
-    @ApiBadRequestResponse({ description: "Position is not valid" })
+    @ApiNotFoundResponse({ description: "Album not found" })
     @ApiBearerAuth(ACCESS_TOKEN)
-    @Put(":id/songs/:songId")
+    @Put(":id/songs/order")
     @UseGuards(AuthGuard, PoliciesGuard)
     @CheckPolicies(ManageAlbumHandler)
-    async moveSong(
+    async changeSongsOrder(
         @Param("id") albumId: string,
-        @Param("songId") songId: string,
-        @Body("to", ParseIntPipe) to: number,
+        @Body() data: ChangeSongsOrderDto,
     ) {
-        await this.manageAlbumSongsService.moveSong(albumId, songId, to);
+        await this.manageAlbumSongsService.changeSongsOrder(albumId, data.songIds);
 
         return { success: true };
     }

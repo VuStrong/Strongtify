@@ -6,7 +6,6 @@ import {
     Get,
     Inject,
     Param,
-    ParseIntPipe,
     Post,
     Put,
     UploadedFile,
@@ -42,7 +41,6 @@ import { UpdatePlaylistDto } from "./dtos/cud/update-playlist.dto";
 import { PlaylistResponseDto } from "./dtos/get/playlist-response.dto";
 import { CudPlaylistResponseDto } from "./dtos/cud/cud-playlist-response.dto";
 
-import { ApiBodyMoveSong } from "src/common/decorators/api/api-body-move-song.decorator";
 import { CaslAbilityFactory } from "src/casl/casl-ability.factory";
 import { Action } from "src/casl/enums/casl.enum";
 import { subject } from "@casl/ability";
@@ -55,6 +53,7 @@ import { GetPlaylistService } from "./interfaces/get-playlist-service.interface"
 import { CudPlaylistService } from "./interfaces/cud-playlist-service.interface";
 import { ManagePlaylistSongsService } from "./interfaces/manage-playlist-songs-service.interface";
 import { JwtPayload } from "src/auth/types/jwt-payload";
+import { ChangeSongsOrderDto } from "./dtos/change-songs-order.dto";
 
 @ApiTags("playlists")
 @Controller({
@@ -161,23 +160,20 @@ export class PlaylistsController {
         });
     }
 
-    @ApiOperation({ summary: "Move a song in playlist to another position" })
-    @ApiBodyMoveSong()
+    @ApiOperation({ summary: "Change order of songs in playlist" })
     @ApiOkResponse()
-    @ApiNotFoundResponse({ description: "Playlist or song not found" })
-    @ApiBadRequestResponse({ description: "Position is not valid" })
+    @ApiNotFoundResponse({ description: "Playlist not found" })
     @ApiForbiddenResponse({ description: "Playlist not belong to user" })
     @ApiBearerAuth(ACCESS_TOKEN)
-    @Put(":id/songs/:songId")
+    @Put(":id/songs/order")
     @UseGuards(AuthGuard, PoliciesGuard)
     @CheckPolicies(UpdatePlaylistHandler)
-    async moveSong(
+    async changeSongsOrder(
         @Param("id") id: string,
-        @Param("songId") songId: string,
-        @Body("to", ParseIntPipe) to: number,
+        @Body() data: ChangeSongsOrderDto,
     ) {
-        await this.managePlaylistSongsService.moveSong(id, songId, to);
-
+        await this.managePlaylistSongsService.changeSongsOrder(id, data.songIds);
+        
         return { success: true };
     }
 

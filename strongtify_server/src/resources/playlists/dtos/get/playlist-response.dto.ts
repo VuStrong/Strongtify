@@ -32,14 +32,6 @@ export class PlaylistResponseDto implements Playlist {
     @Expose()
     likeCount: number;
 
-    @ApiProperty()
-    @Expose()
-    songCount: number;
-
-    @ApiProperty()
-    @Expose()
-    totalLength: number;
-
     userId: string;
 
     @ApiProperty({ type: UserResponseDto })

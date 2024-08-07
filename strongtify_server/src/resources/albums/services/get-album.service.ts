@@ -41,7 +41,18 @@ export class GetAlbumServiceImpl implements GetAlbumService {
 
         if (!album) throw new AlbumNotFoundException();
 
-        return album;
+        let songCount = 0, totalLength = 0;
+
+        album.songs.forEach((song) => {
+            songCount++;
+            totalLength += song.song.length;
+        });
+
+        return {
+            ...album,
+            songCount,
+            totalLength,
+        };
     }
 
     async get(

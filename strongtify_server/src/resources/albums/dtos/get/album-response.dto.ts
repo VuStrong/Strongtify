@@ -30,14 +30,6 @@ export class AlbumResponseDto implements Album {
     @Expose()
     likeCount: number;
 
-    @ApiProperty()
-    @Expose()
-    songCount: number;
-
-    @ApiProperty()
-    @Expose()
-    totalLength: number;
-
     artistId: string;
 
     @ApiProperty({ type: ArtistResponseDto })

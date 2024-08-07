@@ -11,6 +11,7 @@ import { GetSongServiceImpl } from "./services/get-song.service";
 import { CudSongServiceImpl } from "./services/cud-song.service";
 import { SongListenServiceImpl } from "./services/song-listen.service";
 import { StatisticSongServiceImpl } from "./services/statistic-song.service";
+import { UsersModule } from "../users/users.module";
 
 const getSongService = {
     provide: SONG_SERVICES.GetSongService,
@@ -33,7 +34,7 @@ const statisticSongService = {
 };
 
 @Module({
-    imports: [DatabaseModule, UploadModule, CacheModule, CaslModule],
+    imports: [DatabaseModule, UploadModule, CacheModule, CaslModule, UsersModule],
     controllers: [SongsController],
     providers: [
         StringService,

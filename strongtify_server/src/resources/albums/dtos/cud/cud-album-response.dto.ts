@@ -31,13 +31,5 @@ export class CudAlbumResponseDto implements Album {
 
     @ApiProperty()
     @Expose()
-    songCount: number;
-
-    @ApiProperty()
-    @Expose()
-    totalLength: number;
-
-    @ApiProperty()
-    @Expose()
     artistId: string;
 }
