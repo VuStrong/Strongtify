@@ -167,15 +167,14 @@ export class AuthController {
     @UseInterceptors(new TransformDataInterceptor(SignInResponseDto))
     async googleAuthRedirect(@User() user, @Res() res) {
         const result = await this.socialAuthService.socialLogin(user);
+        const jsonString = JSON.stringify(result).replace(/'/g, "\\'").replace(/"/g, '\\"');
 
         res.send(
             `<script>
-                window.opener?.postMessage('${JSON.stringify(
-                    result,
-                )}', '*');
+                window.opener?.postMessage('${jsonString}', '*');
 
                 try {
-                    Print.postMessage('${JSON.stringify(result)}');
+                    Print.postMessage('${jsonString}');
                 } catch {}
 
                 window.close();
@@ -197,11 +196,10 @@ export class AuthController {
     @UseInterceptors(new TransformDataInterceptor(SignInResponseDto))
     async facebookAuthRedirect(@User() user, @Res() res) {
         const result = await this.socialAuthService.socialLogin(user);
+        const jsonString = JSON.stringify(result).replace(/'/g, "\\'").replace(/"/g, '\\"');
 
         res.send(
-            `<script>window.opener.postMessage('${JSON.stringify(
-                result,
-            )}', '*');window.close()</script>`,
+            `<script>window.opener.postMessage('${jsonString}', '*');window.close()</script>`,
         );
         return result;
     }
@@ -219,11 +217,10 @@ export class AuthController {
     @UseInterceptors(new TransformDataInterceptor(SignInResponseDto))
     async githubAuthRedirect(@User() user, @Res() res) {
         const result = await this.socialAuthService.socialLogin(user);
+        const jsonString = JSON.stringify(result).replace(/'/g, "\\'").replace(/"/g, '\\"');
 
         res.send(
-            `<script>window.opener.postMessage('${JSON.stringify(
-                result,
-            )}', '*');window.close()</script>`,
+            `<script>window.opener.postMessage('${jsonString}', '*');window.close()</script>`,
         );
         return result;
     }
